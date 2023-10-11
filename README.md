@@ -1,38 +1,32 @@
-# Welcome to Remix!
 
-- [Remix Docs](https://remix.run/docs)
+## Install dependencies
+```sh
+yarn install
+```
 
 ## Development
 
-From your terminal:
-
 ```sh
-npm run dev
+yarn dev
 ```
-
 This starts your app in development mode, rebuilding assets on file changes.
+
 
 ## Deployment
 
-First, build your app for production:
 
 ```sh
-npm run build
+yarn build
 ```
-
-Then run the app in production mode:
-
+Then
 ```sh
-npm start
+yarn start
 ```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
-
 Make sure to deploy the output of `remix build`
-
 - `build/`
 - `public/build/`
+
+
+## Others
+
+[Tailwind VSCode extension](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
