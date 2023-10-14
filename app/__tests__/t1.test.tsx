@@ -2,7 +2,6 @@ import {render, screen} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import "@testing-library/jest-dom"
 
-
 import Index from 'app/routes/_index';
 
 test('adds 1 + 2 to equal 3', () => {
