@@ -1,6 +1,11 @@
 module.exports = {
   transform: {
-    "^.+\\.(js|jsx|ts|tsx)$": "ts-jest",
+    "^.+\\.(js|jsx|ts|tsx)$": [
+      "ts-jest", 
+      {
+        useESM: true,
+      },
+    ],
   },
   moduleDirectories: ['node_modules', '<rootDir>'],
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
