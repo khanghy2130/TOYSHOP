@@ -10,7 +10,7 @@ module.exports = {
   // preset: 'ts-jest/presets/default-esm',
   // resolver: 'ts-jest-resolver',
 
-  //moduleDirectories: ['node_modules', '<rootDir>'],
+  moduleDirectories: ['node_modules', '<rootDir>'],
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   testEnvironment: "jest-environment-jsdom",
 };
