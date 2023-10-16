@@ -1,28 +1,27 @@
 
+
 ## Install dependencies
 ```sh
 yarn install
 ```
 
 ## Development
-
+Development mode:
 ```sh
 yarn dev
 ```
-This starts your app in development mode, rebuilding assets on file changes.
-
+Run tests:
+```sh
+yarn test
+```
 
 ## Deployment
 
-
 ```sh
 yarn build
-```
-Then
-```sh
 yarn start
 ```
-Make sure to deploy the output of `remix build`
+Outputs:
 - `build/`
 - `public/build/`
 
