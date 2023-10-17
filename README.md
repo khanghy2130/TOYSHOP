@@ -5,14 +5,9 @@
 yarn install
 ```
 
-## Development
-Development mode:
+## Development mode
 ```sh
 yarn dev
-```
-Run tests:
-```sh
-yarn test
 ```
 
 ## Deployment
