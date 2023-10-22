@@ -15,8 +15,11 @@ import {
 } from "@remix-run/react";
 import { useState, useEffect } from "react";
 import { createBrowserClient } from '@supabase/auth-helpers-remix'
+import { useLocation } from "@remix-run/react";
+
 
 import stylesheet from "~/tailwind.css";
+import Navbar from "./components/Navbar";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -37,8 +40,8 @@ export default function App() {
     createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   )
 
-  const revalidator = useRevalidator()
   // recalling loaders when authentication state changes
+  const revalidator = useRevalidator()
   useEffect(() => {
     const {
       data: { subscription }
@@ -51,6 +54,14 @@ export default function App() {
     }
   }, [supabase, revalidator])
 
+
+  // hide nav for specific routes
+  const location = useLocation();
+  const routesToHideNavigation = ['/login', '/signup'];
+  const shouldHideNavigation = routesToHideNavigation.includes(location.pathname);
+
+  
+
   return (
     <html lang="en">
       <head>
@@ -60,6 +71,8 @@ export default function App() {
         <Links />
       </head>
       <body>
+        {shouldHideNavigation ? null : <Navbar/>}
+        
         <Outlet  context={{ supabase }}  />
         <ScrollRestoration />
         <Scripts />
