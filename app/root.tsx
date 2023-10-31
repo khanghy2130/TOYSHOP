@@ -1,5 +1,5 @@
 
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import type { Database } from '../database.types'
 
 import { json } from "@remix-run/node";
@@ -19,23 +19,36 @@ import { useLocation } from "@remix-run/react";
 
 
 import stylesheet from "~/tailwind.css";
+import { ThemeProvider, useTheme, ThemeType } from '~/utils/ThemeProvider';
+import { getThemeSession } from './utils/theme.server';
 import Navbar from "./components/Navbar";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
-export async function loader(){
-  const env = {
-    SUPABASE_URL: process.env.SUPABASE_URL!,
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
-  }
-  return json({ env })
+export type LoaderData = {
+  theme: ThemeType | null;
+  env: { [key: string]: string }
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const themeSession = await getThemeSession(request);
+
+  const data: LoaderData = {
+    theme: themeSession.getTheme(),
+    env: {
+      SUPABASE_URL: process.env.SUPABASE_URL!,
+      SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
+    }
+  };
+
+  return json(data)
 }
 
 
-export default function App() {
-  const { env } = useLoaderData<typeof loader>()
+function App() {
+  const { env } = useLoaderData<LoaderFunction>()
   const [supabase] = useState(() =>
     createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   )
@@ -55,6 +68,10 @@ export default function App() {
   }, [supabase, revalidator])
 
 
+  const [theme] = useTheme();
+
+
+
   // hide nav for specific routes
   const location = useLocation();
   const routesToHideNavigation = ['/login', '/signup'];
@@ -63,7 +80,7 @@ export default function App() {
   
 
   return (
-    <html lang="en">
+    <html lang="en" className={theme ?? ""}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,5 +96,14 @@ export default function App() {
         <LiveReload />
       </body>
     </html>
+  );
+}
+
+export default function AppWithProviders() {
+  const data = useLoaderData<LoaderData>();
+  return (
+    <ThemeProvider specifiedTheme={data.theme}>
+      <App />
+    </ThemeProvider>
   );
 }
