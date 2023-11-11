@@ -5,11 +5,9 @@ import type { Database } from '../database.types'
 import { json } from "@remix-run/node";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
   useLoaderData,
   useRevalidator
 } from "@remix-run/react";
@@ -91,9 +89,7 @@ function App() {
         {shouldHideNavigation ? null : <Navbar/>}
         
         <Outlet  context={{ supabase }}  />
-        <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );

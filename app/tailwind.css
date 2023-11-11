@@ -11,3 +11,7 @@ html.dark {
     --primary-color: #1d1d1d;
     --secondary-color: #7fffe1;
 }
+
+body * {
+    @apply transition-colors duration-200;
+}
