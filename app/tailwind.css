@@ -12,6 +12,28 @@ html.dark {
     --secondary-color: #7fffe1;
 }
 
+body {
+    @apply overflow-y-scroll;
+}
 body * {
     @apply transition-colors duration-200;
+}
+
+
+/* SCROLLBAR */
+/* width */
+::-webkit-scrollbar {
+    width: 1em;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--primary-color);
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+}
+/* PAGE LOADING PROGRESS BAR */
+::-webkit-progress-value {
+    background-color: var(--secondary-color);
 }

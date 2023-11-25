@@ -10,13 +10,13 @@ export default function Navbar(){
         setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
     };
 
-    return <div>
-        {/* <button onClick={toggleTheme}>Theme: {theme}</button> */}
+    return <div className='sticky top-0 
+    bg-primary-color text-secondary-color'>
+            {/* <button onClick={toggleTheme}>Theme: {theme}</button> */}
 
-        <div className=''>
             <div className='
                 flex flex-row justify-between
-                max-w-screen-lg mx-auto
+                max-w-screen-lg mx-auto h-auto
             '>
                 <Link to="/">
                     <img src={titleLogoImage} 
@@ -39,6 +39,4 @@ export default function Navbar(){
                 
             </div>
         </div>
-
-    </div>
 }
