@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Link } from "@remix-run/react";
 import { useTheme } from '~/utils/ThemeProvider';
 
@@ -10,8 +10,26 @@ export default function Navbar(){
         setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
     };
 
-    return <div className='sticky top-0 
-    bg-primary-color text-secondary-color'>
+    const lastScrollY = useRef<number>(0); // useRef allows handler to read updated data
+    const [navIsShown, setNavIsShown] = useState<boolean>(true);
+
+    const handleScroll = () => {
+        setNavIsShown(window.scrollY <= lastScrollY.current);
+        lastScrollY.current = window.scrollY;
+    };
+
+    // set up scroll event listener
+    useEffect(()=>{
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, [])
+
+    const navShownStyle = navIsShown ? "top-0" : "-top-full";
+
+    return <div className={navShownStyle +
+    ' sticky transition-[top] ease-in-out duration-500 bg-red-800'}>
             {/* <button onClick={toggleTheme}>Theme: {theme}</button> */}
 
             <div className='
