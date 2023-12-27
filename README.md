@@ -10,6 +10,11 @@ yarn install
 yarn dev
 ```
 
+## Run tests
+```sh
+yarn test
+```
+
 ## Deployment
 
 ```sh

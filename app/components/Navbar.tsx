@@ -26,7 +26,7 @@ export default function Navbar(){
         };
     }, [])
 
-    const navShownStyle = navIsShown ? "top-0" : "-top-full";
+    const navShownStyle = navIsShown ? "top-0" : "-top-24";
 
     return <div className={navShownStyle +
     ' sticky transition-[top] ease-in-out duration-500 bg-red-800'}>
