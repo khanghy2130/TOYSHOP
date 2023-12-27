@@ -1,37 +1,21 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link } from "@remix-run/react";
-import { useTheme } from '~/utils/ThemeProvider';
 
 import titleLogoImage from "~/assets/title_logo.png"
+import useScrollBehavior from '../utils/Navbar/useScrollBehavior';
 
-export default function Navbar(){
-    const [theme, setTheme] = useTheme();
-    const toggleTheme = () => {
-        setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-    };
 
-    const lastScrollY = useRef<number>(0); // useRef allows handler to read updated data
-    const [navIsShown, setNavIsShown] = useState<boolean>(true);
+type Props = {
+    setSidePanelIsShown: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-    const handleScroll = () => {
-        setNavIsShown(window.scrollY <= lastScrollY.current);
-        lastScrollY.current = window.scrollY;
-    };
+export default function Navbar(
+    {setSidePanelIsShown}
+: Props){
+    const {navIsShown} = useScrollBehavior();
 
-    // set up scroll event listener
-    useEffect(()=>{
-        window.addEventListener("scroll", handleScroll);
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, [])
-
-    const navShownStyle = navIsShown ? "top-0" : "-top-24";
-
-    return <div className={navShownStyle +
-    ' sticky transition-[top] ease-in-out duration-500 bg-red-800'}>
-            {/* <button onClick={toggleTheme}>Theme: {theme}</button> */}
-
+    return <div className={(navIsShown ? "top-0" : "-top-32") +
+    ' fixed transition-[top] ease-in-out duration-500 w-screen bg-red-800'}>
             <div className='
                 flex flex-row justify-between
                 max-w-screen-lg mx-auto h-auto
@@ -42,15 +26,15 @@ export default function Navbar(){
                 </Link>
                 <div>
                     <Link to="/profile">
-                        Profile
+                        <button className='btn'>Profile</button>
                     </Link>
                     <Link to="/store">
-                        Store
+                        <button className='btn'>Store</button>
                     </Link>
                     <Link to="/cart">
-                        Cart
+                        <button className='btn'>Cart</button>
                     </Link>
-                    <button>
+                    <button className='btn' onClick={()=>setSidePanelIsShown(true)}>
                         More
                     </button>
                 </div>

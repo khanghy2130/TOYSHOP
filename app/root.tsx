@@ -17,9 +17,13 @@ import { useLocation } from "@remix-run/react";
 
 
 import stylesheet from "~/tailwind.css";
-import { ThemeProvider, useTheme, ThemeType } from '~/utils/ThemeProvider';
-import { getThemeSession } from './utils/theme.server';
+import { ThemeProvider, useTheme, ThemeType } from '~/utils/Navbar/ThemeProvider';
+import { getThemeSession } from './utils/Navbar/theme.server';
+
+
 import Navbar from "./components/Navbar";
+import SidePanel from "./components/SidePanel";
+
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -67,10 +71,10 @@ function App() {
 
 
   const [theme] = useTheme();
+  const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
 
-
-  // hide nav for specific routes
+  // hide for specific routes
   const location = useLocation();
   const routesToHideNavigation = ['/login', '/signup'];
   const shouldHideNavigation = routesToHideNavigation.includes(location.pathname);
@@ -86,7 +90,10 @@ function App() {
         <Links />
       </head>
       <body>
-        {shouldHideNavigation ? null : <Navbar/>}
+        {shouldHideNavigation ? null : <>
+          <Navbar setSidePanelIsShown={setSidePanelIsShown}/>
+          <SidePanel sidePanelIsShown={sidePanelIsShown} setSidePanelIsShown={setSidePanelIsShown} />
+        </>}
         
         <Outlet  context={{ supabase }}  />
         <Scripts />

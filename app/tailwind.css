@@ -22,6 +22,13 @@ body * {
 }
 
 
+/* CUSTOM CLASSES */
+.btn {
+    @apply font-bold py-2 px-4 rounded-lg text-secondary-color bg-primary-color;
+}
+
+
+
 /* SCROLLBAR */
 /* width */
 ::-webkit-scrollbar {
