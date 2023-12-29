@@ -55,7 +55,7 @@ function App() {
     createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY)
   )
 
-  // recalling loaders when authentication state changes
+  // recalls loaders when authentication state changes
   const revalidator = useRevalidator()
   useEffect(() => {
     const {
