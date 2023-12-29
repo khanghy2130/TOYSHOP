@@ -3,28 +3,34 @@
 @tailwind utilities;
 
 html {
-    --primary-color: #fff;
-    --secondary-color: #000;
+    --color-1: #fff;
+    --color-2: #000;
+    --color-3: #562a2a;
+    --color-4: #170d53;
+    --color-5: #0d5641;
 }
 
 html.dark {
-    --primary-color: #1d1d1d;
-    --secondary-color: #7fffe1;
+    --color-1: #1d1d1d;
+    --color-2: #7fffe1;
+    --color-3: #951919;
+    --color-4: #147b2d;
+    --color-5: #9f9d12;
 }
 
 body {
     @apply overflow-y-scroll;
-    @apply text-secondary-color;
-    @apply bg-primary-color;
+    @apply text-color-2;
+    @apply bg-color-1;
 }
-body * {
-    @apply transition-colors duration-200;
+body *, body {
+    @apply transition-colors duration-150;
 }
 
 
 /* CUSTOM CLASSES */
 .btn {
-    @apply font-bold py-2 px-4 rounded-lg text-secondary-color bg-primary-color;
+    @apply font-bold py-2 px-4 rounded-lg text-color-2 bg-color-1;
 }
 
 
@@ -36,13 +42,13 @@ body * {
 }
 /* Track */
 ::-webkit-scrollbar-track {
-    background: var(--primary-color);
+    background: var(--color-1);
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: var(--secondary-color);
+    background: var(--color-2);
 }
 /* PAGE LOADING PROGRESS BAR */
 ::-webkit-progress-value {
-    background-color: var(--secondary-color);
+    background-color: var(--color-2);
 }

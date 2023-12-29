@@ -12,7 +12,7 @@ import {
   useRevalidator
 } from "@remix-run/react";
 import { useState, useEffect } from "react";
-import { createBrowserClient } from '@supabase/auth-helpers-remix'
+import { createBrowserClient } from '@supabase/ssr'
 import { useLocation } from "@remix-run/react";
 
 
@@ -95,7 +95,10 @@ function App() {
           <SidePanel sidePanelIsShown={sidePanelIsShown} setSidePanelIsShown={setSidePanelIsShown} />
         </>}
         
-        <Outlet  context={{ supabase }}  />
+        {/* space for navbar above main page content */}
+        <div className="pt-24">
+          <Outlet  context={{ supabase }}  />
+        </div>
         <Scripts />
       </body>
     </html>

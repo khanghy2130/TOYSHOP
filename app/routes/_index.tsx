@@ -17,7 +17,7 @@ export default function Index() {
       <h1 className="
       text-5xl 
       hover:line-through
-      text-secondary-color
+      text-color-2
       "
       onClick={headingClicked}>{isDone ? "done" : "click here"}</h1>
 
