@@ -1,7 +1,7 @@
 
 import { useLoaderData, useOutletContext } from "@remix-run/react";
 import { createServerClient, parse, serialize } from '@supabase/ssr';
-import { json } from "@remix-run/node";
+
 
 import type { Database } from '../../database.types'
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -70,8 +70,11 @@ export default function Test(){
         })
     }
 
-    function signOut(){
-        supabase.auth.signOut()
+    async function signOut(){
+      const { error } = await supabase.auth.signOut()
+      if (error){
+        console.log(error)
+      }
     }
 
     return <div>

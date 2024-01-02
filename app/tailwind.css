@@ -33,6 +33,21 @@ body *, body {
     @apply font-bold py-2 px-4 rounded-lg text-color-2 bg-color-1 border-color-2 border-2;
 }
 
+.oauth-provider-btn {
+    @apply m-2 hover:opacity-50 transition-opacity;
+}
+.oauth-provider-btn > img { /* img inside */
+    @apply h-full;
+}
+.auth-form {
+    @apply flex flex-col items-center p-8 absolute 
+    top-1/2 left-1/2 -translate-y-1/2
+    transition-transform duration-200
+    text-left;
+}
+.auth-form input {
+    @apply mb-2;
+}
 
 
 /* SCROLLBAR */
