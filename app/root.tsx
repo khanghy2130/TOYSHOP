@@ -76,7 +76,7 @@ function App() {
 
   // hide for specific routes
   const location = useLocation();
-  const routesToHideNavigation = ['/login', '/signup'];
+  const routesToHideNavigation = ['/login', '/signup']; ///// add homepage
   const shouldHideNavigation = routesToHideNavigation.includes(location.pathname);
 
   

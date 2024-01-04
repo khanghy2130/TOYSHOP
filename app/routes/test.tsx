@@ -41,10 +41,10 @@ export default function Test(){
     const { supabase } = useOutletContext<{ supabase: SupabaseClient<Database> }>()
 
     ////// get data from server side (in loaders and actions)
-    const data = useLoaderData() as string
-    useEffect(()=>{
-        console.log(JSON.parse(data))
-    }, [])
+    // const data = useLoaderData() as string
+    // useEffect(()=>{
+    //     console.log(JSON.parse(data))
+    // }, [])
 
 
     ////// get data from client side
