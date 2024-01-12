@@ -67,7 +67,7 @@ function App() {
     return () => {
       subscription.unsubscribe()
     }
-  }, [supabase, revalidator])
+  }, [supabase /*, revalidator*/ ])
 
 
   const [theme] = useTheme();
