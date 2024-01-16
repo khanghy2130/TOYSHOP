@@ -1,106 +1,25 @@
-import { Link, Form, useOutletContext, useActionData, redirect } from "@remix-run/react";
-import { json } from "@remix-run/node";
+import { Form, useOutletContext, useNavigate } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { createServerClient, parse, serialize } from '@supabase/ssr';
 
-
+import SpinnerSVG from "~/components/SpinnerSVG"
 import googleIcon from "~/assets/oauth_providers/google-icon.png";
-import facebookIcon from "~/assets/oauth_providers/facebook-icon.png";
 import githubIcon from "~/assets/oauth_providers/github-icon.png";
 
-
-import type { Database } from '../../database.types'
-import type { SupabaseClient, Provider } from '@supabase/supabase-js'
-import type { ActionFunctionArgs } from "@remix-run/node"
-
-
-export async function action({request}: ActionFunctionArgs) {
-    const formData = await request.formData();
-
-    const cookies = parse(request.headers.get('Cookie') ?? '')
-    const headers = new Headers()
-    const supabase = createServerClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!, {
-        cookies: {
-          get(key) {
-            return cookies[key]
-          },
-          set(key, value, options) {
-            headers.append('Set-Cookie', serialize(key, value, options))
-          },
-          remove(key, options) {
-            headers.append('Set-Cookie', serialize(key, '', options))
-          },
-        },
-    })
-    
-    // LOGIN
-    if (formData.get("form_type") === "LOGIN"){        
-        const {error} = await supabase.auth.signInWithPassword({
-            email: String(formData.get("email_input")), 
-            password: String(formData.get("password_input"))
-        })
-        if (error) return json({ errorMessage: error.message });
-        return redirect("/");
-    }
-
-    // REGISTER
-    else if (formData.get("form_type") === "REGISTER") {
-        const displayName = String(formData.get("reg_display_name_input"));
-        const email = String(formData.get("reg_email_input"));
-        const password = String(formData.get("reg_password_input"));
-        const passwordConfirm = String(formData.get("reg_confirm_password_input"));
-
-
-        let errorMessage: string | null = null;
-        const validations : [boolean, string][] = [
-            [!email.includes("@") || !email.includes("."), "Invalid email address."],
-            [password.length < 6, "Password should be at least 6 characters."],
-            [!(/[A-Z]/.test(password)), "Password should contain at least 1 uppercase."],
-            [!(/[a-z]/.test(password)), "Password should contain at least 1 lowercase."],
-            [!(/\d/.test(password)), "Password should contain at least 1 number."],
-            [!(/[!@#$%^&*()_+={}\[\]:;<>,.?~\\|\-]/.test(password)), "Password should contain at least 1 symbol."],
-            [password !== passwordConfirm, "Confirm password doesn't match."]
-        ];
-        validations.some(vali => {
-            if (vali[0]){
-                errorMessage = vali[1];
-                return true;
-            } else return false;
-        });
-
-        // const d = await supabase.auth.getUser()
-        // console.log(d)
-        // const s = await supabase.auth.getSession()
-        // console.log(s)
-      
-        if (errorMessage) return json({ errorMessage });
-        const {error} = await supabase.auth.signUp({email, password});
-        if (error) json({ errorMessage: "Error: Failed to register." });
-        
-        return redirect("/");
-    }
-
-    return json({ errorMessage: "Unknown form submitted." });
-  }
+import type { Provider } from '@supabase/supabase-js'
+import { ContextProps } from "~/utils/types/ContextProps.type";
 
 
 export default function Login(){
-    
-    const actionData = useActionData<typeof action>();
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    
-    const resetErrorMessage = () => setErrorMessage(null);
-    // update errorMessage on form submission
-    useEffect(()=>{
-        if (actionData?.errorMessage){
-            setErrorMessage(actionData.errorMessage);
-        }
-    }, [actionData]);
+    const navigate = useNavigate();
 
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const resetErrorMessage = () => setErrorMessage(null);
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
     // switch between login & signup
     const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
-    const { supabase } = useOutletContext<{ supabase: SupabaseClient<Database> }>()
+    const { supabase } = useOutletContext<ContextProps>()
 
     const providerClicked = async (providerName: Provider) => {
         const { data, error } = await supabase.auth.signInWithOAuth({
@@ -123,6 +42,7 @@ export default function Login(){
         hasSymbol: false
     });
 
+    // revalidate new password
     useEffect(()=>{
         setPassReqs({
             hasSixChar: regPassword.length >= 6,
@@ -136,7 +56,72 @@ export default function Login(){
     
     const fillDemoAcc = ()=>{
         setEmail("hynguyendev@gmail.com");
-        setPassword("sup3rs3cur3");
+        setPassword("123+Ab");
+    };
+
+    const loginOnSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+        event.preventDefault();
+        resetErrorMessage();
+        setIsSubmitting(true);
+
+        const {error, data} = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        })
+        if (error) {
+            setIsSubmitting(false);
+            setErrorMessage(error.message);
+            return;
+        }
+
+        return navigate("/");
+    };
+
+    const registerOnSubmit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+        event.preventDefault();
+        resetErrorMessage();
+        setIsSubmitting(true);
+
+        const form = event.currentTarget;
+        const formValues: {[key:string]: string} = {
+            displayName: form["reg_display_name_input"].value,
+            email: form["reg_email_input"].value,
+            password: form["reg_password_input"].value,
+            passwordConfirm: form["reg_confirm_password_input"].value
+        };
+
+        const validations: [boolean, string][] = [
+            [passReqs.hasSixChar, "Password should be at least 6 characters"],
+            [passReqs.hasUppercase, "Password should contain at least 1 uppercase"],
+            [passReqs.hasLowercase, "Password should contain at least 1 lowercase"],
+            [passReqs.hasNumber, "Password should contain at least 1 number"],
+            [passReqs.hasSymbol, "Password should contain at least 1 symbol"],
+            [formValues.password === formValues.passwordConfirm, "Passwords don't match"]
+        ];
+
+        const validationsPassed = validations.every(vali => {
+            if (!vali[0]){
+                setTimeout(()=>{
+                    setErrorMessage(vali[1]);
+                }, 1);
+                return false;
+            } else return true;
+        });
+
+        if (validationsPassed){
+            const {error, data} = await supabase.auth.signUp({
+                email: formValues.email, password: formValues.password
+            });
+            if (error){
+                setIsSubmitting(false);
+                setErrorMessage(error.message);
+                return;
+            }
+            return navigate("/");
+        } else {
+            setIsSubmitting(false);
+            return;
+        }
     };
 
 
@@ -147,10 +132,6 @@ export default function Login(){
                 <button className="oauth-provider-btn" 
                 onClick={()=>providerClicked("google")}>
                     <img src={googleIcon} alt="google"/>
-                </button>
-                <button className="oauth-provider-btn" 
-                    onClick={()=>providerClicked("facebook")}>
-                    <img src={facebookIcon} alt="facebook" />
                 </button>
                 <button className="oauth-provider-btn" 
                     onClick={()=>providerClicked("github")}>
@@ -169,7 +150,7 @@ export default function Login(){
             >{isAtLogin? "New user?" : "Login?"}</button>
 
             <div className={"auth-form right-1/2 " + (isAtLogin? "translate-x-1/2" : "-translate-x-full")}>
-                <Form method="post" onSubmit={resetErrorMessage}>
+                <Form method="post" onSubmit={loginOnSubmit}>
                     <div className="flex flex-col">
                         <h1 className="text-center text-2xl pb-4">Login</h1>
 
@@ -183,7 +164,10 @@ export default function Login(){
                             type="password" autoComplete="current-password"
                             className="text-input" value={password} onChange={(e) => setPassword(e.target.value)}/>
 
-                        <button type="submit" className='btn'>Log In</button>
+                        <button type="submit" disabled={isSubmitting}
+                        className='btn mt-2 inline-flex justify-center'>
+                            {isSubmitting ? <SpinnerSVG size={6} />: "Log in"}
+                        </button>
                         <em className="text-color-4">{errorMessage}</em>
                     </div>
                 </Form>
@@ -192,7 +176,7 @@ export default function Login(){
 
 
             <div className={"auth-form left-1/2 " + (isAtLogin? "translate-x-full" : "-translate-x-1/2")}>
-                <Form method="post" onSubmit={resetErrorMessage}>
+                <Form method="post" onSubmit={registerOnSubmit}>
                     <div className="flex flex-col">
                         <h1 className="text-center text-2xl pb-4">Register</h1>
 
@@ -238,7 +222,10 @@ export default function Login(){
                             className="text-input" required />
                         <em className="text-color-4">{errorMessage}</em>
 
-                        <button type="submit" className='btn'>Sign up</button>
+                        <button type="submit" disabled={isSubmitting}
+                        className='btn mt-2 inline-flex justify-center'>
+                            {isSubmitting ? <SpinnerSVG size={6} />: "Sign up"}
+                        </button>
                     </div>
                 </Form>
             </div>
