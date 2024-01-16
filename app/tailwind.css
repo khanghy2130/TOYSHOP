@@ -2,3 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+    --color-1: #fff; /*background*/
+    --color-2: #000; /*text*/
+    --color-3: #562a2a; /*button*/
+    --color-4: #170d53; /* red error */
+    --color-5: #0d5641; /**/
+}
+
+html.dark {
+    --color-1: #1d1d1d;
+    --color-2: #7fffe1;
+    --color-3: #353535;
+    --color-4: #d75252;
+    --color-5: #9f9d12;
+}
+
+body {
+    @apply overflow-y-scroll;
+    @apply text-color-2;
+    @apply bg-color-1;
+}
+body *, body {
+    @apply transition-colors duration-150;
+}
+
+
+/* CUSTOM CLASSES */
+.btn {
+    @apply font-bold py-2 px-4 text-color-2 bg-color-3 rounded-lg
+    hover:opacity-80 transition-opacity;
+}
+
+.oauth-provider-btn {
+    @apply m-2 hover:opacity-80 transition-opacity;
+}
+.oauth-provider-btn > img { /* img inside */
+    @apply h-full;
+}
+.auth-form {
+    @apply flex flex-col items-center absolute 
+    top-1/2 -translate-y-1/2
+    transition-transform duration-200
+    text-left p-2;
+}
+.auth-form input {
+    @apply mb-2 w-56;
+}
+.text-input {
+    @apply bg-color-3 p-2;
+}
+
+/* SCROLLBAR */
+/* width */
+::-webkit-scrollbar {
+    width: 1em;
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--color-1);
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--color-2);
+}
+/* PAGE LOADING PROGRESS BAR */
+::-webkit-progress-value {
+    background-color: var(--color-2);
+}
