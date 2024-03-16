@@ -48,7 +48,6 @@ export default function Login() {
             setErrorMessage(error.message);
             return;
         }
-
         return navigate("/");
     };
 
@@ -69,6 +68,8 @@ export default function Login() {
         setIsSubmitting(true);
 
         const form = event.currentTarget;
+
+        // BUG: Need to reload the app every time user_data in option has changed ( 111-115 ).
         const formValues: { [key: string]: string } = {
             displayName: form["reg_display_name_input"].value,
             email: form["reg_email_input"].value,
@@ -107,6 +108,11 @@ export default function Login() {
             const { error, data } = await supabase.auth.signUp({
                 email: formValues.email,
                 password: formValues.password,
+                options: {
+                    data: {
+                        full_name: formValues.displayName,
+                    },
+                },
             });
             if (error) {
                 setIsSubmitting(false);
