@@ -63,7 +63,7 @@ function App() {
             data: { subscription },
         } = supabase.auth.onAuthStateChange((event, session) => {
             revalidator.revalidate();
-            if (event === "SIGNED_IN") {
+            if (session?.user || event === "SIGNED_IN") {
                 setUser(session?.user);
             } else if (event === "SIGNED_OUT") {
                 setUser(undefined);
@@ -80,7 +80,7 @@ function App() {
 
     // hide for specific routes
     const location = useLocation();
-    const routesToHideNavigation = ["/login", "/signup"]; ///// add homepage
+    const routesToHideNavigation = ["/login"]; ///// add homepage
     const shouldHideNavigation = routesToHideNavigation.includes(
         location.pathname,
     );

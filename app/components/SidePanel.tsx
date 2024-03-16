@@ -27,9 +27,6 @@ export default function SidePanel({
         if (error) alert("Error while logging out.");
     };
 
-    /// TEST ///
-    console.log(user);
-
     return (
         <div
             className={
