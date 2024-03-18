@@ -9,21 +9,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-    const [isDone, setIsDone] = useState(false);
-    const headingClicked = () => setIsDone(true);
-
     return (
         <div>
-            <h1
-                className="text-5xl text-color-2 hover:line-through"
-                onClick={headingClicked}
-            >
-                {isDone ? "done" : "click here"}
-            </h1>
-
-            {Array.from(Array(50)).map((item, index) => (
-                <p key={index}>{index}</p>
-            ))}
+            <h1 className="text-5xl text-color-2">Landing page</h1>
         </div>
     );
 }

@@ -65,7 +65,7 @@ function App() {
             revalidator.revalidate();
             // handle events
             if (event === "INITIAL_SESSION") {
-                if (session?.user) setUser(session.user);
+                setUser(session?.user);
             } else if (event === "SIGNED_IN") {
                 setUser(session?.user);
             } else if (event === "SIGNED_OUT") {
