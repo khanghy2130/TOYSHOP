@@ -27,8 +27,35 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "CARTS_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "PRODUCTS"
+            referencedColumns: ["product_id"]
+          },
+          {
             foreignKeyName: "public_CARTS_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      editors: {
+        Row: {
+          id: string
+        }
+        Insert: {
+          id: string
+        }
+        Update: {
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editors_id_fkey"
+            columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -54,21 +81,17 @@ export type Database = {
           product_title?: string
           quantity_left?: number
         }
-        Relationships: [
-          {
-            foreignKeyName: "public_PRODUCTS_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: true
-            referencedRelation: "CARTS"
-            referencedColumns: ["product_id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_is_editor: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_super_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean

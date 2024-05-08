@@ -9,16 +9,51 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 export default function Admin() {
     const { supabase, user } = useOutletContext<ContextProps>();
 
-    if (user?.role === "supabase_admin") {
+    const [isEditor, setIsEditor] = useState<boolean>(false);
+
+    // set isEditor
+    useEffect(function () {
+        (async function () {
+            const { data, error } = await supabase.rpc("check_is_editor");
+            setIsEditor(data ? data : false);
+        })();
+    }, []);
+
+    // useEffect(function () {
+    //     (async function () {
+    //         const { data, error } = await supabase.from("PRODUCTS").select("*");
+    //         console.log("SELECT");
+    //         console.log(data);
+    //         console.log(error);
+    //     })();
+    //     (async function () {
+    //         const { data, error } = await supabase
+    //             .from("PRODUCTS")
+    //             .insert([
+    //                 {
+    //                     product_title:
+    //                         "product " + Math.floor(Math.random() * 100),
+    //                     product_description: "aaa",
+    //                 },
+    //             ])
+    //             .select();
+
+    //         console.log("INSERT");
+    //         console.log(data);
+    //         console.log(error);
+    //     })();
+    // }, []);
+
+    if (isEditor) {
         return (
             <div>
-                <h1>You are admin!</h1>
+                <h1>You are the editor!</h1>
             </div>
         );
     } else {
         return (
             <div>
-                <h1>Admin only.</h1>
+                <h1>Access denied.</h1>
             </div>
         );
     }
