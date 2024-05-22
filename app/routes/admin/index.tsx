@@ -1,15 +1,14 @@
 import { useOutletContext, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
-import type { Database } from "../../database.types";
-import type { SupabaseClient } from "@supabase/supabase-js";
-
 import { ContextProps } from "~/utils/types/ContextProps.type";
+import ProductDetails from "./ProductDetails";
 
 export default function Admin() {
     const { supabase, user } = useOutletContext<ContextProps>();
 
-    const [isEditor, setIsEditor] = useState<boolean>(false);
+    // null is still checking
+    const [isEditor, setIsEditor] = useState<boolean | "checking">("checking");
 
     // set isEditor
     useEffect(function () {
@@ -55,11 +54,12 @@ export default function Admin() {
         // fetch and show product info ///
     }
 
+    if (isEditor === "checking") return <h1>Checking permission...</h1>;
     if (!isEditor) return <h1>Access denied.</h1>;
 
     return (
-        <div>
-            <div className="flex w-full flex-col items-center">
+        <div className="flex flex-col items-center">
+            <div className="flex w-full flex-row items-center justify-around">
                 <button
                     className="btn enabled:cursor-pointer disabled:opacity-30"
                     onClick={createBtnClicked}
@@ -67,18 +67,24 @@ export default function Admin() {
                 >
                     Create new product
                 </button>
-                <input
-                    className="my-2 p-2 text-black"
-                    type="text"
-                    placeholder="Product ID"
-                />
-                <button className="btn" onClick={getProductBtnClicked}>
-                    Get existing product
-                </button>
+                <div className="flex flex-col">
+                    <input
+                        className="my-2 p-2 text-black"
+                        type="text"
+                        placeholder="Product ID"
+                    />
+                    <button className="btn" onClick={getProductBtnClicked}>
+                        Load existing product
+                    </button>
+                </div>
             </div>
 
-            <div>{mode === "CREATE" ? <h1>New product</h1> : null}</div>
-            <div>{mode === "UPDATE" ? <h1>Product ID: {123}</h1> : null}</div>
+            <h1 className="py-10 text-center text-4xl">
+                {mode === "CREATE" ? "New product" : null}
+                {mode === "UPDATE" ? `Product ID: ${123}` : null}
+            </h1>
+
+            <ProductDetails mode={mode} />
         </div>
     );
 }

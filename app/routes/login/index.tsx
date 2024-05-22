@@ -135,13 +135,13 @@ export default function Login() {
                         className="oauth-provider-btn"
                         onClick={() => providerClicked("google")}
                     >
-                        <img src={googleIcon} alt="google" />
+                        <img className="h-full" src={googleIcon} alt="google" />
                     </button>
                     <button
                         className="oauth-provider-btn"
                         onClick={() => providerClicked("github")}
                     >
-                        <img src={githubIcon} alt="github" />
+                        <img className="h-full" src={githubIcon} alt="github" />
                     </button>
                 </div>
             </div>
