@@ -1,13 +1,23 @@
 import { Form } from "@remix-run/react";
-import { FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
 /*
     when create/update, for each tag: if not already connected to the product then connect
 */
 
+type ImageFile = {
+    listKey: number;
+    isAlreadyUploaded: boolean;
+    willBeRemoved: boolean; // remove in db
+    file: File;
+};
+
 export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
     const [tags, setTags] = useState<string[]>(["dummy", "weeboo", "yeye"]);
     const tagInput = useRef<HTMLInputElement>(null);
+
+    const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
+    const imageFileInput = useRef<HTMLInputElement>(null);
 
     function addTag() {
         if (tagInput.current) {
@@ -19,9 +29,39 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
             tagInput.current.value = "";
         }
     }
-
     function removeTag(tagIndex: number) {
         setTags(tags.filter((tag, i) => i !== tagIndex));
+    }
+
+    function onImageFileSelected(e: ChangeEvent<HTMLInputElement>) {
+        const files = (e.target as HTMLInputElement).files;
+        if (files) {
+            const newImageFiles: ImageFile[] = [];
+            for (const file of files) {
+                newImageFiles.push({
+                    listKey: Math.floor(Math.random() * 10000),
+                    isAlreadyUploaded: !false,
+                    willBeRemoved: false,
+                    file: file,
+                });
+            }
+            setImageFiles([...imageFiles, ...newImageFiles]);
+        }
+    }
+    function removeImage(listKey: number) {
+        setImageFiles(
+            imageFiles.filter((imageFile) => {
+                // set willBeRemoved if isAlreadyUploaded
+                if (imageFile.listKey === listKey) {
+                    if (imageFile.isAlreadyUploaded) {
+                        imageFile.willBeRemoved = true;
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
+            }),
+        );
     }
 
     function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -58,7 +98,7 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
 
             <div>
                 {tags.map((tag, i) => (
-                    <div className="flex" key={i}>
+                    <div className="flex" key={tag}>
                         <p className="rounded-lg border-2 border-solid border-color-2 p-1">
                             {tag}
                         </p>
@@ -79,6 +119,7 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
                     placeholder="Tag name"
                     ref={tagInput}
                     onKeyDown={(e) => {
+                        // hit enter to add tag
                         if (e.key == "Enter") {
                             e.preventDefault();
                             addTag();
@@ -90,8 +131,39 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
                 </button>
             </div>
 
-            <input required type="file" multiple />
-            <div>images preview here?</div>
+            <div>
+                {
+                    // hide the ones that will be removed
+                    imageFiles
+                        .filter((imageFile) => !imageFile.willBeRemoved)
+                        .map((imageFile, i) => (
+                            <div className="flex" key={imageFile.listKey}>
+                                <img
+                                    className="w-80"
+                                    src={URL.createObjectURL(imageFile.file)}
+                                />
+                                <button
+                                    className="text-red-500 underline"
+                                    type="button"
+                                    onClick={() =>
+                                        removeImage(imageFile.listKey)
+                                    }
+                                >
+                                    delete
+                                </button>
+                            </div>
+                        ))
+                }
+            </div>
+            <input
+                required
+                type="file"
+                multiple
+                accept="image/png, image/jpeg"
+                ref={imageFileInput}
+                onChange={onImageFileSelected}
+            />
+
             <button className="btn" type="submit">
                 {props.mode === "CREATE" ? "Create product" : null}
                 {props.mode === "UPDATE" ? "Update product" : null}
