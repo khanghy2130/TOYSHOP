@@ -1,18 +1,19 @@
 import { Form } from "@remix-run/react";
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
 
-/*
-    when create/update, for each tag: if not already connected to the product then connect
-*/
+import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type ImageFile = {
-    listKey: number;
-    isAlreadyUploaded: boolean;
+    listKey: number; // simple random number
+    isFromDB: boolean;
     willBeRemoved: boolean; // remove in db
-    file: File;
+    url: string;
 };
 
-export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
+export default function ProductDetails(props: {
+    mode: "CREATE" | "UPDATE";
+    supabase: ContextProps["supabase"];
+}) {
     const [tags, setTags] = useState<string[]>(["dummy", "weeboo", "yeye"]);
     const tagInput = useRef<HTMLInputElement>(null);
 
@@ -34,26 +35,28 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
     }
 
     function onImageFileSelected(e: ChangeEvent<HTMLInputElement>) {
-        const files = (e.target as HTMLInputElement).files;
+        const inputEle = e.target as HTMLInputElement;
+        const files = inputEle.files;
         if (files) {
             const newImageFiles: ImageFile[] = [];
             for (const file of files) {
                 newImageFiles.push({
-                    listKey: Math.floor(Math.random() * 10000),
-                    isAlreadyUploaded: !false,
+                    listKey: Math.floor(Math.random() * 1000000),
+                    isFromDB: !false,
                     willBeRemoved: false,
-                    file: file,
+                    url: URL.createObjectURL(file),
                 });
             }
             setImageFiles([...imageFiles, ...newImageFiles]);
+            inputEle.value = "";
         }
     }
     function removeImage(listKey: number) {
         setImageFiles(
             imageFiles.filter((imageFile) => {
-                // set willBeRemoved if isAlreadyUploaded
+                // set willBeRemoved if isFromDB
                 if (imageFile.listKey === listKey) {
-                    if (imageFile.isAlreadyUploaded) {
+                    if (imageFile.isFromDB) {
                         imageFile.willBeRemoved = true;
                         return true;
                     }
@@ -64,9 +67,43 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
         );
     }
 
-    function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        console.log(props.mode);
+        const formEle = event.target as HTMLFormElement;
+        const formData = new FormData(formEle);
+
+        if (props.mode === "CREATE") {
+            // insert into PRODUCTS table
+            const { error } = await props.supabase.from("PRODUCTS").insert({
+                title: formData.get("title") as string,
+                description: formData.get("description") as string,
+                quantity: Number(formData.get("quantity")),
+            });
+
+            // handle error
+            if (error) {
+                console.log(error);
+                alert("error while submitting");
+            }
+        } else if (props.mode === "UPDATE") {
+            // update PRODUCT table ///
+        }
+
+        /*
+            DO tags and images regardless of mode?
+
+            transaction?
+            delete all old tags then add all new tags
+
+            for each image:
+                if isFromDB: do nothing unless willBeRemoved then remove
+                else: upload image
+
+        */
+
+        // if successful
+        // formEle.reset();
+        // window.location.reload();
     }
 
     return (
@@ -138,10 +175,7 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
                         .filter((imageFile) => !imageFile.willBeRemoved)
                         .map((imageFile, i) => (
                             <div className="flex" key={imageFile.listKey}>
-                                <img
-                                    className="w-80"
-                                    src={URL.createObjectURL(imageFile.file)}
-                                />
+                                <img className="w-80" src={imageFile.url} />
                                 <button
                                     className="text-red-500 underline"
                                     type="button"
@@ -156,7 +190,6 @@ export default function ProductDetails(props: { mode: "CREATE" | "UPDATE" }) {
                 }
             </div>
             <input
-                required
                 type="file"
                 multiple
                 accept="image/png, image/jpeg"

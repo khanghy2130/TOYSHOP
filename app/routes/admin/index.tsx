@@ -18,31 +18,6 @@ export default function Admin() {
         })();
     }, []);
 
-    // useEffect(function () {
-    //     (async function () {
-    //         const { data, error } = await supabase.from("PRODUCTS").select("*");
-    //         console.log("SELECT");
-    //         console.log(data);
-    //         console.log(error);
-    //     })();
-    //     (async function () {
-    //         const { data, error } = await supabase
-    //             .from("PRODUCTS")
-    //             .insert([
-    //                 {
-    //                     product_title:
-    //                         "product " + Math.floor(Math.random() * 100),
-    //                     product_description: "aaa",
-    //                 },
-    //             ])
-    //             .select();
-
-    //         console.log("INSERT");
-    //         console.log(data);
-    //         console.log(error);
-    //     })();
-    // }, []);
-
     const [mode, setMode] = useState<"CREATE" | "UPDATE">("CREATE");
 
     function createBtnClicked() {
@@ -84,7 +59,7 @@ export default function Admin() {
                 {mode === "UPDATE" ? `Product ID: ${123}` : null}
             </h1>
 
-            <ProductDetails mode={mode} />
+            <ProductDetails mode={mode} supabase={supabase} />
         </div>
     );
 }
