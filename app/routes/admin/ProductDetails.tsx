@@ -1,7 +1,8 @@
 import { Form } from "@remix-run/react";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 import { ContextProps } from "~/utils/types/ContextProps.type";
+import { UpdateFormState } from ".";
 
 type ImageFile = {
     listKey: number; // simple random number
@@ -13,16 +14,26 @@ type ImageFile = {
 type Props = {
     mode: "CREATE" | "UPDATE";
     supabase: ContextProps["supabase"];
+    updateFormState: UpdateFormState;
 };
 
-export default function ProductDetails({ mode, supabase }: Props) {
+export default function ProductDetails({
+    mode,
+    supabase,
+    updateFormState,
+}: Props) {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [tags, setTags] = useState<string[]>(["dummy", "weeboo", "yeye"]);
+    const [tags, setTags] = useState<string[]>([]);
     const tagInput = useRef<HTMLInputElement>(null);
 
     const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
     const imageFileInput = useRef<HTMLInputElement>(null);
+
+    // when loading existing product
+    useEffect(() => {
+        setTags(updateFormState.tags);
+    }, [updateFormState]);
 
     function addTag() {
         if (tagInput.current) {
@@ -76,7 +87,7 @@ export default function ProductDetails({ mode, supabase }: Props) {
         setIsSubmitting(true);
         const formEle = event.target as HTMLFormElement;
         const formData = new FormData(formEle);
-        let productID: number = 0;
+        let productID: number = updateFormState.productID;
 
         if (mode === "CREATE") {
             // insert into PRODUCTS table
@@ -92,24 +103,36 @@ export default function ProductDetails({ mode, supabase }: Props) {
 
             // handle error
             if (error) {
-                console.error("Error while creating product:", error);
+                console.error("Error while creating product", error);
                 return setIsSubmitting(false);
             }
 
             productID = data.id;
         } else if (mode === "UPDATE") {
-            // update PRODUCT table ///
-            // handle error
-            // if (error) {
-            //     console.error("Error while updating product:", error);
-            //     return setIsSubmitting(false);
-            // }
+            const { error: updateError } = await supabase
+                .from("PRODUCTS")
+                .update({
+                    title: formData.get("title") as string,
+                    description: formData.get("description") as string,
+                    quantity: Number(formData.get("quantity")),
+                })
+                .eq("id", productID);
+
+            if (updateError) {
+                console.error("Error while updating product", updateError);
+                return setIsSubmitting(false);
+            }
+
             // delete all old tag relations
-            // const { error } = await supabase
-            //     .from('PRODUCT_TAGS')
-            //     .delete()
-            //     .eq('product_id', xxx)
-            /////// productID = ???
+            const { error: deleteTagsError } = await supabase
+                .from("PRODUCTS_TAGS")
+                .delete()
+                .eq("product_id", productID);
+
+            if (deleteTagsError) {
+                console.error("Error while deleting old tags", deleteTagsError);
+                return setIsSubmitting(false);
+            }
         }
 
         // ADD TAG RELATIONS (4 steps)
@@ -119,7 +142,7 @@ export default function ProductDetails({ mode, supabase }: Props) {
             .select()
             .in("name", tags);
         if (!existingTags || fetchError) {
-            console.error("Error fetching existing tags:", fetchError);
+            console.error("Error fetching existing tags", fetchError);
             return setIsSubmitting(false);
         }
 
@@ -136,7 +159,7 @@ export default function ProductDetails({ mode, supabase }: Props) {
                 .insert(newTags.map((tagName) => ({ name: tagName })))
                 .select();
             if (!insertedTags || insertError) {
-                console.error("Error inserting new tags:", insertError);
+                console.error("Error inserting new tags", insertError);
                 return setIsSubmitting(false);
             }
 
@@ -158,7 +181,7 @@ export default function ProductDetails({ mode, supabase }: Props) {
             .insert(postTags);
 
         if (relationError) {
-            console.error("Error inserting post-tag relations:", relationError);
+            console.error("Error inserting post-tag relations", relationError);
             return setIsSubmitting(false);
         }
 
@@ -200,12 +223,14 @@ export default function ProductDetails({ mode, supabase }: Props) {
                 required
                 placeholder="Title"
                 name="title"
+                defaultValue={updateFormState.title}
             />
             <textarea
                 className="mb-10 bg-color-3 p-2"
                 required
                 placeholder="Description"
                 name="description"
+                defaultValue={updateFormState.description}
             />
             <input
                 className="mb-10 bg-color-3 p-2"
@@ -214,6 +239,7 @@ export default function ProductDetails({ mode, supabase }: Props) {
                 required
                 placeholder="Quantity"
                 name="quantity"
+                defaultValue={updateFormState.quantity}
             />
 
             <div>
