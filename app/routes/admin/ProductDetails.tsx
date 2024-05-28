@@ -5,15 +5,19 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type ImageFile = {
     listKey: number; // simple random number
-    isFromDB: boolean;
     willBeRemoved: boolean; // remove in db
+    file: null | File; // null if is already uploaded to DB
     url: string;
 };
 
-export default function ProductDetails(props: {
+type Props = {
     mode: "CREATE" | "UPDATE";
     supabase: ContextProps["supabase"];
-}) {
+};
+
+export default function ProductDetails({ mode, supabase }: Props) {
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
     const [tags, setTags] = useState<string[]>(["dummy", "weeboo", "yeye"]);
     const tagInput = useRef<HTMLInputElement>(null);
 
@@ -22,7 +26,7 @@ export default function ProductDetails(props: {
 
     function addTag() {
         if (tagInput.current) {
-            let newTag = tagInput.current.value;
+            let newTag = tagInput.current.value.toLocaleLowerCase();
             newTag = newTag.replace(/\s+/g, "");
             if (newTag.length > 0 && !tags.includes(newTag)) {
                 setTags([...tags, newTag]);
@@ -34,7 +38,7 @@ export default function ProductDetails(props: {
         setTags(tags.filter((tag, i) => i !== tagIndex));
     }
 
-    function onImageFileSelected(e: ChangeEvent<HTMLInputElement>) {
+    function addImages(e: ChangeEvent<HTMLInputElement>) {
         const inputEle = e.target as HTMLInputElement;
         const files = inputEle.files;
         if (files) {
@@ -42,8 +46,8 @@ export default function ProductDetails(props: {
             for (const file of files) {
                 newImageFiles.push({
                     listKey: Math.floor(Math.random() * 1000000),
-                    isFromDB: !false,
                     willBeRemoved: false,
+                    file: file,
                     url: URL.createObjectURL(file),
                 });
             }
@@ -54,9 +58,9 @@ export default function ProductDetails(props: {
     function removeImage(listKey: number) {
         setImageFiles(
             imageFiles.filter((imageFile) => {
-                // set willBeRemoved if isFromDB
+                // set willBeRemoved if is from DB
                 if (imageFile.listKey === listKey) {
-                    if (imageFile.isFromDB) {
+                    if (imageFile.file === null) {
                         imageFile.willBeRemoved = true;
                         return true;
                     }
@@ -69,13 +73,14 @@ export default function ProductDetails(props: {
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        setIsSubmitting(true);
         const formEle = event.target as HTMLFormElement;
         const formData = new FormData(formEle);
-        let productID: number;
+        let productID: number = 0;
 
-        if (props.mode === "CREATE") {
+        if (mode === "CREATE") {
             // insert into PRODUCTS table
-            const { data, error } = await props.supabase
+            const { data, error } = await supabase
                 .from("PRODUCTS")
                 .insert({
                     title: formData.get("title") as string,
@@ -88,19 +93,19 @@ export default function ProductDetails(props: {
             // handle error
             if (error) {
                 console.error("Error while creating product:", error);
-                return;
+                return setIsSubmitting(false);
             }
 
             productID = data.id;
-        } else if (props.mode === "UPDATE") {
+        } else if (mode === "UPDATE") {
             // update PRODUCT table ///
             // handle error
             // if (error) {
             //     console.error("Error while updating product:", error);
-            //     return;
+            //     return setIsSubmitting(false);
             // }
             // delete all old tag relations
-            // const { error } = await props.supabase
+            // const { error } = await supabase
             //     .from('PRODUCT_TAGS')
             //     .delete()
             //     .eq('product_id', xxx)
@@ -109,13 +114,13 @@ export default function ProductDetails(props: {
 
         // ADD TAG RELATIONS (4 steps)
         // Step 1: Check existing tags
-        let { data: existingTags, error: fetchError } = await props.supabase
+        let { data: existingTags, error: fetchError } = await supabase
             .from("TAGS")
             .select()
             .in("name", tags);
         if (!existingTags || fetchError) {
             console.error("Error fetching existing tags:", fetchError);
-            return;
+            return setIsSubmitting(false);
         }
 
         // Map existing tags { name: id }
@@ -126,14 +131,13 @@ export default function ProductDetails(props: {
         // Step 2: Identify non-existing tags to insert
         const newTags = tags.filter((tagName) => !existingTagMap.has(tagName));
         if (newTags.length > 0) {
-            let { data: insertedTags, error: insertError } =
-                await props.supabase
-                    .from("TAGS")
-                    .insert(newTags.map((tagName) => ({ name: tagName })))
-                    .select();
+            let { data: insertedTags, error: insertError } = await supabase
+                .from("TAGS")
+                .insert(newTags.map((tagName) => ({ name: tagName })))
+                .select();
             if (!insertedTags || insertError) {
                 console.error("Error inserting new tags:", insertError);
-                return;
+                return setIsSubmitting(false);
             }
 
             // Add new tags to the map
@@ -149,24 +153,40 @@ export default function ProductDetails(props: {
         }));
 
         // Step 4: Insert post-tag relations
-        let { error: relationError } = await props.supabase
+        let { error: relationError } = await supabase
             .from("PRODUCTS_TAGS")
             .insert(postTags);
 
         if (relationError) {
             console.error("Error inserting post-tag relations:", relationError);
-            return;
+            return setIsSubmitting(false);
         }
 
-        /*
-            for each image:
-                if isFromDB: do nothing unless willBeRemoved then remove
-                else: upload image
-        */
+        // remove / upload images
+        for (const imgFile of imageFiles) {
+            if (imgFile.file) {
+                // upload new image
+                const { data, error } = await supabase.storage
+                    .from("product_images")
+                    .upload(
+                        `${productID}/${Date.now()}${imgFile.file.name.split(".").pop() as string}`,
+                        imgFile.file,
+                    );
+                if (error) {
+                    console.error("Error while uploading image", error);
+                    return setIsSubmitting(false);
+                }
+            } else {
+                if (imgFile.willBeRemoved) {
+                    // remove image from DB
+                }
+            }
+        }
 
         // all actions successful
-        // formEle.reset();
-        // window.location.reload();
+        formEle.reset();
+        window.location.reload();
+        return setIsSubmitting(false);
     }
 
     return (
@@ -257,12 +277,17 @@ export default function ProductDetails(props: {
                 multiple
                 accept="image/png, image/jpeg"
                 ref={imageFileInput}
-                onChange={onImageFileSelected}
+                onChange={addImages}
             />
 
-            <button className="btn" type="submit">
-                {props.mode === "CREATE" ? "Create product" : null}
-                {props.mode === "UPDATE" ? "Update product" : null}
+            <button className="btn" type="submit" disabled={isSubmitting}>
+                {isSubmitting
+                    ? "Processing..."
+                    : mode === "CREATE"
+                      ? "Create product"
+                      : mode === "UPDATE"
+                        ? "Update product"
+                        : null}
             </button>
         </Form>
     );
