@@ -8,6 +8,7 @@ type ImageFile = {
     listKey: number; // simple random number
     willBeRemoved: boolean; // remove in db
     file: null | File; // null if is already uploaded to DB
+    name: string;
     url: string;
 };
 
@@ -15,12 +16,14 @@ type Props = {
     mode: "CREATE" | "UPDATE";
     supabase: ContextProps["supabase"];
     updateFormState: UpdateFormState;
+    SUPABASE_IMAGES_PATH: string;
 };
 
 export default function ProductDetails({
     mode,
     supabase,
     updateFormState,
+    SUPABASE_IMAGES_PATH,
 }: Props) {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -32,7 +35,19 @@ export default function ProductDetails({
 
     // when loading existing product
     useEffect(() => {
-        setTags(updateFormState.tags);
+        setTags(updateFormState.tags); // add existing tags
+        // add existing images
+        const newImageFiles: ImageFile[] = [];
+        for (const imgName of updateFormState.imgNames) {
+            newImageFiles.push({
+                listKey: Math.floor(Math.random() * 1000000),
+                willBeRemoved: false,
+                file: null,
+                name: `${updateFormState.productID}/${imgName}`,
+                url: `${SUPABASE_IMAGES_PATH}/${updateFormState.productID}/${imgName}`,
+            });
+        }
+        setImageFiles(newImageFiles);
     }, [updateFormState]);
 
     function addTag() {
@@ -59,6 +74,7 @@ export default function ProductDetails({
                     listKey: Math.floor(Math.random() * 1000000),
                     willBeRemoved: false,
                     file: file,
+                    name: file.name,
                     url: URL.createObjectURL(file),
                 });
             }
@@ -103,7 +119,7 @@ export default function ProductDetails({
 
             // handle error
             if (error) {
-                console.error("Error while creating product", error);
+                console.error("Error creating product", error);
                 return setIsSubmitting(false);
             }
 
@@ -119,7 +135,7 @@ export default function ProductDetails({
                 .eq("id", productID);
 
             if (updateError) {
-                console.error("Error while updating product", updateError);
+                console.error("Error updating product", updateError);
                 return setIsSubmitting(false);
             }
 
@@ -130,7 +146,7 @@ export default function ProductDetails({
                 .eq("product_id", productID);
 
             if (deleteTagsError) {
-                console.error("Error while deleting old tags", deleteTagsError);
+                console.error("Error deleting old tags", deleteTagsError);
                 return setIsSubmitting(false);
             }
         }
@@ -141,14 +157,14 @@ export default function ProductDetails({
             .from("TAGS")
             .select()
             .in("name", tags);
-        if (!existingTags || fetchError) {
+        if (fetchError) {
             console.error("Error fetching existing tags", fetchError);
             return setIsSubmitting(false);
         }
 
         // Map existing tags { name: id }
         const existingTagMap = new Map(
-            existingTags.map((tagItem) => [tagItem.name, tagItem.id]),
+            existingTags!.map((tagItem) => [tagItem.name, tagItem.id]),
         );
 
         // Step 2: Identify non-existing tags to insert
@@ -158,13 +174,13 @@ export default function ProductDetails({
                 .from("TAGS")
                 .insert(newTags.map((tagName) => ({ name: tagName })))
                 .select();
-            if (!insertedTags || insertError) {
+            if (insertError) {
                 console.error("Error inserting new tags", insertError);
                 return setIsSubmitting(false);
             }
 
             // Add new tags to the map
-            for (const tagItem of insertedTags) {
+            for (const tagItem of insertedTags!) {
                 existingTagMap.set(tagItem.name, tagItem.id);
             }
         }
@@ -185,23 +201,30 @@ export default function ProductDetails({
             return setIsSubmitting(false);
         }
 
-        // remove / upload images
+        // remove images from DB
+        const toBeRemovedImages = imageFiles.filter(
+            (imgFile) => imgFile.willBeRemoved,
+        );
+        if (toBeRemovedImages.length > 0) {
+            const { error: removeImagesError } = await supabase.storage
+                .from("product_images")
+                .remove(toBeRemovedImages.map((imgFile) => imgFile.name));
+            if (removeImagesError) {
+                console.error("Error removing images", removeImagesError);
+                return setIsSubmitting(false);
+            }
+        }
+
+        // upload images to DB
         for (const imgFile of imageFiles) {
             if (imgFile.file) {
                 // upload new image
                 const { data, error } = await supabase.storage
                     .from("product_images")
-                    .upload(
-                        `${productID}/${Date.now()}${imgFile.file.name.split(".").pop() as string}`,
-                        imgFile.file,
-                    );
+                    .upload(`${productID}/${Date.now()}`, imgFile.file);
                 if (error) {
-                    console.error("Error while uploading image", error);
+                    console.error("Error uploading image", error);
                     return setIsSubmitting(false);
-                }
-            } else {
-                if (imgFile.willBeRemoved) {
-                    // remove image from DB
                 }
             }
         }

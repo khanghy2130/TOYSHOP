@@ -10,10 +10,11 @@ export type UpdateFormState = {
     description: string;
     quantity: string | number;
     tags: string[];
+    imgNames: string[];
 };
 
 export default function Admin() {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, env } = useOutletContext<ContextProps>();
 
     // null is still checking
     const [isEditor, setIsEditor] = useState<boolean | "checking">("checking");
@@ -36,6 +37,7 @@ export default function Admin() {
         description: "",
         quantity: "",
         tags: [],
+        imgNames: [],
     });
 
     function createBtnClicked() {
@@ -72,9 +74,20 @@ export default function Admin() {
             .single();
 
         if (error) {
-            console.error("Error while fetching product", error);
+            console.error("Error fetching product", error);
             return;
         }
+
+        const { data: fetchedImagesData, error: imagesError } =
+            await supabase.storage
+                .from("product_images")
+                .list(data.id.toLocaleString());
+
+        if (imagesError) {
+            console.error("Error fetching images", imagesError);
+            return;
+        }
+
         setMode("UPDATE");
         setUpdateFormState({
             productID: data.id,
@@ -82,6 +95,7 @@ export default function Admin() {
             description: data.description,
             quantity: data.quantity,
             tags: data.tags.map(({ tag_id }) => tag_id.name),
+            imgNames: fetchedImagesData.map((imgData) => imgData.name),
         });
     }
 
@@ -104,6 +118,13 @@ export default function Admin() {
                         className="my-2 p-2 text-black"
                         type="number"
                         placeholder="Product ID"
+                        onKeyDown={(e) => {
+                            // hit enter to load product
+                            if (e.key == "Enter") {
+                                e.preventDefault();
+                                getProductBtnClicked();
+                            }
+                        }}
                     />
                     <button className="btn" onClick={getProductBtnClicked}>
                         Load existing product
@@ -122,6 +143,7 @@ export default function Admin() {
                 mode={mode}
                 supabase={supabase}
                 updateFormState={updateFormState}
+                SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
             />
         </div>
     );

@@ -43,6 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         env: {
             SUPABASE_URL: process.env.SUPABASE_URL!,
             SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
+            SUPABASE_IMAGES_PATH: process.env.SUPABASE_IMAGES_PATH!,
         },
     };
 
@@ -120,7 +121,7 @@ function App() {
 
                 {/* space for navbar above main page content */}
                 <div className="pt-24">
-                    <Outlet context={{ supabase, user }} />
+                    <Outlet context={{ supabase, user, env }} />
                 </div>
                 <Scripts />
             </body>
