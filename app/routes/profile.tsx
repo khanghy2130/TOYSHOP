@@ -1,8 +1,31 @@
 import { Link, useOutletContext } from "@remix-run/react";
 import { useState } from "react";
-import ErrorMessage from "~/components/ErrorMessage";
+/// import ErrorMessage from "~/components/ErrorMessage";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
+export default function Profile() {
+    const { supabase, user } = useOutletContext<ContextProps>();
+
+    // unauthenticated render
+    if (!user) {
+        return (
+            <div>
+                <h1>Log in to see your profile.</h1>
+                <Link to="/login">
+                    <button className="btn">Login</button>
+                </Link>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <h1>Logged in.</h1>
+        </div>
+    );
+}
+
+/*
 export default function Profile() {
     const { supabase, user } = useOutletContext<ContextProps>();
 
@@ -78,14 +101,6 @@ export default function Profile() {
                     <div className="flex items-center rounded-full border bg-white px-3 py-2.5 font-bold text-indigo-900">
                         Public Profile
                     </div>
-                    <a
-                        /// BUG: href will raise an error in console.
-                        // Placeholder tag anyways.
-                        href="javascript:alert('Account Settings Page');"
-                        className="flex items-center px-3 py-2.5 font-semibold hover:rounded-full hover:border hover:text-indigo-900"
-                    >
-                        Account Settings
-                    </a>
                 </div>
             </aside>
             <main className="min-h-screen w-full py-1 md:w-2/3 lg:w-3/4">
@@ -166,14 +181,14 @@ export default function Profile() {
                                     <button
                                         type="submit"
                                         onClick={handleEditBtnClick}
-                                        className="w-full rounded-lg bg-indigo-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+                                        className="w-full rounded-lg bg-indigo-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 sm:w-auto"
                                     >
                                         Edit
                                     </button>
                                     <button
                                         type="submit"
                                         onClick={handleSaveBtnClick}
-                                        className="w-full rounded-lg bg-indigo-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 sm:w-auto dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
+                                        className="w-full rounded-lg bg-indigo-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800 sm:w-auto"
                                     >
                                         Save
                                     </button>
@@ -186,3 +201,4 @@ export default function Profile() {
         </div>
     );
 }
+*/

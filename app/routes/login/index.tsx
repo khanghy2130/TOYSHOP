@@ -68,8 +68,6 @@ export default function Login() {
         setIsSubmitting(true);
 
         const form = event.currentTarget;
-
-        /// BUG: Need to reload the app every time user_data in option has changed ( 111-115 ).
         const formValues: { [key: string]: string } = {
             displayName: form["reg_display_name_input"].value,
             email: form["reg_email_input"].value,
@@ -105,20 +103,35 @@ export default function Login() {
         });
 
         if (validationsPassed) {
-            const { error, data } = await supabase.auth.signUp({
-                email: formValues.email,
-                password: formValues.password,
-                options: {
-                    data: {
-                        full_name: formValues.displayName,
-                    },
-                },
-            });
-            if (error) {
+            // sign up new user
+            const { error: signUpError, data: signUpData } =
+                await supabase.auth.signUp({
+                    email: formValues.email,
+                    password: formValues.password,
+                });
+            if (signUpError) {
                 setIsSubmitting(false);
-                setErrorMessage(error.message);
+                setErrorMessage(signUpError.message);
                 return;
             }
+            if (!signUpData.user) {
+                setIsSubmitting(false);
+                setErrorMessage("No user object in response.");
+                return;
+            }
+
+            // insert new profile into PROFILES table
+            const { error: insertProfileError } = await supabase
+                .from("PROFILES")
+                .insert({
+                    id: signUpData.user.id,
+                    display_name: formValues.displayName,
+                });
+            if (insertProfileError) {
+                setErrorMessage(insertProfileError.message);
+                return;
+            }
+
             return navigate("/");
         } else {
             setIsSubmitting(false);
