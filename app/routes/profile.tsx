@@ -1,10 +1,29 @@
-import { Link, useOutletContext } from "@remix-run/react";
-import { useState } from "react";
+import { Form, Link, useOutletContext } from "@remix-run/react";
+import { useEffect, useState } from "react";
 /// import ErrorMessage from "~/components/ErrorMessage";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
+type ProfileData = {
+    //// reviews, purchases
+};
+
 export default function Profile() {
     const { supabase, user } = useOutletContext<ContextProps>();
+
+    const [enableNameEdit, setEnableNameEdit] = useState<boolean>(false);
+    const [showAvatarCustomization, setShowAvatarCustomization] =
+        useState<boolean>(false);
+
+    const [profileData, setProfileData] = useState<ProfileData | null>(null);
+
+    useEffect(() => {
+        //// TODO: fetch profile
+    }, []);
+
+    const onNameEditSubmit: React.FormEventHandler<HTMLFormElement> =
+        async function (event) {
+            event.preventDefault();
+        };
 
     // unauthenticated render
     if (!user) {
@@ -18,9 +37,50 @@ export default function Profile() {
         );
     }
 
+    // loading render
+    if (profileData === null) {
+        return (
+            <div>
+                <h1>Loading...</h1>
+            </div>
+        );
+    }
+
     return (
         <div>
-            <h1>Logged in.</h1>
+            <h1>My Profile</h1>
+            <Form onSubmit={onNameEditSubmit}>
+                <input
+                    type="text"
+                    defaultValue={"dummy name"}
+                    disabled={!enableNameEdit}
+                />
+                <div>
+                    {enableNameEdit ? (
+                        <>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEnableNameEdit(false);
+                                    //// TODO: set old name
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button type="submit">Save</button>
+                        </>
+                    ) : (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEnableNameEdit(true);
+                            }}
+                        >
+                            Edit
+                        </button>
+                    )}
+                </div>
+            </Form>
         </div>
     );
 }

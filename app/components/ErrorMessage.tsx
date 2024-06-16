@@ -1,5 +1,5 @@
 // General Error Message.
-
+/*
 type Props = {
     errorMessage: string | null;
 };
@@ -15,3 +15,4 @@ export default function ErrorMessage({
         </em>
     );
 }
+*/

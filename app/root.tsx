@@ -25,6 +25,7 @@ import { getThemeSession } from "./utils/Navbar/theme.server";
 
 import Navbar from "./components/Navbar";
 import SidePanel from "./components/SidePanel";
+import insertNewProfile from "./utils/insertNewProfile";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -68,16 +69,27 @@ function App() {
             if (event === "INITIAL_SESSION") {
                 setUser(session?.user);
             } else if (event === "SIGNED_IN") {
-                setUser(session?.user);
+                setUser(session!.user);
+                // create new profile if not already exist
+                insertNewProfile(supabase, {
+                    id: session!.user.id!,
+                    display_name:
+                        session!.user.user_metadata.name ||
+                        session!.user.user_metadata.email.split("@")[0],
+                });
             } else if (event === "SIGNED_OUT") {
                 setUser(undefined);
-            } else if (event === "PASSWORD_RECOVERY") {
+            }
+
+            /* more events
+            else if (event === "PASSWORD_RECOVERY") {
                 // handle password recovery event
             } else if (event === "TOKEN_REFRESHED") {
                 // handle token refreshed event
             } else if (event === "USER_UPDATED") {
                 // handle user updated event
             }
+            */
         });
 
         return () => {

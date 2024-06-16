@@ -29,7 +29,7 @@ export default function LoginForm({
 }) {
     const fillDemoAcc = () => {
         setEmail("hynguyendev@gmail.com");
-        setPassword("Test!123");
+        setPassword("123+Ab");
     };
 
     return (

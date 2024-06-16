@@ -1,5 +1,5 @@
 import { useOutletContext, useNavigate } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import googleIcon from "~/assets/oauth_providers/google-icon.png";
 import githubIcon from "~/assets/oauth_providers/github-icon.png";
@@ -19,13 +19,13 @@ export default function Login() {
 
     // switch between login & signup
     const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
-    const { supabase } = useOutletContext<ContextProps>();
+    const { supabase, user } = useOutletContext<ContextProps>();
 
     const providerClicked = async (providerName: Provider) => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
             provider: providerName,
         });
-        if (error) alert("Error while logging in.");
+        if (error) return console.error("Error logging in.", error);
     };
 
     // LOGIN
@@ -48,6 +48,7 @@ export default function Login() {
             setErrorMessage(error.message);
             return;
         }
+
         return navigate("/");
     };
 
@@ -69,7 +70,7 @@ export default function Login() {
 
         const form = event.currentTarget;
         const formValues: { [key: string]: string } = {
-            displayName: form["reg_display_name_input"].value,
+            // displayName: form["reg_display_name_input"].value,
             email: form["reg_email_input"].value,
             password: form["reg_password_input"].value,
             passwordConfirm: form["reg_confirm_password_input"].value,
@@ -114,23 +115,21 @@ export default function Login() {
                 setErrorMessage(signUpError.message);
                 return;
             }
+
+            /*
+            // update display_name assuming a profile is already created
             if (!signUpData.user) {
                 setIsSubmitting(false);
                 setErrorMessage("No user object in response.");
                 return;
             }
-
-            // insert new profile into PROFILES table
-            const { error: insertProfileError } = await supabase
+            await supabase
                 .from("PROFILES")
-                .insert({
-                    id: signUpData.user.id,
+                .update({
                     display_name: formValues.displayName,
-                });
-            if (insertProfileError) {
-                setErrorMessage(insertProfileError.message);
-                return;
-            }
+                })
+                .eq("id", signUpData.user.id);
+            */
 
             return navigate("/");
         } else {
