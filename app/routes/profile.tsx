@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type ProfileData = {
-    //// reviews, purchases
+    display_name: string;
+    //// avatar, reviews, purchases
 };
 
 export default function Profile() {
@@ -16,8 +17,23 @@ export default function Profile() {
 
     const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
+    // fetch profile data
     useEffect(() => {
-        //// TODO: fetch profile
+        (async function () {
+            if (!user) return;
+            const { data, error } = await supabase
+                .from("PROFILES")
+                .select("display_name")
+                .eq("id", user.id)
+                .returns<ProfileData[]>()
+                .single();
+            if (error) {
+                console.error("Error fetching profile", error);
+                return;
+            }
+            ///console.log(data);
+            setProfileData(data);
+        })();
     }, []);
 
     const onNameEditSubmit: React.FormEventHandler<HTMLFormElement> =
@@ -52,7 +68,7 @@ export default function Profile() {
             <Form onSubmit={onNameEditSubmit}>
                 <input
                     type="text"
-                    defaultValue={"dummy name"}
+                    defaultValue={profileData.display_name}
                     disabled={!enableNameEdit}
                 />
                 <div>
