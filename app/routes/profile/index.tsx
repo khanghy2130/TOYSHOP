@@ -2,6 +2,7 @@ import { Form, Link, useOutletContext } from "@remix-run/react";
 import { useEffect, useState } from "react";
 /// import ErrorMessage from "~/components/ErrorMessage";
 import { ContextProps } from "~/utils/types/ContextProps.type";
+import AvatarCustomization from "./AvatarCustomization";
 
 type ProfileData = {
     display_name: string;
@@ -61,7 +62,6 @@ export default function Profile() {
         };
     const cancelNameEdit: React.DOMAttributes<HTMLButtonElement>["onClick"] =
         async function (event) {
-            event.preventDefault();
             setEnableNameEdit(false);
             setNameValue(defaultNameValue);
         };
@@ -94,6 +94,27 @@ export default function Profile() {
     return (
         <div>
             <h1>My Profile</h1>
+
+            <div>
+                <img
+                    className="h-40 w-40"
+                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                />
+                <button
+                    className="btn"
+                    onClick={() => setEnableAvatarCustomization(true)}
+                >
+                    Edit avatar
+                </button>
+                {enableAvatarCustomization ? (
+                    <AvatarCustomization
+                        setEnableAvatarCustomization={
+                            setEnableAvatarCustomization
+                        }
+                    />
+                ) : null}
+            </div>
+
             <Form onSubmit={submitNameEdit}>
                 <input
                     className="bg-black"
@@ -101,21 +122,29 @@ export default function Profile() {
                     onChange={onChangeNameEdit}
                     value={nameValue}
                     disabled={!enableNameEdit}
+                    required
                 />
                 <div>
                     {enableNameEdit ? (
                         <>
-                            <button type="button" onClick={cancelNameEdit}>
+                            <button
+                                className="btn"
+                                type="button"
+                                onClick={cancelNameEdit}
+                            >
                                 Cancel
                             </button>
-                            <button type="submit">Save</button>
+                            <button className="btn" type="submit">
+                                Save
+                            </button>
                         </>
                     ) : (
                         <button
+                            className="btn"
                             type="button"
                             onClick={() => setEnableNameEdit(true)}
                         >
-                            Edit
+                            Edit name
                         </button>
                     )}
                 </div>
