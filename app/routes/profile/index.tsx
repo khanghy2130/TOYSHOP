@@ -1,6 +1,9 @@
 import { Form, Link, useOutletContext } from "@remix-run/react";
-import { useEffect, useState } from "react";
-/// import ErrorMessage from "~/components/ErrorMessage";
+import { useEffect, useMemo, useState } from "react";
+
+import { createAvatar } from "@dicebear/core";
+import * as bigSmile from "@dicebear/big-smile";
+
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import AvatarCustomization from "./AvatarCustomization";
 
@@ -20,6 +23,19 @@ export default function Profile() {
 
     const [nameValue, setNameValue] = useState<string>("");
     const [defaultNameValue, setDefaultNameValue] = useState<string>("");
+
+    const avatarImg = useMemo(() => {
+        return createAvatar(bigSmile, {
+            accessoriesProbability: 100, /// extra option of "none" in accessories
+            backgroundColor: ["013b31"],
+            skinColor: ["e2ba87"],
+            hairColor: ["943404"],
+            hair: ["shortHair"],
+            eyes: ["winking"],
+            mouth: ["openedSmile"],
+            accessories: ["glasses"],
+        }).toDataUri();
+    }, []);
 
     // fetch profile data
     useEffect(() => {
@@ -96,10 +112,7 @@ export default function Profile() {
             <h1>My Profile</h1>
 
             <div>
-                <img
-                    className="h-40 w-40"
-                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                />
+                <img className="h-40 w-40" src={avatarImg} />
                 <button
                     className="btn"
                     onClick={() => setEnableAvatarCustomization(true)}
