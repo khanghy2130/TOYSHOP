@@ -24,9 +24,10 @@ export default function Profile() {
     const [nameValue, setNameValue] = useState<string>("");
     const [defaultNameValue, setDefaultNameValue] = useState<string>("");
 
+    //// fetch avatar options from db
     const avatarImg = useMemo(() => {
         return createAvatar(bigSmile, {
-            accessoriesProbability: 100, /// extra option of "none" in accessories
+            accessoriesProbability: 100,
             backgroundColor: ["013b31"],
             skinColor: ["e2ba87"],
             hairColor: ["943404"],

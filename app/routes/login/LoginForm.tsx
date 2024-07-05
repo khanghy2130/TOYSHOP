@@ -72,7 +72,7 @@ export default function LoginForm({
                         className="btn mt-2 inline-flex justify-center"
                     >
                         {isSubmitting ? (
-                            <div className={"h-6 w-6"}>
+                            <div className="h-6 w-6">
                                 <SpinnerSVG />
                             </div>
                         ) : (
