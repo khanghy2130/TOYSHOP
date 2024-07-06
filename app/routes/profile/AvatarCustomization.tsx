@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import * as bigSmile from "@dicebear/big-smile";
 import { createAvatar } from "@dicebear/core";
 import { AvatarOptions } from "~/utils/types/AvatarOptions";
 
 import SpinnerSVG from "~/components/SpinnerSVG";
+import { hair, eyes, mouth, accessories } from "./AvatarOptions";
 
 type Props = {
     setEnableAvatarCustomization: React.Dispatch<React.SetStateAction<boolean>>;
@@ -31,62 +32,54 @@ export default function AvatarCustomization({
         });
     }, []);
 
-    // samples is dictionary of lists of {uri: string, applyToOptions: Function}
-    const samples: {
-        [key: string]: { uri: string; applyToOptions: Function }[];
-    } = useMemo(() => {
-        const hair: AvatarOptions["hair"] = [
-            "shortHair",
-            "mohawk",
-            "wavyBob",
-            "bowlCutHair",
-            "curlyBob",
-            "straightHair",
-            "braids",
-            "shavedHead",
-            "bunHair",
-            "froBun",
-            "bangs",
-            "halfShavedHead",
-            "curlyShortHair",
-        ];
-        const eyes: AvatarOptions["eyes"] = [
-            "cheery",
-            "normal",
-            "confused",
-            "starstruck",
-            "winking",
-            "sleepy",
-            "sad",
-            "angry",
-        ];
-        const mouth: AvatarOptions["mouth"] = [
-            "openedSmile",
-            "unimpressed",
-            "gapSmile",
-            "openSad",
-            "teethSmile",
-            "awkwardSmile",
-            "braces",
-            "kawaii",
-        ];
-        const accessories: AvatarOptions["accessories"] = [
-            "catEars",
-            "glasses",
-            "sailormoonCrown",
-            "clownNose",
-            "sleepMask",
-            "sunglasses",
-            "faceMask",
-            "mustache",
-        ];
+    // update avatar preview when options change
+    useEffect(() => {
+        if (avatarOptions === null) return;
+        setAvatarUri(createAvatar(bigSmile, avatarOptions).toDataUri());
+        console.log(avatarOptions);
+    }, [avatarOptions]);
 
+    // memorized images uri
+    const optionImageURIs: { [key: string]: string[] } = useMemo(
+        () => ({
+            hair: hair!.map((itemName) => {
+                return createAvatar(bigSmile, {
+                    hair: [itemName],
+                }).toDataUri();
+            }),
+            eyes: eyes!.map((itemName) => {
+                return createAvatar(bigSmile, {
+                    hair: ["shavedHead"],
+                    eyes: [itemName],
+                }).toDataUri();
+            }),
+            mouth: mouth!.map((itemName) => {
+                return createAvatar(bigSmile, {
+                    hair: ["shavedHead"],
+                    mouth: [itemName],
+                }).toDataUri();
+            }),
+            accessories: accessories!.map((itemName) => {
+                return createAvatar(bigSmile, {
+                    hair: ["shavedHead"],
+                    accessoriesProbability: 100,
+                    accessories: [itemName],
+                }).toDataUri();
+            }),
+        }),
+        [],
+    );
+
+    const optionSamples: {
+        [key: string]: {
+            uri: string;
+            applyToOptions: MouseEventHandler<HTMLButtonElement>;
+        }[];
+    } = useMemo(() => {
         const result = {
-            hair: hair.map((itemName) => {
+            hair: hair!.map((itemName, itemIndex) => {
                 return {
-                    uri: createAvatar(bigSmile, {
-                        hair: [itemName],
-                    }).toDataUri(),
+                    uri: optionImageURIs.hair[itemIndex],
                     applyToOptions: function () {
                         setAvatarOptions({
                             ...avatarOptions,
@@ -95,11 +88,9 @@ export default function AvatarCustomization({
                     },
                 };
             }),
-            eyes: eyes.map((itemName) => {
+            eyes: eyes!.map((itemName, itemIndex) => {
                 return {
-                    uri: createAvatar(bigSmile, {
-                        eyes: [itemName],
-                    }).toDataUri(),
+                    uri: optionImageURIs.eyes[itemIndex],
                     applyToOptions: function () {
                         setAvatarOptions({
                             ...avatarOptions,
@@ -108,11 +99,9 @@ export default function AvatarCustomization({
                     },
                 };
             }),
-            mouth: mouth.map((itemName) => {
+            mouth: mouth!.map((itemName, itemIndex) => {
                 return {
-                    uri: createAvatar(bigSmile, {
-                        mouth: [itemName],
-                    }).toDataUri(),
+                    uri: optionImageURIs.mouth[itemIndex],
                     applyToOptions: function () {
                         setAvatarOptions({
                             ...avatarOptions,
@@ -121,12 +110,9 @@ export default function AvatarCustomization({
                     },
                 };
             }),
-            accessories: accessories.map((itemName) => {
+            accessories: accessories!.map((itemName, itemIndex) => {
                 return {
-                    uri: createAvatar(bigSmile, {
-                        accessoriesProbability: 100,
-                        accessories: [itemName],
-                    }).toDataUri(),
+                    uri: optionImageURIs.accessories[itemIndex],
                     applyToOptions: function () {
                         setAvatarOptions({
                             ...avatarOptions,
@@ -141,6 +127,7 @@ export default function AvatarCustomization({
         // add special option "none" to accessories category
         result.accessories.unshift({
             uri: createAvatar(bigSmile, {
+                hair: ["shavedHead"],
                 accessoriesProbability: 0,
             }).toDataUri(),
             applyToOptions: function () {
@@ -152,13 +139,6 @@ export default function AvatarCustomization({
         });
 
         return result;
-    }, []);
-
-    // update avatar preview when options change
-    useEffect(() => {
-        if (avatarOptions === null) return;
-        setAvatarUri(createAvatar(bigSmile, avatarOptions).toDataUri());
-        console.log("update preview");
     }, [avatarOptions]);
 
     const saveAvatar: React.DOMAttributes<HTMLButtonElement>["onClick"] =
@@ -166,12 +146,22 @@ export default function AvatarCustomization({
             console.log("save avatar clicked");
         };
 
+    const customizeOptions: [
+        string,
+        (typeof optionSamples)[keyof typeof optionSamples],
+    ][] = [
+        ["Hair", optionSamples.hair],
+        ["Eyes", optionSamples.eyes],
+        ["Mouth", optionSamples.mouth],
+        ["Accessories", optionSamples.accessories],
+    ];
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
             <div className="h-3/4 w-11/12 max-w-[800px] overflow-y-scroll bg-color-1">
                 <h1>Avatar customization</h1>
 
-                <div className="flex h-40 w-40 items-center justify-center">
+                <div className="flex h-52 w-52 items-center justify-center">
                     {avatarUri === "" ? (
                         <div className="h-1/3 w-1/3">
                             <SpinnerSVG />
@@ -181,38 +171,28 @@ export default function AvatarCustomization({
                     )}
                 </div>
 
-                <div>
-                    <h2>Hair</h2>
-                    <div className="flex flex-wrap">
-                        {samples.hair.map((item, i) => (
-                            <img className="h-20 w-20" src={item.uri} key={i} />
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <h2>Eyes</h2>
-                    <div className="flex flex-wrap">
-                        {samples.eyes.map((item, i) => (
-                            <img className="h-20 w-20" src={item.uri} key={i} />
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <h2>Mouth</h2>
-                    <div className="flex flex-wrap">
-                        {samples.mouth.map((item, i) => (
-                            <img className="h-20 w-20" src={item.uri} key={i} />
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <h2>Accessories</h2>
-                    <div className="flex flex-wrap">
-                        {samples.accessories.map((item, i) => (
-                            <img className="h-20 w-20" src={item.uri} key={i} />
-                        ))}
-                    </div>
-                </div>
+                {
+                    // render option samples
+                    customizeOptions.map(([category, list], categoryIndex) => (
+                        <div key={categoryIndex}>
+                            <h2>{category}</h2>
+                            <div className="flex flex-wrap">
+                                {list.map((item, itemIndex) => (
+                                    <button
+                                        key={itemIndex}
+                                        className="btn m-2 !p-0"
+                                        onClick={item.applyToOptions}
+                                    >
+                                        <img
+                                            className="h-20 w-20"
+                                            src={item.uri}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
 
                 <button
                     className="btn"
