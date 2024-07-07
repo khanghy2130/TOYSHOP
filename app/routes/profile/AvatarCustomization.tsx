@@ -36,7 +36,6 @@ export default function AvatarCustomization({
     useEffect(() => {
         if (avatarOptions === null) return;
         setAvatarUri(createAvatar(bigSmile, avatarOptions).toDataUri());
-        console.log(avatarOptions);
     }, [avatarOptions]);
 
     // memorized images uri
@@ -193,6 +192,48 @@ export default function AvatarCustomization({
                         </div>
                     ))
                 }
+
+                <h2>Skin color</h2>
+                <input
+                    type="color"
+                    value={"#" + avatarOptions?.skinColor}
+                    onChange={(e) => {
+                        setAvatarOptions({
+                            ...avatarOptions,
+                            skinColor: [
+                                e.currentTarget.value.toString().substring(1),
+                            ],
+                        });
+                    }}
+                />
+
+                <h2>Hair color</h2>
+                <input
+                    type="color"
+                    value={"#" + avatarOptions?.hairColor}
+                    onChange={(e) => {
+                        setAvatarOptions({
+                            ...avatarOptions,
+                            hairColor: [
+                                e.currentTarget.value.toString().substring(1),
+                            ],
+                        });
+                    }}
+                />
+
+                <h2>Background color</h2>
+                <input
+                    type="color"
+                    value={"#" + avatarOptions?.backgroundColor}
+                    onChange={(e) => {
+                        setAvatarOptions({
+                            ...avatarOptions,
+                            backgroundColor: [
+                                e.currentTarget.value.toString().substring(1),
+                            ],
+                        });
+                    }}
+                />
 
                 <button
                     className="btn"
