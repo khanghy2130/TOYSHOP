@@ -25,7 +25,7 @@ import { getThemeSession } from "./utils/Navbar/theme.server";
 
 import Navbar from "./components/Navbar";
 import SidePanel from "./components/SidePanel";
-import insertNewProfile from "./utils/insertNewProfile";
+import insertNewUser from "./utils/insertNewUser";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -70,8 +70,8 @@ function App() {
                 setUser(session?.user);
             } else if (event === "SIGNED_IN") {
                 setUser(session!.user);
-                // create new profile if not already exist
-                insertNewProfile(supabase, {
+                // create new profile & avatar
+                insertNewUser(supabase, {
                     id: session!.user.id!,
                     display_name:
                         session!.user.user_metadata.name ||

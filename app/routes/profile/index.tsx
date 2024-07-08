@@ -6,10 +6,11 @@ import * as bigSmile from "@dicebear/big-smile";
 
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import AvatarCustomization from "./AvatarCustomization";
+import SpinnerSVG from "~/components/SpinnerSVG";
 
 type ProfileData = {
     display_name: string;
-    //// avatar, reviews, purchases
+    //// reviews, purchases
 };
 
 export default function Profile() {
@@ -24,21 +25,47 @@ export default function Profile() {
     const [nameValue, setNameValue] = useState<string>("");
     const [defaultNameValue, setDefaultNameValue] = useState<string>("");
 
-    //// fetch avatar options from db
-    const avatarImg = useMemo(() => {
-        return createAvatar(bigSmile, {
-            accessoriesProbability: 100,
-            backgroundColor: ["013b31"],
-            skinColor: ["e2ba87"],
-            hairColor: ["943404"],
-            hair: ["shortHair"],
-            eyes: ["winking"],
-            mouth: ["openedSmile"],
-            accessories: ["glasses"],
-        }).toDataUri();
-    }, []);
+    const [avatarUri, setAvatarUri] = useState<string>("");
+    // trigger a refetch
+    const [avatarUriTrigger, setAvatarUriTrigger] = useState<{}>({});
+
+    // fetch avatar options from db
+    useEffect(() => {
+        (async function () {
+            if (!user) return;
+            const { data, error } = await supabase
+                .from("AVATARS")
+                .select(`*`)
+                .eq("id", user.id)
+                .single();
+
+            if (error) {
+                console.error("Error fetching avatar");
+                return;
+            }
+
+            setAvatarUri(
+                createAvatar(bigSmile, {
+                    accessoriesProbability: data.accessoriesProbability!,
+                    backgroundColor: [data.backgroundColor!],
+                    skinColor: [data.skinColor!],
+                    hairColor: [data.hairColor!],
+                    // expect errors of not matching types
+                    // @ts-expect-error
+                    hair: [data.hair!],
+                    // @ts-expect-error
+                    eyes: [data.eyes!],
+                    // @ts-expect-error
+                    mouth: [data.mouth!],
+                    // @ts-expect-error
+                    accessories: [data.accessories!],
+                }).toDataUri(),
+            );
+        })();
+    }, [avatarUriTrigger]);
 
     // fetch profile data
+    //// get more data here (reviews, orders, ...)
     useEffect(() => {
         (async function () {
             if (!user) return;
@@ -52,7 +79,6 @@ export default function Profile() {
                 console.error("Error fetching profile", error);
                 return;
             }
-            ///console.log(data);
             setProfileData(data);
             setNameValue(data.display_name);
             setDefaultNameValue(data.display_name);
@@ -113,7 +139,15 @@ export default function Profile() {
             <h1>My Profile</h1>
 
             <div>
-                <img className="h-40 w-40" src={avatarImg} />
+                <div className="flex h-40 w-40 items-center justify-center">
+                    {avatarUri === "" ? (
+                        <div className="h-1/3 w-1/3">
+                            <SpinnerSVG />
+                        </div>
+                    ) : (
+                        <img className="h-full w-full" src={avatarUri} />
+                    )}
+                </div>
                 <button
                     className="btn"
                     onClick={() => setEnableAvatarCustomization(true)}
@@ -125,6 +159,7 @@ export default function Profile() {
                         setEnableAvatarCustomization={
                             setEnableAvatarCustomization
                         }
+                        setAvatarUriTrigger={setAvatarUriTrigger}
                     />
                 ) : null}
             </div>

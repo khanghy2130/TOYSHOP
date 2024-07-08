@@ -5,31 +5,56 @@ import { AvatarOptions } from "~/utils/types/AvatarOptions";
 
 import SpinnerSVG from "~/components/SpinnerSVG";
 import { hair, eyes, mouth, accessories } from "./AvatarOptions";
+import { useOutletContext } from "@remix-run/react";
+import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type Props = {
     setEnableAvatarCustomization: React.Dispatch<React.SetStateAction<boolean>>;
+    setAvatarUriTrigger: React.Dispatch<React.SetStateAction<{}>>;
 };
 
 export default function AvatarCustomization({
     setEnableAvatarCustomization,
+    setAvatarUriTrigger,
 }: Props) {
+    const { supabase, user } = useOutletContext<ContextProps>();
+
     const [avatarOptions, setAvatarOptions] = useState<AvatarOptions | null>(
         null,
     );
     const [avatarUri, setAvatarUri] = useState<string>("");
 
-    //// fetch avatar options from db
+    // fetch avatar options from db
     useEffect(() => {
-        setAvatarOptions({
-            accessoriesProbability: 100,
-            backgroundColor: ["013b31"],
-            skinColor: ["e2ba87"],
-            hairColor: ["943404"],
-            hair: ["shortHair"],
-            eyes: ["winking"],
-            mouth: ["openedSmile"],
-            accessories: ["glasses"],
-        });
+        (async function () {
+            if (!user) return;
+            const { data, error } = await supabase
+                .from("AVATARS")
+                .select(`*`)
+                .eq("id", user.id)
+                .single();
+
+            if (error) {
+                console.error("Error fetching avatar");
+                return;
+            }
+
+            setAvatarOptions({
+                accessoriesProbability: data.accessoriesProbability!,
+                backgroundColor: [data.backgroundColor!],
+                skinColor: [data.skinColor!],
+                hairColor: [data.hairColor!],
+                // expect errors of not matching types
+                // @ts-expect-error
+                hair: [data.hair!],
+                // @ts-expect-error
+                eyes: [data.eyes!],
+                // @ts-expect-error
+                mouth: [data.mouth!],
+                // @ts-expect-error
+                accessories: [data.accessories!],
+            });
+        })();
     }, []);
 
     // update avatar preview when options change
@@ -74,75 +99,92 @@ export default function AvatarCustomization({
             uri: string;
             applyToOptions: MouseEventHandler<HTMLButtonElement>;
         }[];
-    } = useMemo(() => {
-        const result = {
-            hair: hair!.map((itemName, itemIndex) => {
-                return {
-                    uri: optionImageURIs.hair[itemIndex],
-                    applyToOptions: function () {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            hair: [itemName],
-                        });
-                    },
-                };
-            }),
-            eyes: eyes!.map((itemName, itemIndex) => {
-                return {
-                    uri: optionImageURIs.eyes[itemIndex],
-                    applyToOptions: function () {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            eyes: [itemName],
-                        });
-                    },
-                };
-            }),
-            mouth: mouth!.map((itemName, itemIndex) => {
-                return {
-                    uri: optionImageURIs.mouth[itemIndex],
-                    applyToOptions: function () {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            mouth: [itemName],
-                        });
-                    },
-                };
-            }),
-            accessories: accessories!.map((itemName, itemIndex) => {
-                return {
-                    uri: optionImageURIs.accessories[itemIndex],
-                    applyToOptions: function () {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            accessoriesProbability: 100,
-                            accessories: [itemName],
-                        });
-                    },
-                };
-            }),
-        };
+    } = {
+        hair: hair!.map((itemName, itemIndex) => {
+            return {
+                uri: optionImageURIs.hair[itemIndex],
+                applyToOptions: function () {
+                    setAvatarOptions({
+                        ...avatarOptions,
+                        hair: [itemName],
+                    });
+                },
+            };
+        }),
+        eyes: eyes!.map((itemName, itemIndex) => {
+            return {
+                uri: optionImageURIs.eyes[itemIndex],
+                applyToOptions: function () {
+                    setAvatarOptions({
+                        ...avatarOptions,
+                        eyes: [itemName],
+                    });
+                },
+            };
+        }),
+        mouth: mouth!.map((itemName, itemIndex) => {
+            return {
+                uri: optionImageURIs.mouth[itemIndex],
+                applyToOptions: function () {
+                    setAvatarOptions({
+                        ...avatarOptions,
+                        mouth: [itemName],
+                    });
+                },
+            };
+        }),
+        accessories: accessories!.map((itemName, itemIndex) => {
+            return {
+                uri: optionImageURIs.accessories[itemIndex],
+                applyToOptions: function () {
+                    setAvatarOptions({
+                        ...avatarOptions,
+                        accessoriesProbability: 100,
+                        accessories: [itemName],
+                    });
+                },
+            };
+        }),
+    };
 
-        // add special option "none" to accessories category
-        result.accessories.unshift({
-            uri: createAvatar(bigSmile, {
-                hair: ["shavedHead"],
+    // add special option "none" to accessories category
+    optionSamples.accessories.unshift({
+        uri: createAvatar(bigSmile, {
+            hair: ["shavedHead"],
+            accessoriesProbability: 0,
+        }).toDataUri(),
+        applyToOptions: function () {
+            setAvatarOptions({
+                ...avatarOptions,
                 accessoriesProbability: 0,
-            }).toDataUri(),
-            applyToOptions: function () {
-                setAvatarOptions({
-                    ...avatarOptions,
-                    accessoriesProbability: 0,
-                });
-            },
-        });
-
-        return result;
-    }, [avatarOptions]);
+            });
+        },
+    });
 
     const saveAvatar: React.DOMAttributes<HTMLButtonElement>["onClick"] =
         async function (event) {
-            console.log("save avatar clicked");
+            const { error } = await supabase
+                .from("AVATARS")
+                .update({
+                    accessoriesProbability:
+                        avatarOptions!.accessoriesProbability,
+                    backgroundColor: avatarOptions!.backgroundColor![0],
+                    skinColor: avatarOptions!.skinColor![0],
+                    hairColor: avatarOptions!.hairColor![0],
+                    hair: avatarOptions!.hair![0],
+                    eyes: avatarOptions!.eyes![0],
+                    mouth: avatarOptions!.mouth![0],
+                    accessories: avatarOptions!.accessories![0],
+                })
+                .eq("id", user!.id);
+            if (error) {
+                console.error("Error update avatar", error);
+                return;
+            }
+
+            // successfully updated
+            setAvatarUriTrigger({});
+            setEnableAvatarCustomization(false);
         };
 
     const customizeOptions: [
