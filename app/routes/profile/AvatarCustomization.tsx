@@ -44,15 +44,12 @@ export default function AvatarCustomization({
                 backgroundColor: [data.backgroundColor!],
                 skinColor: [data.skinColor!],
                 hairColor: [data.hairColor!],
-                // expect errors of not matching types
-                // @ts-expect-error
-                hair: [data.hair!],
-                // @ts-expect-error
-                eyes: [data.eyes!],
-                // @ts-expect-error
-                mouth: [data.mouth!],
-                // @ts-expect-error
-                accessories: [data.accessories!],
+                hair: [data.hair!] as AvatarOptions["hair"],
+                eyes: [data.eyes!] as AvatarOptions["eyes"],
+                mouth: [data.mouth!] as AvatarOptions["mouth"],
+                accessories: [
+                    data.accessories!,
+                ] as AvatarOptions["accessories"],
             });
         })();
     }, []);
