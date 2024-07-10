@@ -2,30 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-    --color-1: #fff; /*background*/
-    --color-2: #000; /*text*/
-    --color-3: #562a2a; /*button*/
-    --color-4: #170d53; /* red error */
-    --color-5: #0d5641; /**/
-}
+@layer base {
+    html {
+        --color-1: #fff; /*background*/
+        --color-2: #000; /*text*/
+        --color-3: #562a2a; /*button*/
+        --color-4: #170d53; /* red error */
+        --color-5: #0d5641; /**/
+    }
+    html.dark {
+        --color-1: #1d1d1d;
+        --color-2: #7fffe1;
+        --color-3: #353535;
+        --color-4: #d75252;
+        --color-5: #9f9d12;
+    }
 
-html.dark {
-    --color-1: #1d1d1d;
-    --color-2: #7fffe1;
-    --color-3: #353535;
-    --color-4: #d75252;
-    --color-5: #9f9d12;
-}
+    body {
+        @apply overflow-y-scroll;
+        @apply text-color-2;
+        @apply bg-color-1;
+    }
 
-body {
-    @apply overflow-y-scroll;
-    @apply text-color-2;
-    @apply bg-color-1;
-}
-body *,
-body {
-    @apply transition-colors duration-150;
+    /* color transition */
+    body *,
+    body {
+        @apply transition-colors duration-150;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 }
 
 /* CUSTOM CLASSES */

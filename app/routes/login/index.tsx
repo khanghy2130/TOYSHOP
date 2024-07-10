@@ -1,5 +1,5 @@
 import { useOutletContext, useNavigate } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import googleIcon from "~/assets/oauth_providers/google-icon.png";
 import githubIcon from "~/assets/oauth_providers/github-icon.png";
@@ -19,13 +19,13 @@ export default function Login() {
 
     // switch between login & signup
     const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
-    const { supabase } = useOutletContext<ContextProps>();
+    const { supabase, user } = useOutletContext<ContextProps>();
 
     const providerClicked = async (providerName: Provider) => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
+        const { error } = await supabase.auth.signInWithOAuth({
             provider: providerName,
         });
-        if (error) alert("Error while logging in.");
+        if (error) return console.error("Error logging in.", error);
     };
 
     // LOGIN
@@ -48,6 +48,7 @@ export default function Login() {
             setErrorMessage(error.message);
             return;
         }
+
         return navigate("/");
     };
 
@@ -68,10 +69,8 @@ export default function Login() {
         setIsSubmitting(true);
 
         const form = event.currentTarget;
-
-        /// BUG: Need to reload the app every time user_data in option has changed ( 111-115 ).
         const formValues: { [key: string]: string } = {
-            displayName: form["reg_display_name_input"].value,
+            // displayName: form["reg_display_name_input"].value,
             email: form["reg_email_input"].value,
             password: form["reg_password_input"].value,
             passwordConfirm: form["reg_confirm_password_input"].value,
@@ -105,20 +104,33 @@ export default function Login() {
         });
 
         if (validationsPassed) {
-            const { error, data } = await supabase.auth.signUp({
-                email: formValues.email,
-                password: formValues.password,
-                options: {
-                    data: {
-                        full_name: formValues.displayName,
-                    },
-                },
-            });
-            if (error) {
+            // sign up new user
+            const { error: signUpError, data: signUpData } =
+                await supabase.auth.signUp({
+                    email: formValues.email,
+                    password: formValues.password,
+                });
+            if (signUpError) {
                 setIsSubmitting(false);
-                setErrorMessage(error.message);
+                setErrorMessage(signUpError.message);
                 return;
             }
+
+            /*
+            // update display_name assuming a profile is already created
+            if (!signUpData.user) {
+                setIsSubmitting(false);
+                setErrorMessage("No user object in response.");
+                return;
+            }
+            await supabase
+                .from("PROFILES")
+                .update({
+                    display_name: formValues.displayName,
+                })
+                .eq("id", signUpData.user.id);
+            */
+
             return navigate("/");
         } else {
             setIsSubmitting(false);

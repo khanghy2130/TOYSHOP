@@ -31,7 +31,7 @@ export default function SidePanel({
         <div
             className={
                 (sidePanelIsShown ? "right-0" : "-right-96") +
-                ` fixed flex h-screen w-96 max-w-full
+                ` fixed z-50 flex h-screen w-96 max-w-full
     flex-col items-center bg-gray-800 transition-[right] duration-500 ease-in-out`
             }
         >

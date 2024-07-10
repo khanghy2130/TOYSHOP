@@ -9,6 +9,86 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      AVATARS: {
+        Row: {
+          accessories: string | null
+          accessoriesProbability: number | null
+          backgroundColor: string | null
+          eyes: string | null
+          hair: string | null
+          hairColor: string | null
+          id: string
+          mouth: string | null
+          skinColor: string | null
+        }
+        Insert: {
+          accessories?: string | null
+          accessoriesProbability?: number | null
+          backgroundColor?: string | null
+          eyes?: string | null
+          hair?: string | null
+          hairColor?: string | null
+          id: string
+          mouth?: string | null
+          skinColor?: string | null
+        }
+        Update: {
+          accessories?: string | null
+          accessoriesProbability?: number | null
+          backgroundColor?: string | null
+          eyes?: string | null
+          hair?: string | null
+          hairColor?: string | null
+          id?: string
+          mouth?: string | null
+          skinColor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "AVATARS_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "PROFILES"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      CARTS: {
+        Row: {
+          id: number
+          product_id: number | null
+          quantity: number | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: number
+          product_id?: number | null
+          quantity?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: number
+          product_id?: number | null
+          quantity?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "CARTS_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "PRODUCTS"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "CARTS_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "PROFILES"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       editors: {
         Row: {
           id: string
@@ -88,17 +168,14 @@ export type Database = {
       }
       PROFILES: {
         Row: {
-          avatar_url: string | null
           display_name: string | null
           id: string
         }
         Insert: {
-          avatar_url?: string | null
           display_name?: string | null
           id?: string
         }
         Update: {
-          avatar_url?: string | null
           display_name?: string | null
           id?: string
         }
@@ -114,35 +191,35 @@ export type Database = {
       }
       REVIEWS: {
         Row: {
-          author_id: string | null
           created_at: string
           feedback: string | null
           id: string
           product_id: number | null
           rating: number | null
+          user_id: string | null
         }
         Insert: {
-          author_id?: string | null
           created_at?: string
           feedback?: string | null
           id?: string
           product_id?: number | null
           rating?: number | null
+          user_id?: string | null
         }
         Update: {
-          author_id?: string | null
           created_at?: string
           feedback?: string | null
           id?: string
           product_id?: number | null
           rating?: number | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "REVIEWS_author_id_fkey"
-            columns: ["author_id"]
+            foreignKeyName: "REVIEWS_author_id_fkey1"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "PROFILES"
             referencedColumns: ["id"]
           },
           {

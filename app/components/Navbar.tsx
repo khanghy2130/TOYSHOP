@@ -15,7 +15,7 @@ export default function Navbar({ setSidePanelIsShown }: Props) {
         <div
             className={
                 (navIsShown ? "top-0" : "-top-32") +
-                " fixed z-50 w-screen bg-red-800 transition-[top] duration-500 ease-in-out"
+                " fixed z-40 w-screen bg-red-800 transition-[top] duration-500 ease-in-out"
             }
         >
             <div

@@ -1,4 +1,4 @@
-export default function SidePanel() {
+export default function SpinnerSVG() {
     return (
         <svg viewBox="0 0 24 24">
             <rect width="6" height="14" x="1" y="4" fill="currentColor">
