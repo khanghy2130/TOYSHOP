@@ -1,4 +1,4 @@
-import { useOutletContext, useLoaderData } from "@remix-run/react";
+import { useOutletContext } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 
 import { ContextProps } from "~/utils/types/ContextProps.type";
