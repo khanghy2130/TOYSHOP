@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { Form, useNavigate } from "@remix-run/react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 import { ContextProps } from "~/utils/types/ContextProps.type";
@@ -25,6 +25,7 @@ export default function ProductDetails({
     updateFormState,
     SUPABASE_IMAGES_PATH,
 }: Props) {
+    const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const [tags, setTags] = useState<string[]>([]);
@@ -231,8 +232,8 @@ export default function ProductDetails({
 
         // all actions successful
         formEle.reset();
-        window.location.reload();
-        return setIsSubmitting(false);
+        setIsSubmitting(false);
+        return navigate("/product/" + productID);
     }
 
     return (
