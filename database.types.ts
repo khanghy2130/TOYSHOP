@@ -113,6 +113,7 @@ export type Database = {
         Row: {
           average_rating: number
           description: string
+          discount: number | null
           id: number
           quantity: number
           title: string
@@ -120,6 +121,7 @@ export type Database = {
         Insert: {
           average_rating?: number
           description?: string
+          discount?: number | null
           id?: number
           quantity?: number
           title?: string
@@ -127,6 +129,7 @@ export type Database = {
         Update: {
           average_rating?: number
           description?: string
+          discount?: number | null
           id?: number
           quantity?: number
           title?: string
@@ -151,7 +154,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "PRODUCTTAGS_product_id_fkey"
+            foreignKeyName: "PRODUCTS_TAGS_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "PRODUCTS"

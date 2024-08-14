@@ -28,9 +28,6 @@ export default function Navbar({ setSidePanelIsShown }: Props) {
                     <img src={titleLogoImage} className="w-40" />
                 </Link>
                 <div>
-                    <Link to="/profile">
-                        <button className="btn">Profile</button>
-                    </Link>
                     <Link to="/store">
                         <button className="btn">Store</button>
                     </Link>

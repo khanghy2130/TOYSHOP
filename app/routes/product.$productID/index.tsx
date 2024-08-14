@@ -72,7 +72,7 @@ export default function ProductPage() {
     }, []);
 
     if (!successfulFetch) {
-        return <div>Error: Could not get product information.</div>;
+        return <div>No product found.</div>;
     }
 
     if (!productInfo) {
