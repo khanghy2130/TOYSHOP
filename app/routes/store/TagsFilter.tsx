@@ -9,7 +9,7 @@ type FilterTag = {
 
 type Props = {
     chosenTags: FilterTag[];
-    setChosenTags: React.Dispatch<React.SetStateAction<FilterTag[]>>;
+    setChosenTags: SetState<FilterTag[]>;
 };
 
 export default function TagsFilter({ chosenTags, setChosenTags }: Props) {

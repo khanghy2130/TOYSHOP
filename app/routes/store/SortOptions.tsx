@@ -2,9 +2,9 @@ type SortType = "TITLE" | "PRICE" | "RATING";
 
 type Props = {
     chosenSort: SortType;
-    setChosenSort: React.Dispatch<React.SetStateAction<SortType>>;
+    setChosenSort: SetState<SortType>;
     sortDescending: boolean;
-    setSortDescending: React.Dispatch<React.SetStateAction<boolean>>;
+    setSortDescending: SetState<boolean>;
 };
 
 export default function TagsFilter({

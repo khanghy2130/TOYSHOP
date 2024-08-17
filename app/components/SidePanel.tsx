@@ -6,7 +6,7 @@ import type { ContextProps } from "../utils/types/ContextProps.type";
 
 type Props = {
     sidePanelIsShown: boolean;
-    setSidePanelIsShown: React.Dispatch<React.SetStateAction<boolean>>;
+    setSidePanelIsShown: SetState<boolean>;
     user: ContextProps["user"];
     supabase: ContextProps["supabase"];
 };

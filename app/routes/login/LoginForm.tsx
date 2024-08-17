@@ -6,9 +6,9 @@ type Props = {
     isAtLogin: boolean;
     loginOnSubmit: React.FormEventHandler<HTMLFormElement>;
     email: string;
-    setEmail: React.Dispatch<React.SetStateAction<string>>;
+    setEmail: SetState<string>;
     password: string;
-    setPassword: React.Dispatch<React.SetStateAction<string>>;
+    setPassword: SetState<string>;
     isSubmitting: boolean;
     errorMessage: string | null;
 };

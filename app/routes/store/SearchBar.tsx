@@ -1,9 +1,9 @@
 type Props = {
-    setFetchTrigger: React.Dispatch<React.SetStateAction<{}>>;
+    setFetchTrigger: SetState<{}>;
     seachQuery: string;
-    setSeachQuery: React.Dispatch<React.SetStateAction<string>>;
+    setSeachQuery: SetState<string>;
     showOnSalesOnly: boolean;
-    setShowOnSalesOnly: React.Dispatch<React.SetStateAction<boolean>>;
+    setShowOnSalesOnly: SetState<boolean>;
 };
 
 export default function TagsFilter({
