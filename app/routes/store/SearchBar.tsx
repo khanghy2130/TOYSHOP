@@ -1,12 +1,14 @@
+import { FetchTriggerType } from "./Types";
+
 type Props = {
-    setFetchTrigger: SetState<{}>;
+    setFetchTrigger: SetState<FetchTriggerType>;
     seachQuery: string;
     setSeachQuery: SetState<string>;
     showOnSalesOnly: boolean;
     setShowOnSalesOnly: SetState<boolean>;
 };
 
-export default function TagsFilter({
+export default function SearchBar({
     setFetchTrigger,
     seachQuery,
     setSeachQuery,
@@ -14,7 +16,7 @@ export default function TagsFilter({
     setShowOnSalesOnly,
 }: Props) {
     function initiateFetching() {
-        setFetchTrigger({});
+        setFetchTrigger({ fetchMode: "NEW" });
     }
 
     return (
@@ -48,7 +50,10 @@ export default function TagsFilter({
                     <input
                         type="checkbox"
                         checked={showOnSalesOnly}
-                        onChange={() => setShowOnSalesOnly(!showOnSalesOnly)}
+                        onChange={() => {
+                            setShowOnSalesOnly(!showOnSalesOnly);
+                            setFetchTrigger({ fetchMode: "NEW" });
+                        }}
                         className="peer sr-only"
                     />
                     <div

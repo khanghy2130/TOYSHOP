@@ -2,17 +2,19 @@ import { useOutletContext } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
-type FilterTag = {
-    id: number;
-    name: string;
-};
+import { FetchTriggerType, FilterTag } from "./Types";
 
 type Props = {
+    setFetchTrigger: SetState<FetchTriggerType>;
     chosenTags: FilterTag[];
     setChosenTags: SetState<FilterTag[]>;
 };
 
-export default function TagsFilter({ chosenTags, setChosenTags }: Props) {
+export default function TagsFilter({
+    setFetchTrigger,
+    chosenTags,
+    setChosenTags,
+}: Props) {
     const { supabase } = useOutletContext<ContextProps>();
     const [allTags, setAllTags] = useState<FilterTag[]>([]);
     const [showTagsModal, setShowTagsModal] = useState<boolean>(false);
@@ -38,6 +40,7 @@ export default function TagsFilter({ chosenTags, setChosenTags }: Props) {
         setShowTagsModal(false);
         if (isAlreadyAdded) removeTag(tag);
         else setChosenTags([...chosenTags, tag]);
+        setFetchTrigger({ fetchMode: "NEW" });
     }
 
     return (
@@ -53,7 +56,10 @@ export default function TagsFilter({ chosenTags, setChosenTags }: Props) {
                 <button
                     className="btn text-xs hover:line-through"
                     key={chosenTag.id}
-                    onClick={() => removeTag(chosenTag)}
+                    onClick={() => {
+                        removeTag(chosenTag);
+                        setFetchTrigger({ fetchMode: "NEW" });
+                    }}
                 >
                     {chosenTag.name}
                 </button>

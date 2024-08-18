@@ -113,24 +113,27 @@ export type Database = {
         Row: {
           average_rating: number
           description: string
-          discount: number | null
+          discount: number
           id: number
+          price: number
           quantity: number
           title: string
         }
         Insert: {
           average_rating?: number
           description?: string
-          discount?: number | null
+          discount?: number
           id?: number
+          price?: number
           quantity?: number
           title?: string
         }
         Update: {
           average_rating?: number
           description?: string
-          discount?: number | null
+          discount?: number
           id?: number
+          price?: number
           quantity?: number
           title?: string
         }

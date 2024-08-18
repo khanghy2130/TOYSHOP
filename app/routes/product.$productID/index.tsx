@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type ProductInfo = {
-    productID: number;
+    id: number;
     title: string;
     description: string;
-    quantity: string | number;
+    quantity: number;
     tags: string[];
     imgNames: string[];
 };
@@ -24,12 +24,12 @@ export default function ProductPage() {
                 .from("PRODUCTS")
                 .select(
                     `
-								id,
-								title,
-								description,
-								quantity,
-								tags:PRODUCTS_TAGS(tag_id(name))
-						`,
+                        id,
+                        title,
+                        description,
+                        quantity,
+                        tags:PRODUCTS_TAGS(tag_id(name))
+                    `,
                 )
                 .eq("id", productID!)
                 .returns<
@@ -61,7 +61,7 @@ export default function ProductPage() {
             }
 
             setProductInfo({
-                productID: productData.id,
+                id: productData.id,
                 title: productData.title,
                 description: productData.description,
                 quantity: productData.quantity,
@@ -94,7 +94,7 @@ export default function ProductPage() {
                 <div className="flex" key={i}>
                     <img
                         className="w-80"
-                        src={`${env.SUPABASE_IMAGES_PATH}/${productInfo.productID}/${imgName}`}
+                        src={`${env.SUPABASE_IMAGES_PATH}/${productInfo.id}/${imgName}`}
                     />
                 </div>
             ))}

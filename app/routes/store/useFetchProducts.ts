@@ -1,91 +1,76 @@
-import { useEffect } from "react";
-
-type FilterTag = {
-    id: number;
-    name: string;
-};
-type SortType = "TITLE" | "PRICE" | "RATING";
+import { useEffect, useState } from "react";
+import { FetchTriggerType, ProductInfo } from "./Types";
+import { useOutletContext } from "@remix-run/react";
+import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type Params = {
-    fetchTrigger: {};
-    setFetchTrigger: SetState<{}>;
+    products: ProductInfo[];
+    setProducts: SetState<ProductInfo[]>;
+
+    fetchTrigger: FetchTriggerType;
     noMoreResult: boolean;
     setNoMoreResult: SetState<boolean>;
     fetchIsInProgress: boolean;
     setFetchIsInProgress: SetState<boolean>;
-
-    seachQuery: string;
-    showOnSalesOnly: boolean;
-    chosenTags: FilterTag[];
-    chosenSort: SortType;
-    sortDescending: boolean;
-
-    dd: number;
-    setdd: SetState<number>;
 };
 
 export default function useFetchProducts({
+    products,
+    setProducts,
+
     fetchTrigger,
-    setFetchTrigger,
     noMoreResult,
     setNoMoreResult,
     fetchIsInProgress,
     setFetchIsInProgress,
-
-    seachQuery,
-    showOnSalesOnly,
-    chosenTags,
-    chosenSort,
-    sortDescending,
-
-    dd,
-    setdd,
 }: Params) {
-    function sleep(delay: number) {
-        return new Promise((resolve) => setTimeout(resolve, delay));
-    }
+    const { supabase } = useOutletContext<ContextProps>();
 
     // fetch results
     useEffect(() => {
-        // ignore?
-        if (noMoreResult || fetchIsInProgress) return;
-        (async function () {
-            setFetchIsInProgress(true);
-            console.log("start fetching more, currently have " + dd);
-            await sleep(1000);
-            setFetchIsInProgress(false);
-
-            //// set noMoreResult if so
-
-            setdd(dd + 5);
-        })();
-    }, [fetchTrigger, showOnSalesOnly, chosenTags, chosenSort, sortDescending]);
-
-    // automatically fetch more after a fetch if is still at bottom of page
-    useEffect(() => {
-        if (
-            window.innerHeight + window.scrollY >=
-            document.body.offsetHeight - 2
-        ) {
-            console.log("AUTO FETCH");
-            setFetchTrigger({});
+        // new fetch? clear old results
+        if (fetchTrigger.fetchMode === "NEW") {
+            products = []; // immediate update for the fetch
+            setProducts([]);
+            setNoMoreResult(false);
         }
-    }, [dd]);
 
-    // event to trigger next lazy fetch
-    useEffect(() => {
-        const handleScroll = () => {
-            if (
-                window.innerHeight + window.scrollY >=
-                document.body.offsetHeight - 2
-            ) {
-                setFetchTrigger({});
+        const controller = new AbortController();
+        const signal = controller.signal;
+
+        (async function () {
+            const FETCH_LIMIT = 6;
+            try {
+                setFetchIsInProgress(true);
+                const { data, error } = await supabase
+                    .from("PRODUCTS")
+                    .select("id, title, price, discount")
+                    .range(products.length, products.length + FETCH_LIMIT - 1)
+                    .abortSignal(signal)
+                    .returns<ProductInfo[]>();
+
+                if (error) throw error;
+
+                console.log(data);
+                setProducts([...products, ...data]);
+
+                // no more result?
+                if (data.length < FETCH_LIMIT) {
+                    setNoMoreResult(true);
+                }
+            } catch (error: any) {
+                if (error.name === "AbortError") {
+                    console.log("Fetch aborted");
+                } else {
+                    console.error("Fetch error:", error);
+                }
+            } finally {
+                setFetchIsInProgress(false);
             }
-        };
+        })();
 
-        window.addEventListener("scroll", handleScroll);
         return () => {
-            window.removeEventListener("scroll", handleScroll);
+            controller.abort();
         };
-    }, []);
+    }, [fetchTrigger]);
 }

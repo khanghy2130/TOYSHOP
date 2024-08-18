@@ -3,19 +3,15 @@ import TagsFilter from "./TagsFilter";
 import SortOptions from "./SortOptions";
 import SearchBar from "./SearchBar";
 import useFetchProducts from "./useFetchProducts";
-
-// another copy in TagsFilter.tsx & useFetchProducts.ts
-type FilterTag = {
-    id: number;
-    name: string;
-};
-
-// another copy in SortOptions.tsx & useFetchProducts.ts
-type SortType = "TITLE" | "PRICE" | "RATING";
+import { FilterTag, SortType, FetchTriggerType, ProductInfo } from "./Types";
 
 export default function StorePage() {
+    const [products, setProducts] = useState<ProductInfo[]>([]);
+
     // set fetchTrigger to manually trigger fetching effect
-    const [fetchTrigger, setFetchTrigger] = useState<{}>({});
+    const [fetchTrigger, setFetchTrigger] = useState<FetchTriggerType>({
+        fetchMode: "NEW",
+    });
     const [noMoreResult, setNoMoreResult] = useState<boolean>(false);
     const [fetchIsInProgress, setFetchIsInProgress] = useState<boolean>(false);
 
@@ -27,24 +23,15 @@ export default function StorePage() {
     const [chosenSort, setChosenSort] = useState<SortType>("TITLE");
     const [sortDescending, setSortDescending] = useState<boolean>(true);
 
-    const [dd, setdd] = useState<number>(0);
-
     useFetchProducts({
+        products,
+        setProducts,
+
         fetchTrigger,
-        setFetchTrigger,
         noMoreResult,
         setNoMoreResult,
         fetchIsInProgress,
         setFetchIsInProgress,
-
-        seachQuery,
-        showOnSalesOnly,
-        chosenTags,
-        chosenSort,
-        sortDescending,
-
-        dd,
-        setdd,
     });
 
     return (
@@ -59,17 +46,36 @@ export default function StorePage() {
                 setShowOnSalesOnly={setShowOnSalesOnly}
             />
 
-            <TagsFilter chosenTags={chosenTags} setChosenTags={setChosenTags} />
+            <TagsFilter
+                setFetchTrigger={setFetchTrigger}
+                chosenTags={chosenTags}
+                setChosenTags={setChosenTags}
+            />
 
             <SortOptions
+                setFetchTrigger={setFetchTrigger}
                 chosenSort={chosenSort}
                 setChosenSort={setChosenSort}
                 sortDescending={sortDescending}
                 setSortDescending={setSortDescending}
             />
-            {Array.apply(null, Array(dd)).map((x, i) => (
-                <p key={i}>{i}</p>
+
+            {products.map((product, i) => (
+                <p key={i}>{product.title}</p>
             ))}
+
+            {fetchIsInProgress ? (
+                <p>Loading....</p>
+            ) : noMoreResult || products.length === 0 ? null : (
+                <button
+                    className="btn"
+                    onClick={() => {
+                        setFetchTrigger({ fetchMode: "EXTRA" });
+                    }}
+                >
+                    Load more
+                </button>
+            )}
         </div>
     );
 }

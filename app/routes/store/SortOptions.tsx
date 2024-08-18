@@ -1,13 +1,15 @@
-type SortType = "TITLE" | "PRICE" | "RATING";
+import { FetchTriggerType, SortType } from "./Types";
 
 type Props = {
+    setFetchTrigger: SetState<FetchTriggerType>;
     chosenSort: SortType;
     setChosenSort: SetState<SortType>;
     sortDescending: boolean;
     setSortDescending: SetState<boolean>;
 };
 
-export default function TagsFilter({
+export default function SortOptions({
+    setFetchTrigger,
     chosenSort,
     setChosenSort,
     sortDescending,
@@ -19,14 +21,23 @@ export default function TagsFilter({
             return (
                 <button
                     className="btn"
-                    onClick={() => setSortDescending(!sortDescending)}
+                    onClick={() => {
+                        setSortDescending(!sortDescending);
+                        setFetchTrigger({ fetchMode: "NEW" });
+                    }}
                 >
                     {displayText + (sortDescending ? "(D)" : "(A)")}
                 </button>
             );
         } else {
             return (
-                <button className="btn" onClick={() => setChosenSort(type)}>
+                <button
+                    className="btn"
+                    onClick={() => {
+                        setChosenSort(type);
+                        setFetchTrigger({ fetchMode: "NEW" });
+                    }}
+                >
                     {displayText}
                 </button>
             );
