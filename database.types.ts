@@ -261,6 +261,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      get_product_ids_by_tags: {
+        Args: {
+          tag_ids: number[]
+        }
+        Returns: {
+          product_id: number
+        }[]
+      }
       is_super_admin: {
         Args: Record<PropertyKey, never>
         Returns: boolean

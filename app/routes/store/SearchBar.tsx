@@ -2,16 +2,16 @@ import { FetchTriggerType } from "./Types";
 
 type Props = {
     setFetchTrigger: SetState<FetchTriggerType>;
-    seachQuery: string;
-    setSeachQuery: SetState<string>;
+    searchQuery: string;
+    setSearchQuery: SetState<string>;
     showOnSalesOnly: boolean;
     setShowOnSalesOnly: SetState<boolean>;
 };
 
 export default function SearchBar({
     setFetchTrigger,
-    seachQuery,
-    setSeachQuery,
+    searchQuery,
+    setSearchQuery,
     showOnSalesOnly,
     setShowOnSalesOnly,
 }: Props) {
@@ -33,8 +33,8 @@ export default function SearchBar({
                             initiateFetching();
                         }
                     }}
-                    value={seachQuery}
-                    onChange={(e) => setSeachQuery(e.currentTarget.value)}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.currentTarget.value)}
                 />
                 <button
                     className="btn"

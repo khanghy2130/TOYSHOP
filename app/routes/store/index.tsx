@@ -15,7 +15,7 @@ export default function StorePage() {
     const [noMoreResult, setNoMoreResult] = useState<boolean>(false);
     const [fetchIsInProgress, setFetchIsInProgress] = useState<boolean>(false);
 
-    const [seachQuery, setSeachQuery] = useState<string>("");
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const [showOnSalesOnly, setShowOnSalesOnly] = useState<boolean>(false);
 
     const [chosenTags, setChosenTags] = useState<FilterTag[]>([]);
@@ -32,6 +32,12 @@ export default function StorePage() {
         setNoMoreResult,
         fetchIsInProgress,
         setFetchIsInProgress,
+
+        searchQuery,
+        showOnSalesOnly,
+        chosenTags,
+        chosenSort,
+        sortDescending,
     });
 
     return (
@@ -40,8 +46,8 @@ export default function StorePage() {
 
             <SearchBar
                 setFetchTrigger={setFetchTrigger}
-                seachQuery={seachQuery}
-                setSeachQuery={setSeachQuery}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
                 showOnSalesOnly={showOnSalesOnly}
                 setShowOnSalesOnly={setShowOnSalesOnly}
             />
@@ -64,9 +70,13 @@ export default function StorePage() {
                 <p key={i}>{product.title}</p>
             ))}
 
-            {fetchIsInProgress ? (
-                <p>Loading....</p>
-            ) : noMoreResult || products.length === 0 ? null : (
+            {fetchIsInProgress ? <p>Loading....</p> : null}
+
+            {noMoreResult && products.length === 0 ? (
+                <p>No products found.</p>
+            ) : null}
+
+            {!noMoreResult && !fetchIsInProgress ? (
                 <button
                     className="btn"
                     onClick={() => {
@@ -75,7 +85,7 @@ export default function StorePage() {
                 >
                     Load more
                 </button>
-            )}
+            ) : null}
         </div>
     );
 }
