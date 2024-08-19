@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FetchTriggerType, ProductInfo, FilterTag, SortType } from "./Types";
 import { useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
+import SortOptions from "./SortOptions";
 
 type Params = {
     products: ProductInfo[];
@@ -68,6 +69,11 @@ export default function useFetchProducts({
                     });
                 }
 
+                // on sale filter
+                if (showOnSalesOnly) {
+                    query.gt("discount", 0);
+                }
+
                 // tags
                 if (chosenTags.length !== 0) {
                     const tagIds = chosenTags.map((chosenTag) => chosenTag.id);
@@ -84,13 +90,25 @@ export default function useFetchProducts({
                     );
                 }
 
+                // sort
+                if (chosenSort === "TITLE") {
+                    query.order("title", { ascending: !sortDescending });
+                } else if (chosenSort === "RATING") {
+                    query.order("average_rating", {
+                        ascending: !sortDescending,
+                    });
+                } else if (chosenSort === "PRICE") {
+                    query.order("price_with_discount", {
+                        ascending: !sortDescending,
+                    });
+                }
+
                 const { data, error } = await query
                     .abortSignal(signal)
                     .returns<ProductInfo[]>();
 
                 if (error) throw error;
 
-                console.log(data);
                 setProducts([...products, ...data]);
 
                 // no more result?
