@@ -6,7 +6,7 @@ import type { ContextProps } from "../utils/types/ContextProps.type";
 
 type Props = {
     sidePanelIsShown: boolean;
-    setSidePanelIsShown: React.Dispatch<React.SetStateAction<boolean>>;
+    setSidePanelIsShown: SetState<boolean>;
     user: ContextProps["user"];
     supabase: ContextProps["supabase"];
 };
@@ -43,8 +43,16 @@ export default function SidePanel({
             </button>
 
             {user ? (
-                <div className="mt-12 flex flex-col">
+                <div className="mt-12 flex flex-col items-center">
                     <p>Logged in as {user.user_metadata.full_name}!</p>
+                    <Link to="/profile">
+                        <button
+                            className="btn"
+                            onClick={() => setSidePanelIsShown(false)}
+                        >
+                            My profile
+                        </button>
+                    </Link>
                     <button className="btn" onClick={logout}>
                         Log out
                     </button>

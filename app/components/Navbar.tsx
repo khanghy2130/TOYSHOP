@@ -5,7 +5,7 @@ import titleLogoImage from "~/assets/title_logo.png";
 import useScrollBehavior from "../utils/Navbar/useScrollBehavior";
 
 type Props = {
-    setSidePanelIsShown: React.Dispatch<React.SetStateAction<boolean>>;
+    setSidePanelIsShown: SetState<boolean>;
 };
 
 export default function Navbar({ setSidePanelIsShown }: Props) {
@@ -28,9 +28,6 @@ export default function Navbar({ setSidePanelIsShown }: Props) {
                     <img src={titleLogoImage} className="w-40" />
                 </Link>
                 <div>
-                    <Link to="/profile">
-                        <button className="btn">Profile</button>
-                    </Link>
                     <Link to="/store">
                         <button className="btn">Store</button>
                     </Link>

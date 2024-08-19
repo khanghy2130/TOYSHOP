@@ -3,19 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+    /* update tailwind.config.ts when add/remove colors */
     html {
         --color-1: #fff; /*background*/
-        --color-2: #000; /*text*/
+        --color-2: #000; /*primary color*/
         --color-3: #562a2a; /*button*/
         --color-4: #170d53; /* red error */
-        --color-5: #0d5641; /**/
+        --color-5: #0d5641; /* text */
     }
     html.dark {
         --color-1: #1d1d1d;
         --color-2: #7fffe1;
         --color-3: #353535;
         --color-4: #d75252;
-        --color-5: #9f9d12;
+        --color-5: #e0e0e0;
     }
 
     body {

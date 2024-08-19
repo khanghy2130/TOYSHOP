@@ -113,21 +113,27 @@ export type Database = {
         Row: {
           average_rating: number
           description: string
+          discount: number
           id: number
+          price: number
           quantity: number
           title: string
         }
         Insert: {
           average_rating?: number
           description?: string
+          discount?: number
           id?: number
+          price?: number
           quantity?: number
           title?: string
         }
         Update: {
           average_rating?: number
           description?: string
+          discount?: number
           id?: number
+          price?: number
           quantity?: number
           title?: string
         }
@@ -151,7 +157,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "PRODUCTTAGS_product_id_fkey"
+            foreignKeyName: "PRODUCTS_TAGS_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "PRODUCTS"
@@ -254,6 +260,14 @@ export type Database = {
       check_is_editor: {
         Args: Record<PropertyKey, never>
         Returns: boolean
+      }
+      get_product_ids_by_tags: {
+        Args: {
+          tag_ids: number[]
+        }
+        Returns: {
+          product_id: number
+        }[]
       }
       is_super_admin: {
         Args: Record<PropertyKey, never>

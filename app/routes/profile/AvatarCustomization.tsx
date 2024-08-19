@@ -9,8 +9,8 @@ import { useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type Props = {
-    setEnableAvatarCustomization: React.Dispatch<React.SetStateAction<boolean>>;
-    setAvatarUriTrigger: React.Dispatch<React.SetStateAction<{}>>;
+    setEnableAvatarCustomization: SetState<boolean>;
+    setAvatarUriTrigger: SetState<{}>;
 };
 
 export default function AvatarCustomization({

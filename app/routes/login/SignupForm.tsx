@@ -7,9 +7,7 @@ type Props = {
     isAtLogin: boolean;
     registerOnSubmit: React.FormEventHandler<HTMLFormElement>;
     passReqs: { [key: string]: boolean };
-    setPassReqs: React.Dispatch<
-        React.SetStateAction<{ [key: string]: boolean }>
-    >;
+    setPassReqs: SetState<{ [key: string]: boolean }>;
     isSubmitting: boolean;
     errorMessage: string | null;
 };
