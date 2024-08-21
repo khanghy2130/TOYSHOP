@@ -10,6 +10,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function PaySuccessPage() {
     const paymentIntent = useLoaderData();
+    //// save paymentIntent ID to db!
     return (
         <div>
             <h1>Payment successful</h1>

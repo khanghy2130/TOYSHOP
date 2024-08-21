@@ -10,8 +10,8 @@ export async function createPaymentIntent() {
     return await stripe.paymentIntents.create({
         amount: 2000,
         currency: "usd",
-        automatic_payment_methods: {
-            enabled: true,
+        metadata: {
+            order_id: "123456789",
         },
     });
 }
