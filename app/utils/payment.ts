@@ -1,17 +1,54 @@
 import Stripe from "stripe";
+import { CartItem } from "~/routes/cart/CartItemType";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function retrievePaymentIntent(id: string) {
     return await stripe.paymentIntents.retrieve(id);
 }
 
-export async function createPaymentIntent() {
-    return await stripe.paymentIntents.create({
-        amount: 2000,
+type ShortCartItem = {
+    title: string;
+    quantity: number;
+    finalCost: number;
+};
+
+export type CreatePaymentInfoReturnType = {
+    paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
+    shortCartItems: ShortCartItem[];
+    totalCost: number;
+};
+
+export async function createPaymentInfo(
+    cartItems: CartItem[],
+): Promise<CreatePaymentInfoReturnType> {
+    const shortCartItems: ShortCartItem[] = cartItems.map((ci) => {
+        const singleCost =
+            ci.product.price - (ci.product.price * ci.product.discount) / 100;
+        return {
+            title: ci.product.title,
+            quantity: ci.quantity,
+            finalCost: Math.floor(singleCost * ci.quantity * 100) / 100,
+        };
+    });
+
+    const totalCost = shortCartItems.reduce(
+        (accumulator, cartItem) => accumulator + cartItem.finalCost,
+        0,
+    );
+
+    const paymentIntent = await stripe.paymentIntents.create({
+        // amount must be int, 150 would be $1.50
+        amount: Math.floor(totalCost * 100),
         currency: "usd",
         metadata: {
-            order_id: "123456789",
+            cartItems: JSON.stringify(shortCartItems),
         },
     });
+
+    return {
+        paymentIntent,
+        shortCartItems,
+        totalCost: Math.floor(totalCost * 100) / 100,
+    };
 }
