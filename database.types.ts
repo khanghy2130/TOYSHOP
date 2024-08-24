@@ -109,6 +109,80 @@ export type Database = {
           },
         ]
       }
+      ORDERS: {
+        Row: {
+          created_at: string
+          id: number
+          payment_id: string
+          total_amount: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          payment_id?: string
+          total_amount: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          payment_id?: string
+          total_amount?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ORDERS_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ORDERS_ITEMS: {
+        Row: {
+          id: number
+          order_id: number | null
+          product_id: number | null
+          quantity: number
+          subtotal: number
+          title: string
+        }
+        Insert: {
+          id?: number
+          order_id?: number | null
+          product_id?: number | null
+          quantity?: number
+          subtotal: number
+          title: string
+        }
+        Update: {
+          id?: number
+          order_id?: number | null
+          product_id?: number | null
+          quantity?: number
+          subtotal?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ORDERS_ITEMS_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "ORDERS"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ORDERS_ITEMS_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "PRODUCTS"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       PRODUCTS: {
         Row: {
           average_rating: number
@@ -116,6 +190,7 @@ export type Database = {
           discount: number
           id: number
           price: number
+          price_with_discount: number | null
           quantity: number
           title: string
         }
@@ -125,6 +200,7 @@ export type Database = {
           discount?: number
           id?: number
           price?: number
+          price_with_discount?: number | null
           quantity?: number
           title?: string
         }
@@ -134,6 +210,7 @@ export type Database = {
           discount?: number
           id?: number
           price?: number
+          price_with_discount?: number | null
           quantity?: number
           title?: string
         }
@@ -268,10 +345,6 @@ export type Database = {
         Returns: {
           product_id: number
         }[]
-      }
-      is_super_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
       }
     }
     Enums: {

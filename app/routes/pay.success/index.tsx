@@ -1,4 +1,5 @@
 import { Link, useLoaderData, useOutletContext } from "@remix-run/react";
+import { useEffect } from "react";
 // import { LoaderFunctionArgs } from "@remix-run/node";
 // import { retrievePaymentIntent } from "~/utils/payment";
 
@@ -14,7 +15,9 @@ export default function PaySuccessPage() {
     const { saveOrder } = useOutletContext() as {
         saveOrder: Function;
     };
-    //// saveOrder in useEffect
+    useEffect(() => {
+        saveOrder();
+    }, []);
 
     return (
         <div>

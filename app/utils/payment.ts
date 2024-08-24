@@ -10,12 +10,14 @@ export async function retrievePaymentIntent(id: string) {
 
 // cart item with fewer data & calculated subtotal
 type ShortCartItem = {
+    id: number;
     title: string;
     quantity: number;
     subtotal: number;
 };
 
 export type CreatePaymentInfoReturnType = {
+    userId: string;
     paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
     shortCartItems: ShortCartItem[];
     totalCost: number;
@@ -29,6 +31,7 @@ export async function createPaymentInfo(
         const singleCost =
             ci.product.price - (ci.product.price * ci.product.discount) / 100;
         return {
+            id: ci.product.id,
             title: ci.product.title,
             quantity: ci.quantity,
             subtotal: Math.floor(singleCost * ci.quantity * 100) / 100,
@@ -52,6 +55,7 @@ export async function createPaymentInfo(
     });
 
     return {
+        userId: user.id,
         paymentIntent,
         shortCartItems,
         totalCost: Math.floor(totalCost * 100) / 100,
