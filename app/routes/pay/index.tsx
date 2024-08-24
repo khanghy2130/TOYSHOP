@@ -80,19 +80,18 @@ export async function loader({ request }: LoaderFunctionArgs) {
         return redirect("/login");
     }
 
-    return await createPaymentInfo(cartItems);
+    return await createPaymentInfo(cartItems, user);
 }
 
 export default function PayPage() {
     const { supabase, user } = useOutletContext<ContextProps>();
-    const [ss, setss] = useState(123444);
 
     const [theme] = useTheme();
     const loaderData = useLoaderData() as CreatePaymentInfoReturnType;
     const { paymentIntent, shortCartItems, totalCost } = loaderData;
 
     function saveOrder() {
-        ///// check avoid duplicate, use pi_id as id
+        ///// save order + order items, then clear cart
         console.log("save order");
     }
 
