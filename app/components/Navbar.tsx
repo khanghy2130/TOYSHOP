@@ -34,6 +34,9 @@ export default function Navbar({ setSidePanelIsShown }: Props) {
                     <Link to="/cart">
                         <button className="btn">Cart</button>
                     </Link>
+                    <Link to="/orders">
+                        <button className="btn">Orders</button>
+                    </Link>
                     <button
                         className="btn"
                         onClick={() => setSidePanelIsShown(true)}

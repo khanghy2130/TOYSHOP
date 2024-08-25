@@ -8,20 +8,6 @@ export default function CartPage() {
 
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-    const [userToken, setUserToken] = useState<string>();
-
-    // fetch token
-    useEffect(() => {
-        (async function () {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (session) {
-                setUserToken(session.access_token);
-            }
-        })();
-    }, []);
-
     // fetch items in cart if logged in
     useEffect(() => {
         if (!user) return;
