@@ -78,7 +78,7 @@ export default function ProductPage() {
         if (!user) {
             alert("not logged in");
             return;
-            ////////
+            //////// pop up error
         }
 
         // insert into CARTS table
@@ -92,8 +92,6 @@ export default function ProductPage() {
             console.error("Error adding product to cart", error);
             return;
         }
-
-        console.log("Added to cart");
     }
 
     if (!successfulFetch) {
