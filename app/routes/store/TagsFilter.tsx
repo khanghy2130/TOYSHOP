@@ -28,7 +28,7 @@ export default function TagsFilter({
                 return;
             }
 
-            if (data) setAllTags(data);
+            setAllTags(data);
         })();
     }, []);
 

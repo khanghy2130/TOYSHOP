@@ -83,7 +83,7 @@ export default function StorePage() {
                         setFetchTrigger({ fetchMode: "EXTRA" });
                     }}
                 >
-                    Load more
+                    Show more
                 </button>
             ) : null}
         </div>

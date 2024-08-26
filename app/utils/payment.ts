@@ -1,17 +1,63 @@
+import { User } from "@supabase/supabase-js";
 import Stripe from "stripe";
+import { CartItem } from "~/routes/cart/CartItemType";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function retrievePaymentIntent(id: string) {
     return await stripe.paymentIntents.retrieve(id);
 }
 
-export async function createPaymentIntent() {
-    return await stripe.paymentIntents.create({
-        amount: 2000,
+// cart item with fewer data & calculated subtotal
+type ShortCartItem = {
+    id: number;
+    title: string;
+    quantity: number;
+    subtotal: number;
+};
+
+export type CreatePaymentInfoReturnType = {
+    userId: string;
+    paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
+    shortCartItems: ShortCartItem[];
+    totalCost: number;
+};
+
+export async function createPaymentInfo(
+    cartItems: CartItem[],
+    user: User,
+): Promise<CreatePaymentInfoReturnType> {
+    const shortCartItems: ShortCartItem[] = cartItems.map((ci) => {
+        const singleCost =
+            ci.product.price - (ci.product.price * ci.product.discount) / 100;
+        return {
+            id: ci.product.id,
+            title: ci.product.title,
+            quantity: ci.quantity,
+            subtotal: Math.floor(singleCost * ci.quantity * 100) / 100,
+        };
+    });
+
+    const totalCost = shortCartItems.reduce(
+        (accumulator, cartItem) => accumulator + cartItem.subtotal,
+        0,
+    );
+
+    const paymentIntent = await stripe.paymentIntents.create({
+        // amount must be int, 150 would be $1.50
+        amount: Math.floor(totalCost * 100),
         currency: "usd",
+        receipt_email: user.email,
         metadata: {
-            order_id: "123456789",
+            customer_id: user.id,
+            cart_items: JSON.stringify(shortCartItems),
         },
     });
+
+    return {
+        userId: user.id,
+        paymentIntent,
+        shortCartItems,
+        totalCost: Math.floor(totalCost * 100) / 100,
+    };
 }
