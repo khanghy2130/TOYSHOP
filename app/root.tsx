@@ -1,6 +1,6 @@
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import type { User } from "@supabase/supabase-js";
-import { Database } from "database.types";
+import { Database, Tables } from "database.types";
 
 import { json } from "@remix-run/node";
 import {
@@ -57,6 +57,8 @@ function App() {
         createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY),
     );
     const [user, setUser] = useState<undefined | User>(undefined);
+    // force rerender because user is still undefined briefly on first page load
+    const [forceRerenderCounter, setForceRerenderCounter] = useState<number>(0);
 
     // recalls loaders when authentication state changes
     const revalidator = useRevalidator();
@@ -68,6 +70,7 @@ function App() {
             // handle events
             if (event === "INITIAL_SESSION") {
                 setUser(session?.user);
+                setForceRerenderCounter(forceRerenderCounter + 1);
             } else if (event === "SIGNED_IN") {
                 setUser(session!.user);
                 // create new profile & avatar
@@ -100,6 +103,40 @@ function App() {
     const [theme] = useTheme();
     const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
+    const [wishlist, setWishlist] = useState<number[]>([]);
+    const [cartCount, setCartCount] = useState<number>(0);
+    // fetch wishlist & cartCount
+    useEffect(() => {
+        if (!user) {
+            setWishlist([]);
+            setCartCount(0);
+            return;
+        }
+        (async function () {
+            const { data: wishlistData, error: wishlistError } = await supabase
+                .from("WISHLIST")
+                .select("product_id")
+                .order("created_at", { ascending: false })
+                .eq("user_id", user.id);
+
+            if (wishlistError) {
+                console.error("Error fetching wishlist", wishlistError);
+            } else {
+                setWishlist(wishlistData.map((item) => item.product_id));
+            }
+
+            const { count, error: cartCountError } = await supabase
+                .from("CARTS")
+                .select("*", { count: "exact", head: true })
+                .eq("user_id", user.id);
+            if (cartCountError) {
+                console.error("Error fetching cart count", cartCountError);
+            } else {
+                setCartCount(count ? count : 0);
+            }
+        })();
+    }, [user]);
+
     // hide for specific routes
     const location = useLocation();
     const routesToHideNavigation = ["/login"]; ///// add homepage
@@ -118,7 +155,7 @@ function App() {
                 <Meta />
                 <Links />
             </head>
-            <body>
+            <body key={forceRerenderCounter}>
                 {shouldHideNavigation ? null : (
                     <>
                         <Navbar setSidePanelIsShown={setSidePanelIsShown} />
@@ -133,7 +170,17 @@ function App() {
 
                 {/* space for navbar above main page content */}
                 <div className="pt-24">
-                    <Outlet context={{ supabase, user, env }} />
+                    <Outlet
+                        context={{
+                            supabase,
+                            user,
+                            env,
+                            wishlist,
+                            setWishlist,
+                            cartCount,
+                            setCartCount,
+                        }}
+                    />
                 </div>
                 <Scripts />
             </body>

@@ -37,7 +37,7 @@ export default function OrdersPage() {
 
     if (!user) {
         ////////
-        <div>Not logged in</div>;
+        return <div>Not logged in</div>;
     }
 
     return (

@@ -53,6 +53,14 @@ export default function SidePanel({
                             My profile
                         </button>
                     </Link>
+                    <Link to="/wishlist">
+                        <button
+                            className="btn"
+                            onClick={() => setSidePanelIsShown(false)}
+                        >
+                            Wishlist
+                        </button>
+                    </Link>
                     <button className="btn" onClick={logout}>
                         Log out
                     </button>
