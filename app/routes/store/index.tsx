@@ -3,10 +3,12 @@ import TagsFilter from "./TagsFilter";
 import SortOptions from "./SortOptions";
 import SearchBar from "./SearchBar";
 import useFetchProducts from "./useFetchProducts";
-import { FilterTag, SortType, FetchTriggerType, ProductInfo } from "./Types";
+import { FilterTag, SortType, FetchTriggerType } from "./Types";
+import { Tables } from "database.types";
+import ProductCard from "./ProductCard";
 
 export default function StorePage() {
-    const [products, setProducts] = useState<ProductInfo[]>([]);
+    const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);
 
     // set fetchTrigger to manually trigger fetching effect
     const [fetchTrigger, setFetchTrigger] = useState<FetchTriggerType>({
@@ -66,8 +68,8 @@ export default function StorePage() {
                 setSortDescending={setSortDescending}
             />
 
-            {products.map((product, i) => (
-                <p key={i}>{product.title}</p>
+            {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
             ))}
 
             {fetchIsInProgress ? <p>Loading....</p> : null}

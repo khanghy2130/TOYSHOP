@@ -329,6 +329,42 @@ export type Database = {
         }
         Relationships: []
       }
+      WISHLIST: {
+        Row: {
+          created_at: string
+          id: number
+          product_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          product_id: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          product_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "WISHLIST_ITEMS_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "PRODUCTS"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "WISHLIST_ITEMS_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

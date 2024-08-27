@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { FetchTriggerType, ProductInfo, FilterTag, SortType } from "./Types";
+import { FetchTriggerType, FilterTag, SortType } from "./Types";
 import { useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
-import SortOptions from "./SortOptions";
+import { Tables } from "database.types";
 
 type Params = {
-    products: ProductInfo[];
-    setProducts: SetState<ProductInfo[]>;
+    products: Tables<"PRODUCTS">[];
+    setProducts: SetState<Tables<"PRODUCTS">[]>;
 
     fetchTrigger: FetchTriggerType;
     noMoreResult: boolean;
@@ -59,7 +59,7 @@ export default function useFetchProducts({
                 // build the query
                 const query = supabase
                     .from("PRODUCTS")
-                    .select("id, title, price, discount")
+                    .select("*")
                     .range(products.length, products.length + FETCH_LIMIT - 1);
 
                 // text search
@@ -103,9 +103,7 @@ export default function useFetchProducts({
                     });
                 }
 
-                const { data, error } = await query
-                    .abortSignal(signal)
-                    .returns<ProductInfo[]>();
+                const { data, error } = await query.abortSignal(signal);
 
                 if (error) throw error;
 
