@@ -1,15 +1,11 @@
 import { useOutletContext, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
-
-type ProductInfo = {
-    id: number;
-    title: string;
-    description: string;
-    quantity: number;
-    tags: string[];
-    imgNames: string[];
-};
+import Gallery from "./Gallery";
+import { ProductInfo } from "./Types";
+import Tags from "./Tags";
+import Reviews from "./Reviews";
+import ReviewForm from "./ReviewForm";
 
 export default function ProductPage() {
     const { supabase, user, env } = useOutletContext<ContextProps>();
@@ -106,21 +102,14 @@ export default function ProductPage() {
         <div>
             <h1>{productInfo.title}</h1>
             <p>{productInfo.description}</p>
-            {productInfo.tags.map((tag) => (
-                <div className="flex" key={tag}>
-                    <p className="rounded-lg border-2 border-solid border-color-2 p-1">
-                        {tag}
-                    </p>
-                </div>
-            ))}
-            {productInfo.imgNames.map((imgName, i) => (
-                <div className="flex" key={i}>
-                    <img
-                        className="w-80"
-                        src={`${env.SUPABASE_IMAGES_PATH}/${productInfo.id}/${imgName}`}
-                    />
-                </div>
-            ))}
+
+            <Tags productInfo={productInfo} />
+
+            <Gallery
+                productInfo={productInfo}
+                SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
+            />
+
             <select
                 value={chosenQuantity}
                 onChange={(e) =>
@@ -138,6 +127,10 @@ export default function ProductPage() {
             <button className="btn" onClick={addToCart}>
                 Add to cart
             </button>
+
+            <ReviewForm productInfo={productInfo} />
+
+            <Reviews productInfo={productInfo} />
         </div>
     );
 }

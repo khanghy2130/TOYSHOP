@@ -276,7 +276,7 @@ export type Database = {
         Row: {
           created_at: string
           feedback: string | null
-          id: string
+          id: number
           product_id: number | null
           rating: number | null
           user_id: string | null
@@ -284,7 +284,7 @@ export type Database = {
         Insert: {
           created_at?: string
           feedback?: string | null
-          id?: string
+          id?: number
           product_id?: number | null
           rating?: number | null
           user_id?: string | null
@@ -292,7 +292,7 @@ export type Database = {
         Update: {
           created_at?: string
           feedback?: string | null
-          id?: string
+          id?: number
           product_id?: number | null
           rating?: number | null
           user_id?: string | null
