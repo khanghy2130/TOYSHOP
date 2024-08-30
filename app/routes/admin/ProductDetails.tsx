@@ -1,4 +1,4 @@
-import { Form, useNavigate } from "@remix-run/react";
+import { Form, useNavigate, useOutletContext } from "@remix-run/react";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 import { ContextProps } from "~/utils/types/ContextProps.type";
@@ -14,17 +14,12 @@ type ImageFile = {
 
 type Props = {
     mode: "CREATE" | "UPDATE";
-    supabase: ContextProps["supabase"];
     updateFormState: UpdateFormState;
-    SUPABASE_IMAGES_PATH: string;
 };
 
-export default function ProductDetails({
-    mode,
-    supabase,
-    updateFormState,
-    SUPABASE_IMAGES_PATH,
-}: Props) {
+export default function ProductDetails({ mode, updateFormState }: Props) {
+    const { supabase, env } = useOutletContext<ContextProps>();
+
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -45,7 +40,7 @@ export default function ProductDetails({
                 willBeRemoved: false,
                 file: null,
                 name: `${updateFormState.productID}/${imgName}`,
-                url: `${SUPABASE_IMAGES_PATH}/${updateFormState.productID}/${imgName}`,
+                url: `${env.SUPABASE_IMAGES_PATH}/${updateFormState.productID}/${imgName}`,
             });
         }
         setImageFiles(newImageFiles);
