@@ -2,7 +2,7 @@ import { useOutletContext, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
-import { ProductInfo } from "./Types";
+import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
 import Tags from "./Tags";
 import Reviews from "./Reviews";
 import ReviewForm from "./ReviewForm";
@@ -14,6 +14,11 @@ export default function ProductPage() {
     const [successfulFetch, setSuccessfulFetch] = useState<boolean>(true);
 
     const [chosenQuantity, setChosenQuantity] = useState<number>(1);
+
+    const [reviewsFetchTrigger, setReviewsFetchTrigger] =
+        useState<ReviewsFetchTriggerType>({
+            fetchMode: "NEW",
+        });
 
     // fetch product
     useEffect(() => {
@@ -128,9 +133,16 @@ export default function ProductPage() {
                 Add to cart
             </button>
 
-            <ReviewForm productInfo={productInfo} />
+            <ReviewForm
+                setReviewsFetchTrigger={setReviewsFetchTrigger}
+                productInfo={productInfo}
+            />
 
-            <Reviews productInfo={productInfo} />
+            <Reviews
+                reviewsFetchTrigger={reviewsFetchTrigger}
+                setReviewsFetchTrigger={setReviewsFetchTrigger}
+                productInfo={productInfo}
+            />
         </div>
     );
 }

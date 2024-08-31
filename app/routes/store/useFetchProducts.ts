@@ -113,11 +113,13 @@ export default function useFetchProducts({
                 if (data.length < FETCH_LIMIT) {
                     setNoMoreResult(true);
                 }
-            } catch (error: any) {
-                if (error.name === "AbortError") {
-                    console.log("Fetch aborted");
-                } else {
-                    console.error("Fetch error:", error);
+            } catch (error: unknown) {
+                if (error instanceof Error) {
+                    if (error.name === "AbortError") {
+                        console.log("Fetch aborted");
+                    } else {
+                        console.error("Fetch error:", error);
+                    }
                 }
             } finally {
                 setFetchIsInProgress(false);

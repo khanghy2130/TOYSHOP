@@ -1,11 +1,17 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ProductInfo } from "./Types";
+import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
 import { Form, useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
-type Props = { productInfo: ProductInfo };
+type Props = {
+    productInfo: ProductInfo;
+    setReviewsFetchTrigger: SetState<ReviewsFetchTriggerType>;
+};
 
-export default function ReviewForm({ productInfo }: Props) {
+export default function ReviewForm({
+    productInfo,
+    setReviewsFetchTrigger,
+}: Props) {
     const { supabase, user } = useOutletContext<ContextProps>();
 
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -96,7 +102,7 @@ export default function ReviewForm({ productInfo }: Props) {
 
         setIsSubmitting(false);
         setEnableFormInput(false);
-        ///// also update in reviews list if there, this component invokes the trigger, Reviews listens to the trigger value
+        setReviewsFetchTrigger({ fetchMode: "NEW" });
     }
 
     async function deleteReview() {
@@ -115,17 +121,21 @@ export default function ReviewForm({ productInfo }: Props) {
         setEnableFormInput(true);
         setFeedback("");
         setRating(0);
+        setReviewsFetchTrigger({ fetchMode: "NEW" });
     }
 
     async function enableEdit() {
         setEnableFormInput(true);
     }
 
+    if (!user) return null;
+
     return (
         <Form
             className="flex w-full max-w-3xl flex-col"
             onSubmit={handleSubmit}
         >
+            <h1>My Review</h1>
             {!enableFormInput ? (
                 <div>
                     <button className="btn" type="button" onClick={enableEdit}>
@@ -161,8 +171,8 @@ export default function ReviewForm({ productInfo }: Props) {
                 placeholder="Feedback"
                 name="feedback"
                 disabled={!enableFormInput}
-                defaultValue={feedback}
-                onChange={(e) => setFeedback(e.currentTarget.value)}
+                value={feedback}
+                onChange={(e) => setFeedback(e.currentTarget.value.trimStart())}
             />
 
             {enableFormInput ? (
