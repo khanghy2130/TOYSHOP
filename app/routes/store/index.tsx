@@ -7,6 +7,14 @@ import { FilterTag, SortType, FetchTriggerType } from "./Types";
 import { Tables } from "database.types";
 import ProductCard from "./ProductCard";
 
+function useLocalState<T>(stateKey: string, initialValue: T) {
+    return useState<T>(() => {
+        if (typeof localStorage === "undefined") return initialValue;
+        const localData = localStorage.getItem(stateKey);
+        return localData ? JSON.parse(localData)["data"] : initialValue;
+    });
+}
+
 export default function StorePage() {
     const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);
 
@@ -17,13 +25,28 @@ export default function StorePage() {
     const [noMoreResult, setNoMoreResult] = useState<boolean>(false);
     const [fetchIsInProgress, setFetchIsInProgress] = useState<boolean>(false);
 
-    const [searchQuery, setSearchQuery] = useState<string>("");
-    const [showOnSalesOnly, setShowOnSalesOnly] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useLocalState<string>(
+        "searchQuery",
+        "",
+    );
+    const [showOnSalesOnly, setShowOnSalesOnly] = useLocalState<boolean>(
+        "showOnSalesOnly",
+        false,
+    );
 
-    const [chosenTags, setChosenTags] = useState<FilterTag[]>([]);
+    const [chosenTags, setChosenTags] = useLocalState<FilterTag[]>(
+        "chosenTags",
+        [],
+    );
 
-    const [chosenSort, setChosenSort] = useState<SortType>("TITLE");
-    const [sortDescending, setSortDescending] = useState<boolean>(true);
+    const [chosenSort, setChosenSort] = useLocalState<SortType>(
+        "chosenSort",
+        "TITLE",
+    );
+    const [sortDescending, setSortDescending] = useLocalState<boolean>(
+        "sortDescending",
+        true,
+    );
 
     useFetchProducts({
         products,

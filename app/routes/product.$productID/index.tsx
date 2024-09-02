@@ -1,4 +1,4 @@
-import { useOutletContext, useParams } from "@remix-run/react";
+import { redirect, useOutletContext, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
@@ -77,9 +77,15 @@ export default function ProductPage() {
 
     async function addToCart() {
         if (!user) {
-            alert("not logged in");
-            return;
-            //////// pop up error
+            return redirect("/login");
+        }
+
+        if (!productInfo) {
+            return console.error("productInfo not defined");
+        }
+
+        if (productInfo.quantity < chosenQuantity) {
+            return console.error("not enough in stock");
         }
 
         // insert into CARTS table

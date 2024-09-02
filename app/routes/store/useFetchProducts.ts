@@ -123,6 +123,7 @@ export default function useFetchProducts({
                 }
             } finally {
                 setFetchIsInProgress(false);
+                saveSearchOptionsToLocalStorage();
             }
         })();
 
@@ -130,4 +131,21 @@ export default function useFetchProducts({
             controller.abort();
         };
     }, [fetchTrigger]);
+
+    function saveSearchOptionsToLocalStorage() {
+        if (typeof localStorage === "undefined") return;
+        const states: { [key: string]: any } = {
+            searchQuery: searchQuery,
+            showOnSalesOnly: showOnSalesOnly,
+            chosenTags: chosenTags,
+            chosenSort: chosenSort,
+            sortDescending: sortDescending,
+        };
+        Object.keys(states).forEach((stateKey) => {
+            localStorage.setItem(
+                stateKey,
+                JSON.stringify({ data: states[stateKey] }),
+            );
+        });
+    }
 }

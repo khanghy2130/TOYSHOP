@@ -16,8 +16,11 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import { useEffect, useRef, useState } from "react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 
-import { parse } from "cookie";
-import { createClient } from "@supabase/supabase-js";
+import {
+    createServerClient,
+    parseCookieHeader,
+    serializeCookieHeader,
+} from "@supabase/ssr";
 
 // public key doesn't need to be hidden
 const stripePromise = loadStripe(
@@ -25,27 +28,33 @@ const stripePromise = loadStripe(
 );
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const cookies = parse(request.headers.get("Cookie")!);
-
-    let accessToken = null;
-    const tokenMatch = JSON.stringify(cookies).match(
-        /\\"access_token\\":\\"(.*?)\\"/,
-    );
-    if (tokenMatch) accessToken = tokenMatch[1];
-    if (accessToken === null) return redirect("/login");
-
-    const supabase = createClient(
+    const headers = new Headers();
+    const supabase = createServerClient(
         process.env.SUPABASE_URL!,
         process.env.SUPABASE_ANON_KEY!,
         {
-            global: { headers: { Authorization: `Bearer ${accessToken}` } },
+            cookies: {
+                getAll() {
+                    return parseCookieHeader(
+                        request.headers.get("Cookie") ?? "",
+                    );
+                },
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        headers.append(
+                            "Set-Cookie",
+                            serializeCookieHeader(name, value, options),
+                        ),
+                    );
+                },
+            },
         },
     );
 
     const {
         data: { user },
         error: userError,
-    } = await supabase.auth.getUser(accessToken);
+    } = await supabase.auth.getUser();
 
     if (userError || !user) {
         console.error("Error fetching user", userError);
@@ -62,7 +71,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
                     id,
                     title,
                     price,
-                    discount
+                    discount,
+                    quantity
                 )
             `,
         )
@@ -71,14 +81,27 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     if (cartItemsError) {
         console.error("Error fetching items in cart", cartItemsError);
-        return redirect("/login");
+        return redirect("/cart");
     }
     // empty cart?
     if (cartItems.length === 0) {
+        console.error("Cart is empty");
         return redirect("/store");
     }
 
-    return await createPaymentInfo(cartItems, user);
+    // chosen bigger quantity than in stock?
+    const somethingOutOfStock = cartItems.some(
+        (ci) => ci.product.quantity < ci.quantity,
+    );
+    if (somethingOutOfStock) {
+        console.error("Something is out of stock");
+        return redirect("/cart");
+    }
+    const paymentIntent = await createPaymentInfo(cartItems, user);
+    // return new Response(paymentIntent, {
+    //     headers,
+    //   })
+    return paymentIntent;
 }
 
 export default function PayPage() {
