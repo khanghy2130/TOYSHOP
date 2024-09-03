@@ -5,10 +5,11 @@ import titleLogoImage from "~/assets/title_logo.png";
 import useScrollBehavior from "../utils/Navbar/useScrollBehavior";
 
 type Props = {
+    cartCount: number;
     setSidePanelIsShown: SetState<boolean>;
 };
 
-export default function Navbar({ setSidePanelIsShown }: Props) {
+export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
     const { navIsShown } = useScrollBehavior();
 
     return (
@@ -18,12 +19,7 @@ export default function Navbar({ setSidePanelIsShown }: Props) {
                 " fixed z-40 w-screen bg-red-800 transition-[top] duration-500 ease-in-out"
             }
         >
-            <div
-                className="
-                mx-auto flex h-auto
-                max-w-screen-lg flex-row justify-between
-            "
-            >
+            <div className="mx-auto flex h-auto max-w-screen-lg flex-row justify-between">
                 <Link to="/">
                     <img src={titleLogoImage} className="w-40" />
                 </Link>
@@ -32,7 +28,7 @@ export default function Navbar({ setSidePanelIsShown }: Props) {
                         <button className="btn">Store</button>
                     </Link>
                     <Link to="/cart">
-                        <button className="btn">Cart</button>
+                        <button className="btn">Cart ({cartCount})</button>
                     </Link>
                     <Link to="/orders">
                         <button className="btn">Orders</button>

@@ -11,7 +11,7 @@ import {
     useLoaderData,
     useRevalidator,
 } from "@remix-run/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useLocation } from "@remix-run/react";
 
@@ -26,6 +26,7 @@ import { getThemeSession } from "./utils/Navbar/theme.server";
 import Navbar from "./components/Navbar";
 import SidePanel from "./components/SidePanel";
 import insertNewUser from "./utils/insertNewUser";
+import { RawCartItem } from "./utils/types/ContextProps.type";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -104,12 +105,24 @@ function App() {
     const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
     const [wishlist, setWishlist] = useState<number[]>([]);
+    const [rawCartItems, setRawCartItems] = useState<RawCartItem[]>([]);
     const [cartCount, setCartCount] = useState<number>(0);
+
+    // calculate cartCount
+    useEffect(() => {
+        setCartCount(
+            rawCartItems.reduce(
+                (total, curItem) => total + curItem.quantity,
+                0,
+            ),
+        );
+    }, [rawCartItems]);
+
     // fetch wishlist & cartCount
     useEffect(() => {
         if (!user) {
             setWishlist([]);
-            setCartCount(0);
+            setRawCartItems([]);
             return;
         }
         (async function () {
@@ -125,24 +138,29 @@ function App() {
                 setWishlist(wishlistData.map((item) => item.product_id));
             }
 
-            const { count, error: cartCountError } = await supabase
-                .from("CARTS")
-                .select("*", { count: "exact", head: true })
-                .eq("user_id", user.id);
-            if (cartCountError) {
-                console.error("Error fetching cart count", cartCountError);
+            const { data: rawCartItemsData, error: rawCartItemsError } =
+                await supabase
+                    .from("CARTS")
+                    .select("product_id, quantity")
+                    .eq("user_id", user.id);
+            if (rawCartItemsError) {
+                console.error(
+                    "Error fetching raw cart items",
+                    rawCartItemsError,
+                );
             } else {
-                setCartCount(count ? count : 0);
+                setRawCartItems(rawCartItemsData);
             }
         })();
     }, [user]);
 
     // hide for specific routes
     const location = useLocation();
-    const routesToHideNavigation = ["/login"]; ///// add homepage
-    const shouldHideNavigation = routesToHideNavigation.includes(
-        location.pathname,
-    );
+    const pathSegments = location.pathname.split("/").filter(Boolean); // Split and filter out empty segments
+    const firstPathSegment = pathSegments[0];
+    const routesToHideNavigation = ["login", "pay"];
+    const shouldHideNavigation =
+        routesToHideNavigation.includes(firstPathSegment);
 
     return (
         <html lang="en" className={theme ?? ""}>
@@ -158,7 +176,10 @@ function App() {
             <body key={forceRerenderCounter}>
                 {shouldHideNavigation ? null : (
                     <>
-                        <Navbar setSidePanelIsShown={setSidePanelIsShown} />
+                        <Navbar
+                            cartCount={cartCount}
+                            setSidePanelIsShown={setSidePanelIsShown}
+                        />
                         <SidePanel
                             user={user}
                             supabase={supabase}
@@ -177,8 +198,8 @@ function App() {
                             env,
                             wishlist,
                             setWishlist,
-                            cartCount,
-                            setCartCount,
+                            rawCartItems,
+                            setRawCartItems,
                         }}
                     />
                 </div>

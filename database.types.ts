@@ -56,21 +56,21 @@ export type Database = {
       CARTS: {
         Row: {
           id: number
-          product_id: number | null
-          quantity: number | null
-          user_id: string | null
+          product_id: number
+          quantity: number
+          user_id: string
         }
         Insert: {
           id?: number
-          product_id?: number | null
-          quantity?: number | null
-          user_id?: string | null
+          product_id: number
+          quantity: number
+          user_id?: string
         }
         Update: {
           id?: number
-          product_id?: number | null
-          quantity?: number | null
-          user_id?: string | null
+          product_id?: number
+          quantity?: number
+          user_id?: string
         }
         Relationships: [
           {

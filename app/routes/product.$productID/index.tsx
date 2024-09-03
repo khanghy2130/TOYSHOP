@@ -1,4 +1,4 @@
-import { redirect, useOutletContext, useParams } from "@remix-run/react";
+import { useOutletContext, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
@@ -6,6 +6,7 @@ import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
 import Tags from "./Tags";
 import Reviews from "./Reviews";
 import ReviewForm from "./ReviewForm";
+import { BuyOptions } from "./BuyOptions";
 
 export default function ProductPage() {
     const { supabase, user, env } = useOutletContext<ContextProps>();
@@ -75,32 +76,6 @@ export default function ProductPage() {
         })();
     }, []);
 
-    async function addToCart() {
-        if (!user) {
-            return redirect("/login");
-        }
-
-        if (!productInfo) {
-            return console.error("productInfo not defined");
-        }
-
-        if (productInfo.quantity < chosenQuantity) {
-            return console.error("not enough in stock");
-        }
-
-        // insert into CARTS table
-        const { error } = await supabase.from("CARTS").insert({
-            user_id: user.id,
-            product_id: Number(productID),
-            quantity: chosenQuantity,
-        });
-
-        if (error) {
-            console.error("Error adding product to cart", error);
-            return;
-        }
-    }
-
     if (!successfulFetch) {
         return <div>No product found.</div>;
     }
@@ -121,23 +96,11 @@ export default function ProductPage() {
                 SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
             />
 
-            <select
-                value={chosenQuantity}
-                onChange={(e) =>
-                    setChosenQuantity(Number(e.currentTarget.value))
-                }
-                className="text-black"
-            >
-                {Array.apply(null, Array(5)).map((x, i) => (
-                    <option key={i + 1} value={i + 1}>
-                        {i + 1}
-                    </option>
-                ))}
-            </select>
-
-            <button className="btn" onClick={addToCart}>
-                Add to cart
-            </button>
+            <BuyOptions
+                chosenQuantity={chosenQuantity}
+                setChosenQuantity={setChosenQuantity}
+                productInfo={productInfo}
+            />
 
             <ReviewForm
                 setReviewsFetchTrigger={setReviewsFetchTrigger}

@@ -7,7 +7,14 @@ type Props = {
 };
 
 export default function ProductCard({ product }: Props) {
-    const { user, supabase } = useOutletContext<ContextProps>();
+    const {
+        user,
+        supabase,
+        setRawCartItems,
+        rawCartItems,
+        wishlist,
+        setWishlist,
+    } = useOutletContext<ContextProps>();
 
     //// fetch image, hide card until image is loaded
 
@@ -29,6 +36,17 @@ export default function ProductCard({ product }: Props) {
             console.error("Error adding product to cart", error);
             return;
         }
+
+        const { data, error: selectError } = await supabase
+            .from("CARTS")
+            .select("product_id, quantity");
+
+        if (selectError) {
+            console.error("Error fetching cart items", selectError);
+            return;
+        }
+
+        setRawCartItems(data);
     }
 
     async function addToWishlist() {
@@ -60,8 +78,14 @@ export default function ProductCard({ product }: Props) {
             if (insertError) {
                 console.error("Wishlist failed:", insertError);
             }
+            setWishlist([...wishlist, product.id]);
+        } else {
+            setWishlist(wishlist.filter((wi) => wi !== product.id));
         }
     }
+
+    const isInCart = rawCartItems.some((rci) => rci.product_id === product.id);
+    const isInWishlist = wishlist.includes(product.id);
 
     return (
         <div className="mt-5 border-2 border-color-2">
@@ -69,11 +93,15 @@ export default function ProductCard({ product }: Props) {
             <p>Rating: {product.average_rating}</p>
             {!user ? null : (
                 <div className="flex flex-row">
-                    <button className="btn" onClick={addToCart}>
-                        Add to cart
+                    <button
+                        className="btn"
+                        disabled={isInCart}
+                        onClick={addToCart}
+                    >
+                        {isInCart ? "In cart" : "Add to cart"}
                     </button>
                     <button className="btn" onClick={addToWishlist}>
-                        Add to wishlist
+                        {isInWishlist ? "Wishlist-" : "Wishlist+"}
                     </button>
                 </div>
             )}

@@ -62,7 +62,8 @@ export default function CartPage() {
             <h1>cart page</h1>
             {cartItems.map((cartItem) => (
                 <div key={cartItem.id}>
-                    (COMPONENT) product: {cartItem.product.title}
+                    (COMPONENT) product: {cartItem.product.title}; quantity:
+                    {cartItem.quantity}
                 </div>
             ))}
             <Link to="/pay">

@@ -21,6 +21,7 @@ import {
     parseCookieHeader,
     serializeCookieHeader,
 } from "@supabase/ssr";
+import Stripe from "stripe";
 
 // public key doesn't need to be hidden
 const stripePromise = loadStripe(
@@ -105,28 +106,31 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function PayPage() {
-    const { supabase } = useOutletContext<ContextProps>();
+    const { supabase, setRawCartItems } = useOutletContext<ContextProps>();
 
     const [theme] = useTheme();
     const loaderData = useLoaderData() as CreatePaymentInfoReturnType;
-    const { userId, paymentIntent, shortCartItems, totalCost } = loaderData;
+    const { userId, paymentIntent, shortCartItems } = loaderData;
     const orderIsSaved = useRef<boolean>(false);
 
     // clear cart if saved order when unmount
     useEffect(() => {
         return () => {
+            console.log(orderIsSaved.current);
             if (orderIsSaved.current) clearCart();
         };
     }, []);
 
-    async function saveOrder() {
+    async function saveOrder(
+        paidPaymentIntent: Stripe.Response<Stripe.PaymentIntent>,
+    ) {
         // create new order
         const { data: orderData, error: orderError } = await supabase
             .from("ORDERS")
             .insert({
                 user_id: userId,
-                payment_id: paymentIntent.id,
-                total_amount: totalCost,
+                payment_id: paidPaymentIntent.id,
+                total_amount: paymentIntent.amount / 100,
             })
             .select()
             .single();
@@ -167,6 +171,9 @@ export default function PayPage() {
             console.error("Error deleting cart items", deleteCartError);
             return;
         }
+
+        // clear rawCartItems
+        setRawCartItems([]);
     }
 
     if (!paymentIntent || !shortCartItems) {
@@ -175,7 +182,10 @@ export default function PayPage() {
 
     return (
         <div>
-            <p>(COMPONENT) receipt listing and total cost ${totalCost}</p>
+            <p>
+                (COMPONENT) receipt listing and total cost $
+                {paymentIntent.amount / 100}
+            </p>
             {shortCartItems.map((cartItem, i) => (
                 <div key={i}>product: {cartItem.title}</div>
             ))}
