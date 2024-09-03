@@ -85,22 +85,22 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
     // empty cart?
     if (cartItems.length === 0) {
-        console.error("Cart is empty");
         return redirect("/store");
     }
 
-    // chosen bigger quantity than in stock?
-    const somethingOutOfStock = cartItems.some(
-        (ci) => ci.product.quantity < ci.quantity,
-    );
-    if (somethingOutOfStock) {
-        console.error("Something is out of stock");
-        return redirect("/cart");
+    // look for any item that is insufficient in stock
+    let insufficientStockItem: null | string = null;
+    cartItems.some((ci) => {
+        if (ci.product.quantity < ci.quantity) {
+            insufficientStockItem = ci.product.title;
+            return true;
+        }
+        return false;
+    });
+    if (insufficientStockItem) {
+        return redirect("/cart?insufficientStockItem=" + insufficientStockItem);
     }
     const paymentIntent = await createPaymentInfo(cartItems, user);
-    // return new Response(paymentIntent, {
-    //     headers,
-    //   })
     return paymentIntent;
 }
 

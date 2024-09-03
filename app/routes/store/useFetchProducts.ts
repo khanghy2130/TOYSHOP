@@ -19,6 +19,8 @@ type Params = {
     chosenTags: FilterTag[];
     chosenSort: SortType;
     sortDescending: boolean;
+
+    localStatesLoaded: boolean;
 };
 
 export default function useFetchProducts({
@@ -36,11 +38,16 @@ export default function useFetchProducts({
     chosenTags,
     chosenSort,
     sortDescending,
+
+    localStatesLoaded,
 }: Params) {
     const { supabase } = useOutletContext<ContextProps>();
 
     // fetch results
     useEffect(() => {
+        // not loaded saved search options yet?
+        if (!localStatesLoaded) return;
+
         // new fetch? clear old results
         if (fetchTrigger.fetchMode === "NEW") {
             products = []; // immediate update for the fetch
@@ -130,7 +137,7 @@ export default function useFetchProducts({
         return () => {
             controller.abort();
         };
-    }, [fetchTrigger]);
+    }, [fetchTrigger, localStatesLoaded]);
 
     function saveSearchOptionsToLocalStorage() {
         if (typeof localStorage === "undefined") return;

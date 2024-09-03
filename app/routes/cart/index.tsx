@@ -1,4 +1,4 @@
-import { Link, useOutletContext } from "@remix-run/react";
+import { Link, useOutletContext, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import { CartItem } from "./CartItemType";
@@ -6,7 +6,21 @@ import { CartItem } from "./CartItemType";
 export default function CartPage() {
     const { supabase, user } = useOutletContext<ContextProps>();
 
+    const [searchParams, setSearchParams] = useSearchParams();
+    const insufficientStockItem = searchParams.get("insufficientStockItem");
+
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+    // receive insufficient in stock error
+    useEffect(() => {
+        if (insufficientStockItem) {
+            //////
+            console.log(`insufficient in stock item: ${insufficientStockItem}`);
+
+            searchParams.delete("insufficientStockItem");
+            setSearchParams(searchParams);
+        }
+    }, [insufficientStockItem, searchParams, setSearchParams]);
 
     // fetch items in cart if logged in
     useEffect(() => {
