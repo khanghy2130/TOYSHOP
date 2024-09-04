@@ -17,10 +17,8 @@ type ShortCartItem = {
 };
 
 export type CreatePaymentInfoReturnType = {
-    userId: string;
     paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
     shortCartItems: ShortCartItem[];
-    totalCost: number;
 };
 
 export async function createPaymentInfo(
@@ -55,9 +53,7 @@ export async function createPaymentInfo(
     });
 
     return {
-        userId: user.id,
         paymentIntent,
         shortCartItems,
-        totalCost: Math.floor(totalCost * 100) / 100,
     };
 }

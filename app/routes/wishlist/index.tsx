@@ -17,7 +17,7 @@ export default function WishlistPage() {
             const { data: wishlistData, error: wishlistError } = await supabase
                 .from("WISHLIST")
                 .select("product_id")
-                .order("created_at", { ascending: false })
+                .order("created_at", { ascending: true })
                 .eq("user_id", user.id);
 
             if (wishlistError) {

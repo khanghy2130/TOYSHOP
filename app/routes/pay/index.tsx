@@ -16,8 +16,12 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import { useEffect, useRef, useState } from "react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 
-import { parse } from "cookie";
-import { createClient } from "@supabase/supabase-js";
+import {
+    createServerClient,
+    parseCookieHeader,
+    serializeCookieHeader,
+} from "@supabase/ssr";
+import Stripe from "stripe";
 
 // public key doesn't need to be hidden
 const stripePromise = loadStripe(
@@ -25,27 +29,33 @@ const stripePromise = loadStripe(
 );
 
 export async function loader({ request }: LoaderFunctionArgs) {
-    const cookies = parse(request.headers.get("Cookie")!);
-
-    let accessToken = null;
-    const tokenMatch = JSON.stringify(cookies).match(
-        /\\"access_token\\":\\"(.*?)\\"/,
-    );
-    if (tokenMatch) accessToken = tokenMatch[1];
-    if (accessToken === null) return redirect("/login");
-
-    const supabase = createClient(
+    const headers = new Headers();
+    const supabase = createServerClient(
         process.env.SUPABASE_URL!,
         process.env.SUPABASE_ANON_KEY!,
         {
-            global: { headers: { Authorization: `Bearer ${accessToken}` } },
+            cookies: {
+                getAll() {
+                    return parseCookieHeader(
+                        request.headers.get("Cookie") ?? "",
+                    );
+                },
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        headers.append(
+                            "Set-Cookie",
+                            serializeCookieHeader(name, value, options),
+                        ),
+                    );
+                },
+            },
         },
     );
 
     const {
         data: { user },
         error: userError,
-    } = await supabase.auth.getUser(accessToken);
+    } = await supabase.auth.getUser();
 
     if (userError || !user) {
         console.error("Error fetching user", userError);
@@ -62,7 +72,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
                     id,
                     title,
                     price,
-                    discount
+                    discount,
+                    quantity
                 )
             `,
         )
@@ -71,44 +82,63 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
     if (cartItemsError) {
         console.error("Error fetching items in cart", cartItemsError);
-        return redirect("/login");
+        return redirect("/cart");
     }
     // empty cart?
     if (cartItems.length === 0) {
-        return redirect("/store");
+        return null;
     }
 
-    return await createPaymentInfo(cartItems, user);
+    // look for any item that is insufficient in stock
+    let insufficientStockItem: null | string = null;
+    cartItems.some((ci) => {
+        if (ci.product.quantity < ci.quantity) {
+            insufficientStockItem = ci.product.title;
+            return true;
+        }
+        return false;
+    });
+    if (insufficientStockItem) {
+        return redirect("/cart?insufficientStockItem=" + insufficientStockItem);
+    }
+    const paymentIntent = await createPaymentInfo(cartItems, user);
+    return paymentIntent;
 }
 
 export default function PayPage() {
-    const { supabase } = useOutletContext<ContextProps>();
+    const { supabase, user, setRawCartItems } =
+        useOutletContext<ContextProps>();
 
     const [theme] = useTheme();
-    const loaderData = useLoaderData() as CreatePaymentInfoReturnType;
-    const { userId, paymentIntent, shortCartItems, totalCost } = loaderData;
-    const orderIsSaved = useRef<boolean>(false);
+    const loaderData = useLoaderData() as CreatePaymentInfoReturnType | null;
+    const paymentIntent:
+        | CreatePaymentInfoReturnType["paymentIntent"]
+        | undefined = loaderData?.paymentIntent;
+    const shortCartItems:
+        | CreatePaymentInfoReturnType["shortCartItems"]
+        | undefined = loaderData?.shortCartItems;
 
-    // clear cart if saved order when unmount
-    useEffect(() => {
-        return () => {
-            if (orderIsSaved.current) clearCart();
-        };
-    }, []);
+    const [orderIsSaved, setOrderIsSaved] = useState<boolean>(false);
 
-    async function saveOrder() {
+    async function saveOrder(
+        paidPaymentIntent: Stripe.Response<Stripe.PaymentIntent>,
+    ) {
+        if (orderIsSaved || !paymentIntent || !user || !shortCartItems) return;
+
         // create new order
         const { data: orderData, error: orderError } = await supabase
             .from("ORDERS")
             .insert({
-                user_id: userId,
-                payment_id: paymentIntent.id,
-                total_amount: totalCost,
+                user_id: user.id,
+                payment_id: paidPaymentIntent.id,
+                total_amount: paymentIntent.amount / 100,
             })
             .select()
             .single();
 
         if (orderError) {
+            // ignore duplicate order error
+            if (orderError.code === "23505") return;
             console.error("Error creating new order", orderError);
             return;
         }
@@ -131,28 +161,40 @@ export default function PayPage() {
             return;
         }
 
-        orderIsSaved.current = true;
+        clearCart();
+        setOrderIsSaved(true);
     }
 
     async function clearCart() {
+        if (!user) return;
+
         const { error: deleteCartError } = await supabase
             .from("CARTS")
             .delete()
-            .eq("user_id", userId);
+            .eq("user_id", user.id);
 
         if (deleteCartError) {
             console.error("Error deleting cart items", deleteCartError);
             return;
         }
+
+        setRawCartItems([]); // clear raw cart state
     }
 
     if (!paymentIntent || !shortCartItems) {
-        return <div>Error: server didn't give expected results</div>;
+        return (
+            <div>
+                <Outlet context={{ saveOrder }} />
+            </div>
+        );
     }
 
     return (
         <div>
-            <p>(COMPONENT) receipt listing and total cost ${totalCost}</p>
+            <p>
+                (COMPONENT) receipt listing and total cost $
+                {paymentIntent.amount / 100}
+            </p>
             {shortCartItems.map((cartItem, i) => (
                 <div key={i}>product: {cartItem.title}</div>
             ))}

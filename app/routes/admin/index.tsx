@@ -14,7 +14,7 @@ export type UpdateFormState = {
 };
 
 export default function Admin() {
-    const { supabase, user, env } = useOutletContext<ContextProps>();
+    const { supabase } = useOutletContext<ContextProps>();
 
     // null is still checking
     const [isEditor, setIsEditor] = useState<boolean | "checking">("checking");
@@ -139,12 +139,7 @@ export default function Admin() {
                     : null}
             </h1>
 
-            <ProductDetails
-                mode={mode}
-                supabase={supabase}
-                updateFormState={updateFormState}
-                SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
-            />
+            <ProductDetails mode={mode} updateFormState={updateFormState} />
         </div>
     );
 }

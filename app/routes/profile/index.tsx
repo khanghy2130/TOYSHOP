@@ -104,13 +104,13 @@ export default function Profile() {
             }
         };
     const cancelNameEdit: React.DOMAttributes<HTMLButtonElement>["onClick"] =
-        async function (event) {
+        function (event) {
             setEnableNameEdit(false);
             setNameValue(defaultNameValue);
         };
     const onChangeNameEdit: React.ChangeEventHandler<HTMLInputElement> =
-        async function (event) {
-            setNameValue(event.currentTarget.value);
+        function (event) {
+            setNameValue(event.currentTarget.value.trimStart());
         };
 
     // unauthenticated render

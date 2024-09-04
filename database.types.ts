@@ -56,21 +56,21 @@ export type Database = {
       CARTS: {
         Row: {
           id: number
-          product_id: number | null
-          quantity: number | null
-          user_id: string | null
+          product_id: number
+          quantity: number
+          user_id: string
         }
         Insert: {
           id?: number
-          product_id?: number | null
-          quantity?: number | null
-          user_id?: string | null
+          product_id: number
+          quantity: number
+          user_id?: string
         }
         Update: {
           id?: number
-          product_id?: number | null
-          quantity?: number | null
-          user_id?: string | null
+          product_id?: number
+          quantity?: number
+          user_id?: string
         }
         Relationships: [
           {
@@ -275,26 +275,26 @@ export type Database = {
       REVIEWS: {
         Row: {
           created_at: string
-          feedback: string | null
-          id: string
+          feedback: string
+          id: number
           product_id: number | null
-          rating: number | null
+          rating: number
           user_id: string | null
         }
         Insert: {
           created_at?: string
-          feedback?: string | null
-          id?: string
+          feedback?: string
+          id?: number
           product_id?: number | null
-          rating?: number | null
+          rating?: number
           user_id?: string | null
         }
         Update: {
           created_at?: string
-          feedback?: string | null
-          id?: string
+          feedback?: string
+          id?: number
           product_id?: number | null
-          rating?: number | null
+          rating?: number
           user_id?: string | null
         }
         Relationships: [

@@ -11,7 +11,7 @@ import {
     useLoaderData,
     useRevalidator,
 } from "@remix-run/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useLocation } from "@remix-run/react";
 
@@ -26,6 +26,11 @@ import { getThemeSession } from "./utils/Navbar/theme.server";
 import Navbar from "./components/Navbar";
 import SidePanel from "./components/SidePanel";
 import insertNewUser from "./utils/insertNewUser";
+import {
+    PopupNotification,
+    RawCartItem,
+} from "./utils/types/ContextProps.type";
+import PopupNotificationsList from "./components/PopupNotificationsList";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -104,12 +109,24 @@ function App() {
     const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
     const [wishlist, setWishlist] = useState<number[]>([]);
+    const [rawCartItems, setRawCartItems] = useState<RawCartItem[]>([]);
     const [cartCount, setCartCount] = useState<number>(0);
+
+    // calculate cartCount
+    useEffect(() => {
+        setCartCount(
+            rawCartItems.reduce(
+                (total, curItem) => total + curItem.quantity,
+                0,
+            ),
+        );
+    }, [rawCartItems]);
+
     // fetch wishlist & cartCount
     useEffect(() => {
         if (!user) {
             setWishlist([]);
-            setCartCount(0);
+            setRawCartItems([]);
             return;
         }
         (async function () {
@@ -125,24 +142,43 @@ function App() {
                 setWishlist(wishlistData.map((item) => item.product_id));
             }
 
-            const { count, error: cartCountError } = await supabase
-                .from("CARTS")
-                .select("*", { count: "exact", head: true })
-                .eq("user_id", user.id);
-            if (cartCountError) {
-                console.error("Error fetching cart count", cartCountError);
+            const { data: rawCartItemsData, error: rawCartItemsError } =
+                await supabase
+                    .from("CARTS")
+                    .select("product_id, quantity")
+                    .eq("user_id", user.id);
+            if (rawCartItemsError) {
+                console.error(
+                    "Error fetching raw cart items",
+                    rawCartItemsError,
+                );
             } else {
-                setCartCount(count ? count : 0);
+                setRawCartItems(rawCartItemsData);
             }
         })();
     }, [user]);
 
-    // hide for specific routes
-    const location = useLocation();
-    const routesToHideNavigation = ["/login"]; ///// add homepage
-    const shouldHideNavigation = routesToHideNavigation.includes(
-        location.pathname,
+    // popup notifications
+    const [notifications, setNotifications] = useState<PopupNotification[]>([]);
+    const addNotification = useCallback(
+        (message: string, type: PopupNotification["type"]) => {
+            const id: number = Date.now() + Math.floor(Math.random() * 10000);
+            setNotifications((prev) => [...prev, { id, message, type }]);
+
+            setTimeout(() => {
+                setNotifications((prev) =>
+                    prev.filter((notification) => notification.id !== id),
+                );
+            }, 4000); // remove after 4 seconds
+        },
+        [],
     );
+
+    const location = useLocation();
+    // Split and filter out empty segments, get first item
+    const firstPathSegment = location.pathname.split("/").filter(Boolean)[0];
+    // routes with navbar hidden
+    const shouldHideNavigation = ["login", "pay"].includes(firstPathSegment);
 
     return (
         <html lang="en" className={theme ?? ""}>
@@ -158,7 +194,10 @@ function App() {
             <body key={forceRerenderCounter}>
                 {shouldHideNavigation ? null : (
                     <>
-                        <Navbar setSidePanelIsShown={setSidePanelIsShown} />
+                        <Navbar
+                            cartCount={cartCount}
+                            setSidePanelIsShown={setSidePanelIsShown}
+                        />
                         <SidePanel
                             user={user}
                             supabase={supabase}
@@ -177,11 +216,15 @@ function App() {
                             env,
                             wishlist,
                             setWishlist,
-                            cartCount,
-                            setCartCount,
+                            rawCartItems,
+                            setRawCartItems,
+                            addNotification,
                         }}
                     />
                 </div>
+
+                <PopupNotificationsList notifications={notifications} />
+
                 <Scripts />
             </body>
         </html>

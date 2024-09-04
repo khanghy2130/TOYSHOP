@@ -25,6 +25,67 @@ export default function StorePage() {
     const [chosenSort, setChosenSort] = useState<SortType>("TITLE");
     const [sortDescending, setSortDescending] = useState<boolean>(true);
 
+    const [localStatesLoaded, setLocalStatesLoaded] = useState<boolean>(false);
+
+    // set search options from local storage + check types
+    useEffect(() => {
+        if (localStatesLoaded) return;
+
+        let localData = localStorage.getItem("searchQuery");
+        if (localData) {
+            const parsedData = JSON.parse(localData)["data"];
+            if (typeof parsedData === "string") {
+                setSearchQuery(parsedData);
+            }
+        }
+
+        localData = localStorage.getItem("showOnSalesOnly");
+        if (localData) {
+            const parsedData = JSON.parse(localData)["data"];
+            if (typeof parsedData === "boolean") {
+                setShowOnSalesOnly(parsedData);
+            }
+        }
+
+        localData = localStorage.getItem("chosenTags");
+        if (localData) {
+            const parsedData = JSON.parse(localData)["data"];
+            if (asserter(parsedData)) {
+                setChosenTags(parsedData);
+            }
+            function asserter(value: unknown): value is FilterTag[] {
+                return (
+                    Array.isArray(value) &&
+                    value.length > 0 &&
+                    "id" in value[0] &&
+                    "name" in value[0]
+                );
+            }
+        }
+
+        localData = localStorage.getItem("chosenSort");
+        if (localData) {
+            const parsedData = JSON.parse(localData)["data"];
+            if (
+                parsedData === "TITLE" ||
+                parsedData === "PRICE" ||
+                parsedData === "RATING"
+            ) {
+                setChosenSort(parsedData as SortType);
+            }
+        }
+
+        localData = localStorage.getItem("sortDescending");
+        if (localData) {
+            const parsedData = JSON.parse(localData)["data"];
+            if (typeof parsedData === "boolean") {
+                setSortDescending(parsedData);
+            }
+        }
+
+        setLocalStatesLoaded(true);
+    }, []);
+
     useFetchProducts({
         products,
         setProducts,
@@ -40,6 +101,8 @@ export default function StorePage() {
         chosenTags,
         chosenSort,
         sortDescending,
+
+        localStatesLoaded,
     });
 
     return (
