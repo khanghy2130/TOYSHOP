@@ -86,6 +86,7 @@ export default function ProductCard({ product }: Props) {
 
     const isInCart = rawCartItems.some((rci) => rci.product_id === product.id);
     const isInWishlist = wishlist.includes(product.id);
+    const outOfStock = product.quantity <= 0;
 
     return (
         <div className="mt-5 border-2 border-color-2">
@@ -95,10 +96,14 @@ export default function ProductCard({ product }: Props) {
                 <div className="flex flex-row">
                     <button
                         className="btn"
-                        disabled={isInCart}
+                        disabled={isInCart || outOfStock}
                         onClick={addToCart}
                     >
-                        {isInCart ? "In cart" : "Add to cart"}
+                        {isInCart
+                            ? "In cart"
+                            : outOfStock
+                              ? "Out of stock"
+                              : "Add to cart"}
                     </button>
                     <button className="btn" onClick={addToWishlist}>
                         {isInWishlist ? "Wishlist-" : "Wishlist+"}

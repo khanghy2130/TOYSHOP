@@ -17,7 +17,6 @@ type ShortCartItem = {
 };
 
 export type CreatePaymentInfoReturnType = {
-    userId: string;
     paymentIntent: Stripe.Response<Stripe.PaymentIntent>;
     shortCartItems: ShortCartItem[];
 };
@@ -54,7 +53,6 @@ export async function createPaymentInfo(
     });
 
     return {
-        userId: user.id,
         paymentIntent,
         shortCartItems,
     };

@@ -86,7 +86,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     }
     // empty cart?
     if (cartItems.length === 0) {
-        return redirect("/store");
+        return null;
     }
 
     // look for any item that is insufficient in stock
@@ -106,29 +106,30 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function PayPage() {
-    const { supabase, setRawCartItems } = useOutletContext<ContextProps>();
+    const { supabase, user, setRawCartItems } =
+        useOutletContext<ContextProps>();
 
     const [theme] = useTheme();
-    const loaderData = useLoaderData() as CreatePaymentInfoReturnType;
-    const { userId, paymentIntent, shortCartItems } = loaderData;
-    const orderIsSaved = useRef<boolean>(false);
+    const loaderData = useLoaderData() as CreatePaymentInfoReturnType | null;
+    const paymentIntent:
+        | CreatePaymentInfoReturnType["paymentIntent"]
+        | undefined = loaderData?.paymentIntent;
+    const shortCartItems:
+        | CreatePaymentInfoReturnType["shortCartItems"]
+        | undefined = loaderData?.shortCartItems;
 
-    // clear cart if saved order when unmount
-    useEffect(() => {
-        return () => {
-            console.log(orderIsSaved.current);
-            if (orderIsSaved.current) clearCart();
-        };
-    }, []);
+    const [orderIsSaved, setOrderIsSaved] = useState<boolean>(false);
 
     async function saveOrder(
         paidPaymentIntent: Stripe.Response<Stripe.PaymentIntent>,
     ) {
+        if (orderIsSaved || !paymentIntent || !user || !shortCartItems) return;
+
         // create new order
         const { data: orderData, error: orderError } = await supabase
             .from("ORDERS")
             .insert({
-                user_id: userId,
+                user_id: user.id,
                 payment_id: paidPaymentIntent.id,
                 total_amount: paymentIntent.amount / 100,
             })
@@ -136,6 +137,8 @@ export default function PayPage() {
             .single();
 
         if (orderError) {
+            // ignore duplicate order error
+            if (orderError.code === "23505") return;
             console.error("Error creating new order", orderError);
             return;
         }
@@ -158,26 +161,32 @@ export default function PayPage() {
             return;
         }
 
-        orderIsSaved.current = true;
+        clearCart();
+        setOrderIsSaved(true);
     }
 
     async function clearCart() {
+        if (!user) return;
+
         const { error: deleteCartError } = await supabase
             .from("CARTS")
             .delete()
-            .eq("user_id", userId);
+            .eq("user_id", user.id);
 
         if (deleteCartError) {
             console.error("Error deleting cart items", deleteCartError);
             return;
         }
 
-        // clear rawCartItems
-        setRawCartItems([]);
+        setRawCartItems([]); // clear raw cart state
     }
 
     if (!paymentIntent || !shortCartItems) {
-        return <div>Error: server didn't give expected results</div>;
+        return (
+            <div>
+                <Outlet context={{ saveOrder }} />
+            </div>
+        );
     }
 
     return (
