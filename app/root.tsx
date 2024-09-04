@@ -11,7 +11,7 @@ import {
     useLoaderData,
     useRevalidator,
 } from "@remix-run/react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useLocation } from "@remix-run/react";
 
@@ -26,7 +26,11 @@ import { getThemeSession } from "./utils/Navbar/theme.server";
 import Navbar from "./components/Navbar";
 import SidePanel from "./components/SidePanel";
 import insertNewUser from "./utils/insertNewUser";
-import { RawCartItem } from "./utils/types/ContextProps.type";
+import {
+    PopupNotification,
+    RawCartItem,
+} from "./utils/types/ContextProps.type";
+import PopupNotificationsList from "./components/PopupNotificationsList";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -154,13 +158,27 @@ function App() {
         })();
     }, [user]);
 
-    // hide for specific routes
+    // popup notifications
+    const [notifications, setNotifications] = useState<PopupNotification[]>([]);
+    const addNotification = useCallback(
+        (message: string, type: PopupNotification["type"]) => {
+            const id: number = Date.now() + Math.floor(Math.random() * 10000);
+            setNotifications((prev) => [...prev, { id, message, type }]);
+
+            setTimeout(() => {
+                setNotifications((prev) =>
+                    prev.filter((notification) => notification.id !== id),
+                );
+            }, 4000); // remove after 4 seconds
+        },
+        [],
+    );
+
     const location = useLocation();
-    const pathSegments = location.pathname.split("/").filter(Boolean); // Split and filter out empty segments
-    const firstPathSegment = pathSegments[0];
-    const routesToHideNavigation = ["login", "pay"];
-    const shouldHideNavigation =
-        routesToHideNavigation.includes(firstPathSegment);
+    // Split and filter out empty segments, get first item
+    const firstPathSegment = location.pathname.split("/").filter(Boolean)[0];
+    // routes with navbar hidden
+    const shouldHideNavigation = ["login", "pay"].includes(firstPathSegment);
 
     return (
         <html lang="en" className={theme ?? ""}>
@@ -200,9 +218,13 @@ function App() {
                             setWishlist,
                             rawCartItems,
                             setRawCartItems,
+                            addNotification,
                         }}
                     />
                 </div>
+
+                <PopupNotificationsList notifications={notifications} />
+
                 <Scripts />
             </body>
         </html>

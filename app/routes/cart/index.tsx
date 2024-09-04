@@ -4,7 +4,8 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import { CartItem } from "./CartItemType";
 
 export default function CartPage() {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
 
     const [searchParams, setSearchParams] = useSearchParams();
     const insufficientStockItem = searchParams.get("insufficientStockItem");
@@ -14,8 +15,10 @@ export default function CartPage() {
     // receive insufficient in stock error
     useEffect(() => {
         if (insufficientStockItem) {
-            //////
-            console.log(`insufficient in stock item: ${insufficientStockItem}`);
+            addNotification(
+                `Insufficient stock for "${insufficientStockItem}"`,
+                "FAIL",
+            );
 
             searchParams.delete("insufficientStockItem");
             setSearchParams(searchParams);

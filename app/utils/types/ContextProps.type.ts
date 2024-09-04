@@ -6,6 +6,12 @@ export type RawCartItem = {
     quantity: number;
 };
 
+export type PopupNotification = {
+    id: number;
+    message: string;
+    type: "NEUTRAL" | "SUCCESS" | "FAIL";
+};
+
 export type ContextProps = {
     supabase: SupabaseClient<Database>;
     user: User | undefined;
@@ -14,4 +20,5 @@ export type ContextProps = {
     setWishlist: SetState<number[]>;
     rawCartItems: RawCartItem[];
     setRawCartItems: SetState<RawCartItem[]>;
+    addNotification: (message: string, type: PopupNotification["type"]) => void;
 };

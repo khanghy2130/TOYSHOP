@@ -14,6 +14,7 @@ export default function ProductCard({ product }: Props) {
         rawCartItems,
         wishlist,
         setWishlist,
+        addNotification,
     } = useOutletContext<ContextProps>();
 
     //// fetch image, hide card until image is loaded
@@ -47,6 +48,7 @@ export default function ProductCard({ product }: Props) {
         }
 
         setRawCartItems(data);
+        addNotification("Added to cart", "SUCCESS");
     }
 
     async function addToWishlist() {
@@ -79,8 +81,10 @@ export default function ProductCard({ product }: Props) {
                 console.error("Wishlist failed:", insertError);
             }
             setWishlist([...wishlist, product.id]);
+            addNotification("Added to wishlist", "SUCCESS");
         } else {
             setWishlist(wishlist.filter((wi) => wi !== product.id));
+            addNotification("Removed from wishlist", "SUCCESS");
         }
     }
 
