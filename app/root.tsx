@@ -174,12 +174,6 @@ function App() {
         [],
     );
 
-    const location = useLocation();
-    // Split and filter out empty segments, get first item
-    const firstPathSegment = location.pathname.split("/").filter(Boolean)[0];
-    // routes with navbar hidden
-    const shouldHideNavigation = ["login", "pay"].includes(firstPathSegment);
-
     return (
         <html lang="en" className={theme ?? ""}>
             <head>
@@ -192,20 +186,16 @@ function App() {
                 <Links />
             </head>
             <body key={forceRerenderCounter}>
-                {shouldHideNavigation ? null : (
-                    <>
-                        <Navbar
-                            cartCount={cartCount}
-                            setSidePanelIsShown={setSidePanelIsShown}
-                        />
-                        <SidePanel
-                            user={user}
-                            supabase={supabase}
-                            sidePanelIsShown={sidePanelIsShown}
-                            setSidePanelIsShown={setSidePanelIsShown}
-                        />
-                    </>
-                )}
+                <Navbar
+                    cartCount={cartCount}
+                    setSidePanelIsShown={setSidePanelIsShown}
+                />
+                <SidePanel
+                    user={user}
+                    supabase={supabase}
+                    sidePanelIsShown={sidePanelIsShown}
+                    setSidePanelIsShown={setSidePanelIsShown}
+                />
 
                 {/* space for navbar above main page content */}
                 <div className="pt-24">
