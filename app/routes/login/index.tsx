@@ -162,7 +162,7 @@ export default function Login() {
             <div className="relative h-[520px] w-72 overflow-hidden border-2 border-color-2 text-center">
                 {/* LOGIN/SIGNUP SWITCH */}
                 <button
-                    className="btn absolute right-2 top-2 z-50 min-w-32 text-xs"
+                    className="btn absolute right-2 top-2 z-10 min-w-32 text-xs"
                     onClick={() => {
                         setIsAtLogin(!isAtLogin);
                         resetErrorMessage();

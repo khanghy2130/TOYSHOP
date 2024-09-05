@@ -118,12 +118,15 @@ export default function PayPage() {
         | CreatePaymentInfoReturnType["shortCartItems"]
         | undefined = loaderData?.shortCartItems;
 
-    const [orderIsSaved, setOrderIsSaved] = useState<boolean>(false);
+    const [startedSavingNewOrder, setStartedSavingNewOrder] =
+        useState<boolean>(false);
 
     async function saveOrder(
         paidPaymentIntent: Stripe.Response<Stripe.PaymentIntent>,
     ) {
-        if (orderIsSaved || !paymentIntent || !user || !shortCartItems) return;
+        if (startedSavingNewOrder || !paymentIntent || !user || !shortCartItems)
+            return;
+        setStartedSavingNewOrder(true);
 
         // create new order
         const { data: orderData, error: orderError } = await supabase
@@ -162,7 +165,6 @@ export default function PayPage() {
         }
 
         clearCart();
-        setOrderIsSaved(true);
     }
 
     async function clearCart() {
@@ -181,7 +183,7 @@ export default function PayPage() {
         setRawCartItems([]); // clear raw cart state
     }
 
-    if (!paymentIntent || !shortCartItems) {
+    if (startedSavingNewOrder || !paymentIntent || !shortCartItems) {
         return (
             <div>
                 <Outlet context={{ saveOrder }} />
