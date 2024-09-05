@@ -1,10 +1,6 @@
 import { Tables } from "database.types";
 
-export type ProductInfo = {
-    id: number;
-    title: string;
-    description: string;
-    quantity: number;
+export type ProductInfo = Tables<"PRODUCTS"> & {
     tags: string[];
     imgNames: string[];
 };

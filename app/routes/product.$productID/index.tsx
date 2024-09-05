@@ -7,6 +7,7 @@ import Tags from "./Tags";
 import Reviews from "./Reviews";
 import ReviewForm from "./ReviewForm";
 import { BuyOptions } from "./BuyOptions";
+import OtherProducts from "./other_products/OtherProducts";
 
 export default function ProductPage() {
     const { supabase, user, env } = useOutletContext<ContextProps>();
@@ -23,29 +24,19 @@ export default function ProductPage() {
 
     // fetch product
     useEffect(() => {
+        if (!productID) return;
+
+        // fetch product info + images
         (async function () {
-            // fetch and show product info
             const { data: productData, error } = await supabase
                 .from("PRODUCTS")
                 .select(
                     `
-                        id,
-                        title,
-                        description,
-                        quantity,
+                        *,
                         tags:PRODUCTS_TAGS(tag_id(name))
                     `,
                 )
-                .eq("id", productID!)
-                .returns<
-                    {
-                        id: number;
-                        title: string;
-                        description: string;
-                        quantity: number;
-                        tags: { tag_id: { name: string } }[];
-                    }[]
-                >()
+                .eq("id", productID)
                 .single();
 
             if (error) {
@@ -70,6 +61,13 @@ export default function ProductPage() {
                 title: productData.title,
                 description: productData.description,
                 quantity: productData.quantity,
+
+                average_rating: productData.average_rating,
+                discount: productData.discount,
+                price: productData.price,
+                price_with_discount: productData.price_with_discount,
+
+                // @ts-expect-error
                 tags: productData.tags.map(({ tag_id }) => tag_id.name),
                 imgNames: fetchedImagesData.map((imgData) => imgData.name),
             });
@@ -112,6 +110,8 @@ export default function ProductPage() {
                 setReviewsFetchTrigger={setReviewsFetchTrigger}
                 productInfo={productInfo}
             />
+
+            <OtherProducts productID={productInfo.id} />
         </div>
     );
 }

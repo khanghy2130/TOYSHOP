@@ -4,25 +4,20 @@ import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type Props = {
-    orderItem: Tables<"ORDERS_ITEMS">;
+    product: Tables<"PRODUCTS">;
 };
 
-export default function OrderItem({ orderItem }: Props) {
+export default function OtherProductCard({ product }: Props) {
     const { supabase, env } = useOutletContext<ContextProps>();
     const [imgName, setImgName] = useState<string | null>(null);
-    const [productIsNotFound, setProductIsNotFound] = useState<boolean>(false);
 
     useEffect(() => {
         (async function () {
-            if (orderItem.product_id === null) {
-                return setProductIsNotFound(true);
-            }
-
             // fetch first image of product
             const { data: fetchedImageData, error: imageError } =
                 await supabase.storage
                     .from("product_images")
-                    .list(orderItem.product_id.toLocaleString(), {
+                    .list(product.id.toLocaleString(), {
                         limit: 1,
                         sortBy: { column: "name", order: "asc" },
                     });
@@ -40,19 +35,16 @@ export default function OrderItem({ orderItem }: Props) {
 
     return (
         <div>
-            {productIsNotFound ? (
-                <p>This product is deleted.</p>
-            ) : imgName === null ? (
+            {imgName === null ? (
                 <p>loading...</p>
             ) : (
                 <img
                     className="w-80"
-                    src={`${env.SUPABASE_IMAGES_PATH}/${orderItem.product_id}/${imgName}`}
+                    src={`${env.SUPABASE_IMAGES_PATH}/${product.id}/${imgName}`}
                 />
             )}
-            <p>title: {orderItem.title}</p>
-            <p>subtoal: {orderItem.subtotal}</p>
-            <p>quantity: {orderItem.quantity}</p>
+            <p>title: {product.title}</p>
+            <p>rating: {product.average_rating}</p>
         </div>
     );
 }

@@ -382,6 +382,22 @@ export type Database = {
           product_id: number
         }[]
       }
+      get_random_items: {
+        Args: {
+          amount: number
+          exclude_id: number
+        }
+        Returns: {
+          average_rating: number
+          description: string
+          discount: number
+          id: number
+          price: number
+          price_with_discount: number | null
+          quantity: number
+          title: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
