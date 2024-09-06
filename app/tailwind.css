@@ -4,31 +4,32 @@
 
 @layer base {
     /* update tailwind.config.ts when add/remove colors */
+    :root {
+        --primaryColor: #0ea5e9;
+    }
     html {
         --color-1: #fff; /*background*/
         --color-2: #000; /*primary color*/
         --color-3: #562a2a; /*button*/
         --color-4: #170d53; /* red error */
         --color-5: #0d5641; /* text */
+
+        --bgColor1: #eaeaea;
+        --textColor1: #1b1b1b;
     }
     html.dark {
-        --color-1: #1d1d1d;
+        --color-1: #101010;
         --color-2: #7fffe1;
         --color-3: #353535;
         --color-4: #d75252;
         --color-5: #e0e0e0;
+
+        --bgColor1: #101010;
+        --textColor1: #e0e0e0;
     }
 
     body {
-        @apply overflow-y-scroll;
-        @apply text-color-2;
-        @apply bg-color-1;
-    }
-
-    /* color transition */
-    body *,
-    body {
-        @apply transition-colors duration-150;
+        @apply text-textColor1 bg-bgColor1 overflow-y-scroll transition-colors;
     }
 
     input[type="number"]::-webkit-inner-spin-button,
@@ -40,19 +41,11 @@
 
 /* CUSTOM CLASSES */
 .btn {
-    @apply rounded-lg bg-color-3 px-4 py-2 font-bold text-color-2
-    transition-colors duration-300 enabled:hover:bg-color-2 enabled:hover:text-color-3;
-}
-
-.oauth-provider-btn {
-    @apply m-2 transition-opacity hover:opacity-80;
+    @apply rounded-lg bg-color-3 px-4 py-2 font-bold text-color-2 transition-colors duration-300 enabled:hover:bg-color-2 enabled:hover:text-color-3;
 }
 
 .auth-form {
-    @apply absolute top-1/2 flex -translate-y-1/2 
-    flex-col items-center
-    p-2 text-left
-    transition-transform duration-200;
+    @apply absolute top-1/2 flex -translate-y-1/2 flex-col items-center p-2 text-left transition-transform duration-200;
 }
 .auth-form input {
     @apply mb-2 w-56;

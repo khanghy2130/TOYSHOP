@@ -144,13 +144,13 @@ export default function Login() {
                 <h1 className="mb-4 text-xl">Continue with</h1>
                 <div className="flex h-20 flex-row justify-center md:h-auto md:w-20 md:flex-col">
                     <button
-                        className="oauth-provider-btn"
+                        className="m-2 transition-opacity hover:opacity-70"
                         onClick={() => providerClicked("google")}
                     >
                         <img className="h-full" src={googleIcon} alt="google" />
                     </button>
                     <button
-                        className="oauth-provider-btn"
+                        className="m-2 transition-opacity hover:opacity-70"
                         onClick={() => providerClicked("github")}
                     >
                         <img className="h-full" src={githubIcon} alt="github" />
