@@ -198,7 +198,7 @@ function App() {
                 />
 
                 {/* space for navbar above main page content */}
-                <div className="pt-24">
+                <div className="flex justify-center pt-24">
                     <Outlet
                         context={{
                             supabase,

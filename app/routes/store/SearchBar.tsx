@@ -21,9 +21,9 @@ export default function SearchBar({
 
     return (
         <div>
-            <div>
+            <div className="flex flex-row align-top">
                 <input
-                    className="bg-color-3 p-2"
+                    className="bg-bgColor2 w-3/4 max-w-96 p-2"
                     type="text"
                     placeholder="Search"
                     onKeyDown={(e) => {
@@ -37,15 +37,28 @@ export default function SearchBar({
                     onChange={(e) => setSearchQuery(e.currentTarget.value)}
                 />
                 <button
-                    className="btn"
+                    className="hover:bg-primaryColorMuted bg-primaryColor px-2 text-white"
                     type="button"
                     onClick={initiateFetching}
                 >
-                    Search
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="size-6"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                        />
+                    </svg>
                 </button>
             </div>
 
-            <div>
+            <div className="py-3">
                 <label className="inline-flex cursor-pointer items-center">
                     <input
                         type="checkbox"
@@ -54,17 +67,10 @@ export default function SearchBar({
                             setShowOnSalesOnly(!showOnSalesOnly);
                             setFetchTrigger({ fetchMode: "NEW" });
                         }}
-                        className="peer sr-only"
+                        className="h-5 w-5 accent-textColor1"
                     />
-                    <div
-                        className="peer relative h-6 w-11 rounded-full bg-color-3
-                        after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full 
-                        after:bg-color-2 after:transition-all after:content-[''] peer-checked:bg-color-4
-                        peer-checked:after:translate-x-full
-                        rtl:peer-checked:after:-translate-x-full"
-                    ></div>
-                    <span className="ms-3 text-sm font-medium text-color-2">
-                        On sale only
+                    <span className="text-md ms-2 font-medium text-textColor1">
+                        On sale
                     </span>
                 </label>
             </div>

@@ -106,51 +106,57 @@ export default function StorePage() {
     });
 
     return (
-        <div>
+        <div className="flex w-full max-w-[1200px] flex-col">
             <div>++Banners slider... (on click: set filter)</div>
 
-            <SearchBar
-                setFetchTrigger={setFetchTrigger}
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                showOnSalesOnly={showOnSalesOnly}
-                setShowOnSalesOnly={setShowOnSalesOnly}
-            />
+            <div className="flex flex-col lg:flex-row">
+                <div className="flex flex-col px-4 lg:w-80">
+                    <SearchBar
+                        setFetchTrigger={setFetchTrigger}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        showOnSalesOnly={showOnSalesOnly}
+                        setShowOnSalesOnly={setShowOnSalesOnly}
+                    />
 
-            <TagsFilter
-                setFetchTrigger={setFetchTrigger}
-                chosenTags={chosenTags}
-                setChosenTags={setChosenTags}
-            />
+                    <TagsFilter
+                        setFetchTrigger={setFetchTrigger}
+                        chosenTags={chosenTags}
+                        setChosenTags={setChosenTags}
+                    />
+                </div>
 
-            <SortOptions
-                setFetchTrigger={setFetchTrigger}
-                chosenSort={chosenSort}
-                setChosenSort={setChosenSort}
-                sortDescending={sortDescending}
-                setSortDescending={setSortDescending}
-            />
+                <div className="flex flex-grow flex-col">
+                    <SortOptions
+                        setFetchTrigger={setFetchTrigger}
+                        chosenSort={chosenSort}
+                        setChosenSort={setChosenSort}
+                        sortDescending={sortDescending}
+                        setSortDescending={setSortDescending}
+                    />
 
-            {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-            ))}
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
 
-            {fetchIsInProgress ? <p>Loading....</p> : null}
+                    {fetchIsInProgress ? <p>Loading....</p> : null}
 
-            {noMoreResult && products.length === 0 ? (
-                <p>No products found.</p>
-            ) : null}
+                    {noMoreResult && products.length === 0 ? (
+                        <p>No products found.</p>
+                    ) : null}
 
-            {!noMoreResult && !fetchIsInProgress ? (
-                <button
-                    className="btn"
-                    onClick={() => {
-                        setFetchTrigger({ fetchMode: "EXTRA" });
-                    }}
-                >
-                    Show more
-                </button>
-            ) : null}
+                    {!noMoreResult && !fetchIsInProgress ? (
+                        <button
+                            className="btn"
+                            onClick={() => {
+                                setFetchTrigger({ fetchMode: "EXTRA" });
+                            }}
+                        >
+                            Show more
+                        </button>
+                    ) : null}
+                </div>
+            </div>
         </div>
     );
 }

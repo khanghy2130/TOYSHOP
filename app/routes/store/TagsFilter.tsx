@@ -33,7 +33,9 @@ export default function TagsFilter({
     }, []);
 
     function removeTag(tag: FilterTag) {
-        setChosenTags(chosenTags.filter((chosenTag) => chosenTag !== tag));
+        setChosenTags(
+            chosenTags.filter((chosenTag) => chosenTag.id !== tag.id),
+        );
     }
 
     function tagClicked(tag: FilterTag, isAlreadyAdded: boolean) {
@@ -44,26 +46,28 @@ export default function TagsFilter({
     }
 
     return (
-        <div className="flex">
-            <button
-                className="btn"
-                onClick={() => setShowTagsModal(!showTagsModal)}
-            >
-                Add tag
-            </button>
-
-            {chosenTags.map((chosenTag) => (
+        <>
+            <div className="flex flex-wrap">
                 <button
-                    className="btn text-xs hover:line-through"
-                    key={chosenTag.id}
-                    onClick={() => {
-                        removeTag(chosenTag);
-                        setFetchTrigger({ fetchMode: "NEW" });
-                    }}
+                    className="btn"
+                    onClick={() => setShowTagsModal(!showTagsModal)}
                 >
-                    {chosenTag.name}
+                    Add tag
                 </button>
-            ))}
+
+                {chosenTags.map((chosenTag) => (
+                    <button
+                        className="btn text-xs hover:line-through"
+                        key={chosenTag.id}
+                        onClick={() => {
+                            removeTag(chosenTag);
+                            setFetchTrigger({ fetchMode: "NEW" });
+                        }}
+                    >
+                        {chosenTag.name}
+                    </button>
+                ))}
+            </div>
 
             {showTagsModal ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
@@ -83,8 +87,9 @@ export default function TagsFilter({
                         ) : (
                             <div className="flex flex-wrap">
                                 {allTags.map((tag) => {
-                                    const isAlreadyAdded =
-                                        chosenTags.includes(tag);
+                                    const isAlreadyAdded = chosenTags.some(
+                                        (ct) => ct.id === tag.id,
+                                    );
                                     const conditionClass = isAlreadyAdded
                                         ? "line-through"
                                         : "";
@@ -105,6 +110,6 @@ export default function TagsFilter({
                     </div>
                 </div>
             ) : null}
-        </div>
+        </>
     );
 }
