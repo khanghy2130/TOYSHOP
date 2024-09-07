@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "@remix-run/react";
 
-import titleLogoImage from "~/assets/title_logo.png";
+import brandTextImage from "~/assets/brand_text.png";
+import logoImage from "~/assets/logo.png";
 import useScrollBehavior from "../utils/Navbar/useScrollBehavior";
 
 type Props = {
@@ -16,26 +17,21 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
         <div
             className={
                 (navIsShown ? "top-0" : "-top-32") +
-                " fixed z-40 w-screen px-1 backdrop-blur-sm transition-[top] duration-500 ease-in-out sm:px-5"
+                " fixed z-40 w-screen px-2 backdrop-blur-sm transition-[top] duration-500 ease-in-out sm:px-5"
             }
         >
             <div className="mx-auto flex h-16 max-w-screen-lg flex-row justify-between">
-                <Link to="/">
+                <Link to="/" className="flex py-2">
+                    <img src={logoImage} className="h-full" />
                     <img
-                        src={titleLogoImage}
-                        className="hidden w-36 sm:block"
-                    />
-                    <img
-                        src={
-                            "https://images.vexels.com/media/users/3/142860/isolated/preview/3b874e1bacfab0d586c5534cc0c9b637-blue-star-square-logo.png"
-                        }
-                        className="w-16 sm:hidden"
+                        src={brandTextImage}
+                        className="hidden h-full sm:block"
                     />
                 </Link>
                 <div className="flex align-middle">
                     <Link
                         to="/store"
-                        className="hover:text-primaryColor flex align-middle"
+                        className="flex align-middle hover:text-primaryColor"
                     >
                         <button className="py-2">
                             <svg
@@ -56,7 +52,7 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
                     </Link>
                     <Link
                         to="/cart"
-                        className="hover:text-primaryColor mx-3 flex align-middle sm:mx-8"
+                        className="mx-3 flex align-middle hover:text-primaryColor sm:mx-8"
                     >
                         <button className="relative py-2">
                             <svg
@@ -74,13 +70,13 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
                                 />
                             </svg>
                             {cartCount === 0 ? null : (
-                                <span className="bg-primaryColor absolute right-0 top-3 rounded-3xl px-1 text-sm font-bold text-gray-50">
+                                <span className="absolute right-0 top-3 rounded-3xl bg-primaryColor px-1 text-sm font-bold text-gray-50">
                                     {cartCount}
                                 </span>
                             )}
                         </button>
                     </Link>
-                    <a className="hover:text-primaryColor flex align-middle">
+                    <a className="flex align-middle hover:text-primaryColor">
                         <button
                             className="py-2"
                             onClick={() => setSidePanelIsShown(true)}
