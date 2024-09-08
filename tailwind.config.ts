@@ -11,6 +11,7 @@ export default {
                 bgColor2: "var(--bgColor2)",
                 bgColor3: "var(--bgColor3)",
                 textColor1: "var(--textColor1)",
+                textColor2: "var(--textColor2)",
                 primaryColor: "var(--primaryColor)",
                 primaryColorMuted: "var(--primaryColorMuted)",
                 primaryTextColor: "var(--primaryTextColor)",

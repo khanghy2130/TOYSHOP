@@ -93,7 +93,7 @@ export default function ProductCard({ product }: Props) {
     const outOfStock = product.quantity <= 0;
 
     return (
-        <div className="mt-5 rounded-lg border-2 border-bgColor2 bg-gradient-to-br from-bgColor1 to-bgColor2 dark:bg-gradient-to-tl">
+        <div className="mt-5 rounded-lg bg-gradient-to-br from-bgColor1 to-bgColor2 shadow-md dark:bg-gradient-to-tl">
             <p>Title: {product.title}</p>
             <p>Rating: {product.average_rating}</p>
             {!user ? null : (
@@ -110,7 +110,7 @@ export default function ProductCard({ product }: Props) {
                               : addToCartTextRender}
                     </button>
                     <button
-                        className="text-primaryColor hover:text-primaryColorMuted"
+                        className="click-shrink text-primaryColor hover:text-primaryColorMuted"
                         onClick={addToWishlist}
                     >
                         {isInWishlist ? filledHeartIcon : emptyHeartIcon}
@@ -149,7 +149,7 @@ const emptyHeartIcon = (
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="size-10"
+            className="size-8"
         >
             <path
                 strokeLinecap="round"
@@ -166,7 +166,7 @@ const filledHeartIcon = (
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="size-10"
+            className="size-8"
         >
             <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
         </svg>

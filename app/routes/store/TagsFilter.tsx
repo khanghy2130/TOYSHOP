@@ -39,7 +39,7 @@ export default function TagsFilter({
     }
 
     function tagClicked(tag: FilterTag, isAlreadyAdded: boolean) {
-        setShowTagsModal(false);
+        //setShowTagsModal(false);
         if (isAlreadyAdded) removeTag(tag);
         else setChosenTags([...chosenTags, tag]);
         setFetchTrigger({ fetchMode: "NEW" });
@@ -49,7 +49,7 @@ export default function TagsFilter({
         <>
             <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
                 <button
-                    className="btn mr-2 flex flex-row px-2 py-1 text-lg"
+                    className="btn text-md mr-2 flex flex-row px-2 py-2"
                     onClick={() => setShowTagsModal(!showTagsModal)}
                 >
                     <svg
@@ -58,7 +58,7 @@ export default function TagsFilter({
                         viewBox="0 0 24 24"
                         strokeWidth={1.5}
                         stroke="currentColor"
-                        className="size-7"
+                        className="size-6"
                     >
                         <path
                             strokeLinecap="round"
@@ -71,50 +71,73 @@ export default function TagsFilter({
                             d="M6 6h.008v.008H6V6Z"
                         />
                     </svg>
-                    <span className="ms-1">Tag</span>
+                    <span className="ms-1">Tags</span>
                 </button>
 
                 {chosenTags.map((chosenTag) => (
                     <button
-                        className="rounded-full border-2 border-bgColor2 px-3 py-1 text-sm hover:bg-bgColor2"
+                        className="click-shrink flex items-center overflow-hidden rounded-full bg-bgColor2 text-sm hover:bg-bgColor3"
                         key={chosenTag.id}
                         onClick={() => {
                             removeTag(chosenTag);
                             setFetchTrigger({ fetchMode: "NEW" });
                         }}
                     >
-                        {chosenTag.name}
+                        <span className="h-full bg-bgColor2 py-[0.2rem] pl-3 pr-1 font-medium transition-none">
+                            {chosenTag.name}
+                        </span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            className="ml-[0.1rem] mr-[0.2rem] size-4"
+                        >
+                            <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                        </svg>
                     </button>
                 ))}
             </div>
 
             {showTagsModal ? (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                    <div className="h-3/4 w-11/12 max-w-[600px] overflow-y-scroll bg-bgColor1">
-                        <div className="flex flex-row">
-                            <h1>Tags</h1>
+                <div className="fixed inset-0 flex items-center justify-center">
+                    <div className="z-50 mx-4 flex h-80 w-full max-w-[600px] flex-col rounded-lg border-2 border-bgColor3 bg-bgColor1">
+                        <div className="flex w-full flex-row border-b-2 border-bgColor3">
+                            <h1 className="px-4 py-2 text-2xl">Tags</h1>
                             <button
-                                className="btn"
+                                className="ml-auto mr-4 text-textColor1 hover:text-primaryColor"
                                 onClick={() => setShowTagsModal(false)}
                             >
-                                Close
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="size-8"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M6 18 18 6M6 6l12 12"
+                                    />
+                                </svg>
                             </button>
                         </div>
 
                         {allTags.length === 0 ? (
                             <p>No tags found</p>
                         ) : (
-                            <div className="flex flex-wrap">
+                            <div className="flex flex-wrap items-center gap-2 overflow-y-auto p-5">
                                 {allTags.map((tag) => {
                                     const isAlreadyAdded = chosenTags.some(
                                         (ct) => ct.id === tag.id,
                                     );
                                     const conditionClass = isAlreadyAdded
-                                        ? "line-through"
-                                        : "";
+                                        ? "bg-primaryColor hover:bg-primaryColorMuted text-primaryTextColor"
+                                        : "bg-bgColor2 hover:bg-bgColor3";
                                     return (
                                         <button
-                                            className={`btn ${conditionClass}`}
+                                            className={`${conditionClass} click-shrink text-md rounded-full px-4 py-[0.2rem] font-medium`}
                                             key={tag.id}
                                             onClick={() =>
                                                 tagClicked(tag, isAlreadyAdded)

@@ -17,7 +17,7 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
         <div
             className={
                 (navIsShown ? "top-0" : "-top-32") +
-                " fixed z-40 w-screen border-b-2 border-bgColor2 px-2 backdrop-blur-md transition-[top] duration-500 ease-in-out sm:px-5"
+                " fixed z-40 w-screen border-b-2 border-bgColor3 px-2 backdrop-blur-md transition-[top] duration-500 ease-in-out sm:px-5"
             }
         >
             <div className="mx-auto flex h-16 max-w-screen-lg flex-row justify-between">
@@ -70,7 +70,7 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
                                 />
                             </svg>
                             {cartCount === 0 ? null : (
-                                <span className="text-primaryTextColor absolute right-0 top-3 rounded-3xl bg-primaryColor px-1 text-sm font-bold">
+                                <span className="absolute right-0 top-3 rounded-3xl bg-primaryColor px-1 text-sm font-bold text-primaryTextColor">
                                     {cartCount}
                                 </span>
                             )}
