@@ -47,17 +47,36 @@ export default function TagsFilter({
 
     return (
         <>
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
                 <button
-                    className="btn"
+                    className="btn mr-2 flex flex-row px-2 py-1 text-lg"
                     onClick={() => setShowTagsModal(!showTagsModal)}
                 >
-                    Add tag
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-7"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+                        />
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M6 6h.008v.008H6V6Z"
+                        />
+                    </svg>
+                    <span className="ms-1">Tag</span>
                 </button>
 
                 {chosenTags.map((chosenTag) => (
                     <button
-                        className="btn text-xs hover:line-through"
+                        className="rounded-full border-2 border-bgColor2 px-3 py-1 text-sm hover:bg-bgColor2"
                         key={chosenTag.id}
                         onClick={() => {
                             removeTag(chosenTag);
@@ -71,7 +90,7 @@ export default function TagsFilter({
 
             {showTagsModal ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-                    <div className="h-3/4 w-11/12 max-w-[600px] overflow-y-scroll bg-color-1">
+                    <div className="h-3/4 w-11/12 max-w-[600px] overflow-y-scroll bg-bgColor1">
                         <div className="flex flex-row">
                             <h1>Tags</h1>
                             <button

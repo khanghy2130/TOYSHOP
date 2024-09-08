@@ -126,7 +126,7 @@ export default function StorePage() {
                     />
                 </div>
 
-                <div className="flex flex-grow flex-col">
+                <div className="flex flex-grow flex-col px-4">
                     <SortOptions
                         setFetchTrigger={setFetchTrigger}
                         chosenSort={chosenSort}

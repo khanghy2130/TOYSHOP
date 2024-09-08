@@ -17,12 +17,12 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
         <div
             className={
                 (navIsShown ? "top-0" : "-top-32") +
-                " fixed z-40 w-screen px-2 backdrop-blur-sm transition-[top] duration-500 ease-in-out sm:px-5"
+                " fixed z-40 w-screen border-b-2 border-bgColor2 px-2 backdrop-blur-md transition-[top] duration-500 ease-in-out sm:px-5"
             }
         >
             <div className="mx-auto flex h-16 max-w-screen-lg flex-row justify-between">
                 <Link to="/" className="flex py-2">
-                    <img src={logoImage} className="h-full" />
+                    <img src={logoImage} className="h-full w-auto" />
                     <img
                         src={brandTextImage}
                         className="hidden h-full sm:block"
@@ -70,7 +70,7 @@ export default function Navbar({ cartCount, setSidePanelIsShown }: Props) {
                                 />
                             </svg>
                             {cartCount === 0 ? null : (
-                                <span className="absolute right-0 top-3 rounded-3xl bg-primaryColor px-1 text-sm font-bold text-gray-50">
+                                <span className="text-primaryTextColor absolute right-0 top-3 rounded-3xl bg-primaryColor px-1 text-sm font-bold">
                                     {cartCount}
                                 </span>
                             )}

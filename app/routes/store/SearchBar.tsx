@@ -23,7 +23,7 @@ export default function SearchBar({
         <div>
             <div className="flex flex-row align-top">
                 <input
-                    className="bg-bgColor2 w-3/4 max-w-96 p-2"
+                    className="w-3/4 max-w-96 rounded-l-lg bg-bgColor2 px-4 py-2"
                     type="text"
                     placeholder="Search"
                     onKeyDown={(e) => {
@@ -37,7 +37,7 @@ export default function SearchBar({
                     onChange={(e) => setSearchQuery(e.currentTarget.value)}
                 />
                 <button
-                    className="hover:bg-primaryColorMuted bg-primaryColor px-2 text-white"
+                    className="rounded-r-lg bg-primaryColor px-2 text-white hover:bg-primaryColorMuted"
                     type="button"
                     onClick={initiateFetching}
                 >
@@ -67,8 +67,9 @@ export default function SearchBar({
                             setShowOnSalesOnly(!showOnSalesOnly);
                             setFetchTrigger({ fetchMode: "NEW" });
                         }}
-                        className="h-5 w-5 accent-textColor1"
+                        className="peer sr-only"
                     />
+                    <div className="peer relative h-6 w-11 rounded-lg bg-bgColor2 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-lg after:bg-white after:transition-all after:content-[''] peer-checked:bg-primaryColor peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
                     <span className="text-md ms-2 font-medium text-textColor1">
                         On sale
                     </span>
