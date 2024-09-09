@@ -74,7 +74,12 @@ export default function SidePanel({
                 </div>
             ) : (
                 <Link to="/login">
-                    <button className="btn">Login</button>
+                    <button
+                        className="btn"
+                        onClick={() => setSidePanelIsShown(false)}
+                    >
+                        Login
+                    </button>
                 </Link>
             )}
         </div>

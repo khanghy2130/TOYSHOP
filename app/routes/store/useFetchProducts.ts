@@ -110,7 +110,9 @@ export default function useFetchProducts({
                     });
                 }
 
-                const { data, error } = await query.abortSignal(signal);
+                const { data, error } = await query
+                    .order("id", { ascending: true }) // avoid equal order duplicate
+                    .abortSignal(signal);
 
                 if (error) throw error;
 

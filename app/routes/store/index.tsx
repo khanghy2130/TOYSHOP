@@ -110,7 +110,7 @@ export default function StorePage() {
             <div>++Banners slider... (on click: set filter)</div>
 
             <div className="flex flex-col lg:flex-row">
-                <div className="flex flex-col px-4 lg:w-80">
+                <div className="flex flex-col px-4 lg:w-1/4">
                     <SearchBar
                         setFetchTrigger={setFetchTrigger}
                         searchQuery={searchQuery}
@@ -126,7 +126,7 @@ export default function StorePage() {
                     />
                 </div>
 
-                <div className="flex flex-grow flex-col px-4">
+                <div className="flex flex-grow flex-col px-4 lg:w-3/4">
                     <SortOptions
                         setFetchTrigger={setFetchTrigger}
                         chosenSort={chosenSort}
@@ -134,10 +134,11 @@ export default function StorePage() {
                         sortDescending={sortDescending}
                         setSortDescending={setSortDescending}
                     />
-
-                    {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+                    <div className="mt-5 flex flex-wrap">
+                        {products.map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
 
                     {fetchIsInProgress ? <p>Loading....</p> : null}
 
