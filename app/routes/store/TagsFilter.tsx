@@ -99,7 +99,7 @@ export default function TagsFilter({
             </div>
 
             {showTagsModal ? (
-                <div className="fixed inset-0 flex items-center justify-center">
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
                     <div className="z-50 mx-4 flex h-80 w-full max-w-[600px] flex-col rounded-lg border-2 border-bgColor3 bg-bgColor1">
                         <div className="flex w-full flex-row border-b-2 border-bgColor3">
                             <h1 className="px-4 py-2 text-2xl">Tags</h1>

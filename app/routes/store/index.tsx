@@ -6,6 +6,7 @@ import useFetchProducts from "./useFetchProducts";
 import { FilterTag, SortType, FetchTriggerType } from "./Types";
 import { Tables } from "database.types";
 import ProductCard from "./ProductCard";
+import SpinnerSVG from "~/components/SpinnerSVG";
 
 export default function StorePage() {
     const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);
@@ -126,7 +127,7 @@ export default function StorePage() {
                     />
                 </div>
 
-                <div className="flex flex-grow flex-col px-4 lg:w-3/4">
+                <div className="flex flex-grow flex-col px-2 md:px-4 lg:w-3/4">
                     <SortOptions
                         setFetchTrigger={setFetchTrigger}
                         chosenSort={chosenSort}
@@ -140,7 +141,11 @@ export default function StorePage() {
                         ))}
                     </div>
 
-                    {fetchIsInProgress ? <p>Loading....</p> : null}
+                    {fetchIsInProgress ? (
+                        <div className="my-3 h-12 w-12 self-center text-primaryColor">
+                            <SpinnerSVG />
+                        </div>
+                    ) : null}
 
                     {noMoreResult && products.length === 0 ? (
                         <p>No products found.</p>
@@ -148,7 +153,7 @@ export default function StorePage() {
 
                     {!noMoreResult && !fetchIsInProgress ? (
                         <button
-                            className="btn"
+                            className="btn my-3 self-center px-5 py-2 text-xl"
                             onClick={() => {
                                 setFetchTrigger({ fetchMode: "EXTRA" });
                             }}
