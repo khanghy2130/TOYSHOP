@@ -179,25 +179,27 @@ export default function ProductCard({ product }: Props) {
                                 : product.average_rating.toFixed(1)}
                         </span>
                     </div>
-
-                    <h2 className="pt-6 text-xl font-bold sm:text-2xl">
-                        ${product.price_with_discount?.toFixed(2)}
-                    </h2>
-                    {product.discount > 0 ? (
-                        <h3 className="text-md sm:text-lg">
-                            <span className="text-textColor2 line-through">
-                                ${product.price}
-                            </span>
-                            <span className="ms-1 font-medium text-primaryColor">
-                                -{product.discount}%
-                            </span>
-                        </h3>
-                    ) : null}
                 </div>
 
-                <div className="flex flex-grow items-end">
+                <div className="flex flex-grow flex-col justify-end">
+                    <div className="p-1 sm:p-2">
+                        <h2 className="pt-6 text-xl font-bold sm:text-2xl">
+                            ${product.price_with_discount?.toFixed(2)}
+                        </h2>
+                        {product.discount > 0 ? (
+                            <h3 className="text-md sm:text-lg">
+                                <span className="text-textColor2 line-through">
+                                    ${product.price}
+                                </span>
+                                <span className="ms-1 font-medium text-primaryColor">
+                                    -{product.discount}%
+                                </span>
+                            </h3>
+                        ) : null}
+                    </div>
+
                     <button
-                        className="h-10 w-full enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:text-textColor2"
+                        className="mt-1 h-10 w-full enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:text-textColor2"
                         disabled={isInCart || outOfStock}
                         onClick={addToCart}
                     >

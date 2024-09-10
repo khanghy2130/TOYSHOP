@@ -40,6 +40,10 @@
     @apply click-shrink rounded-md enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted;
 }
 
+.absolute-center {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+}
+
 .click-shrink {
     @apply transition-[transform] active:scale-90;
 }
