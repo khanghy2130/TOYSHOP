@@ -65,13 +65,13 @@
 }
 /* Track */
 ::-webkit-scrollbar-track {
-    background: var(--color-1);
+    @apply bg-bgColor1;
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: var(--color-2);
+    @apply bg-primaryColor;
 }
-/* PAGE LOADING PROGRESS BAR */
+/* PAGE LOADING PROGRESS BAR (mobile) */
 ::-webkit-progress-value {
-    background-color: var(--color-2);
+    @apply bg-primaryColor;
 }

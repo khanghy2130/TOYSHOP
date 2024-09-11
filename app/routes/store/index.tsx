@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TagsFilter from "./TagsFilter";
 import SortOptions from "./SortOptions";
 import SearchBar from "./SearchBar";
@@ -7,6 +7,7 @@ import { FilterTag, SortType, FetchTriggerType } from "./Types";
 import { Tables } from "database.types";
 import ProductCard from "./ProductCard";
 import SpinnerSVG from "~/components/SpinnerSVG";
+import Banner from "./Banner";
 
 export default function StorePage() {
     const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);
@@ -27,6 +28,8 @@ export default function StorePage() {
     const [sortDescending, setSortDescending] = useState<boolean>(true);
 
     const [localStatesLoaded, setLocalStatesLoaded] = useState<boolean>(false);
+
+    const productsContainerRef = useRef<HTMLDivElement>(null);
 
     // set search options from local storage + check types
     useEffect(() => {
@@ -92,9 +95,7 @@ export default function StorePage() {
         setProducts,
 
         fetchTrigger,
-        noMoreResult,
         setNoMoreResult,
-        fetchIsInProgress,
         setFetchIsInProgress,
 
         searchQuery,
@@ -108,10 +109,16 @@ export default function StorePage() {
 
     return (
         <div className="flex w-full max-w-[1200px] flex-col">
-            <div>++Banners slider... (on click: set filter)</div>
+            <Banner
+                setFetchTrigger={setFetchTrigger}
+                setSearchQuery={setSearchQuery}
+                setShowOnSalesOnly={setShowOnSalesOnly}
+                setChosenTags={setChosenTags}
+                productsContainerRef={productsContainerRef}
+            />
 
             <div className="flex flex-col lg:flex-row">
-                <div className="flex flex-col px-4 lg:w-1/4">
+                <div className="flex flex-col px-4 lg:w-1/4 lg:pr-0">
                     <SearchBar
                         setFetchTrigger={setFetchTrigger}
                         searchQuery={searchQuery}
@@ -135,7 +142,10 @@ export default function StorePage() {
                         sortDescending={sortDescending}
                         setSortDescending={setSortDescending}
                     />
-                    <div className="mt-5 flex flex-wrap">
+                    <div
+                        className="mt-5 flex flex-wrap"
+                        ref={productsContainerRef}
+                    >
                         {products.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
@@ -148,12 +158,14 @@ export default function StorePage() {
                     ) : null}
 
                     {noMoreResult && products.length === 0 ? (
-                        <p>No products found.</p>
+                        <p className="self-center text-xl font-medium">
+                            No products found.
+                        </p>
                     ) : null}
 
                     {!noMoreResult && !fetchIsInProgress ? (
                         <button
-                            className="btn my-3 self-center px-5 py-2 text-xl"
+                            className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-8 py-2 text-xl text-textColor1 hover:bg-bgColor3"
                             onClick={() => {
                                 setFetchTrigger({ fetchMode: "EXTRA" });
                             }}

@@ -9,9 +9,7 @@ type Params = {
     setProducts: SetState<Tables<"PRODUCTS">[]>;
 
     fetchTrigger: FetchTriggerType;
-    noMoreResult: boolean;
     setNoMoreResult: SetState<boolean>;
-    fetchIsInProgress: boolean;
     setFetchIsInProgress: SetState<boolean>;
 
     searchQuery: string;
@@ -28,9 +26,7 @@ export default function useFetchProducts({
     setProducts,
 
     fetchTrigger,
-    noMoreResult,
     setNoMoreResult,
-    fetchIsInProgress,
     setFetchIsInProgress,
 
     searchQuery,

@@ -155,17 +155,17 @@ export default function ProductCard({ product }: Props) {
 
                 <div className="p-1 sm:p-2">
                     <h1
-                        className="cursor-pointer text-sm leading-none hover:text-primaryColor sm:text-lg"
+                        className="text-md cursor-pointer leading-none hover:text-primaryColor sm:text-xl"
                         onClick={goToProductPage}
                     >
-                        {product.title} afadf dsfss sg gssg gfg s gsgdg
+                        {product.title}
                     </h1>
-                    <div className="flex items-center pt-1">
+                    <div className="flex items-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="size-5 text-yellow-400 sm:size-7"
+                            className="size-5 text-yellow-400 sm:size-6"
                         >
                             <path
                                 fillRule="evenodd"
@@ -183,7 +183,7 @@ export default function ProductCard({ product }: Props) {
 
                 <div className="flex flex-grow flex-col justify-end">
                     <div className="p-1 sm:p-2">
-                        <h2 className="pt-6 text-xl font-bold sm:text-2xl">
+                        <h2 className="text-xl font-bold sm:text-2xl">
                             ${product.price_with_discount?.toFixed(2)}
                         </h2>
                         {product.discount > 0 ? (
