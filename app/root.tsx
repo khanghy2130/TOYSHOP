@@ -1,6 +1,6 @@
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import type { User } from "@supabase/supabase-js";
-import { Database, Tables } from "database.types";
+import { Database } from "database.types";
 
 import { json } from "@remix-run/node";
 import {
@@ -13,7 +13,6 @@ import {
 } from "@remix-run/react";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { createBrowserClient } from "@supabase/ssr";
-import { useLocation } from "@remix-run/react";
 
 import stylesheet from "~/tailwind.css";
 import {
@@ -50,6 +49,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             SUPABASE_URL: process.env.SUPABASE_URL!,
             SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
             SUPABASE_IMAGES_PATH: process.env.SUPABASE_IMAGES_PATH!,
+            DOUBLE_TAGS_JSON: process.env.DOUBLE_TAGS_JSON!,
         },
     };
 
@@ -198,7 +198,7 @@ function App() {
                 />
 
                 {/* space for navbar above main page content */}
-                <div className="pt-24">
+                <div className="flex justify-center pt-24">
                     <Outlet
                         context={{
                             supabase,

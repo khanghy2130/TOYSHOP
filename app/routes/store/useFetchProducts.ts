@@ -9,9 +9,7 @@ type Params = {
     setProducts: SetState<Tables<"PRODUCTS">[]>;
 
     fetchTrigger: FetchTriggerType;
-    noMoreResult: boolean;
     setNoMoreResult: SetState<boolean>;
-    fetchIsInProgress: boolean;
     setFetchIsInProgress: SetState<boolean>;
 
     searchQuery: string;
@@ -28,9 +26,7 @@ export default function useFetchProducts({
     setProducts,
 
     fetchTrigger,
-    noMoreResult,
     setNoMoreResult,
-    fetchIsInProgress,
     setFetchIsInProgress,
 
     searchQuery,
@@ -59,7 +55,7 @@ export default function useFetchProducts({
         const signal = controller.signal;
 
         (async function () {
-            const FETCH_LIMIT = 5;
+            const FETCH_LIMIT = 6; /// 12
             try {
                 setFetchIsInProgress(true);
 
@@ -110,7 +106,9 @@ export default function useFetchProducts({
                     });
                 }
 
-                const { data, error } = await query.abortSignal(signal);
+                const { data, error } = await query
+                    .order("id", { ascending: true }) // avoid equal order duplicate
+                    .abortSignal(signal);
 
                 if (error) throw error;
 

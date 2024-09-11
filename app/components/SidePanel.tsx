@@ -31,8 +31,7 @@ export default function SidePanel({
         <div
             className={
                 (sidePanelIsShown ? "right-0" : "-right-96") +
-                ` fixed z-50 flex h-screen w-96 max-w-full
-    flex-col items-center bg-gray-800 transition-[right] duration-500 ease-in-out`
+                ` fixed z-50 flex h-screen w-96 max-w-full flex-col items-center border-l-2 border-bgColor3 backdrop-blur-md transition-[right] duration-500 ease-in-out`
             }
         >
             <button className="btn" onClick={() => setSidePanelIsShown(false)}>
@@ -61,13 +60,26 @@ export default function SidePanel({
                             Wishlist
                         </button>
                     </Link>
+                    <Link to="/orders">
+                        <button
+                            className="btn"
+                            onClick={() => setSidePanelIsShown(false)}
+                        >
+                            Orders
+                        </button>
+                    </Link>
                     <button className="btn" onClick={logout}>
                         Log out
                     </button>
                 </div>
             ) : (
                 <Link to="/login">
-                    <button className="btn">Login</button>
+                    <button
+                        className="btn"
+                        onClick={() => setSidePanelIsShown(false)}
+                    >
+                        Login
+                    </button>
                 </Link>
             )}
         </div>

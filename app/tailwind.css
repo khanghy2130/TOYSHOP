@@ -4,31 +4,28 @@
 
 @layer base {
     /* update tailwind.config.ts when add/remove colors */
+    :root {
+        --primaryColor: #f734ac;
+        --primaryColorMuted: #cc1d89;
+        --primaryTextColor: #f6f6f6;
+    }
     html {
-        --color-1: #fff; /*background*/
-        --color-2: #000; /*primary color*/
-        --color-3: #562a2a; /*button*/
-        --color-4: #170d53; /* red error */
-        --color-5: #0d5641; /* text */
+        --bgColor1: #fdfdfd;
+        --bgColor2: #eaeaea;
+        --bgColor3: #dddddd;
+        --textColor1: #373737;
+        --textColor2: #6b6b6b;
     }
     html.dark {
-        --color-1: #1d1d1d;
-        --color-2: #7fffe1;
-        --color-3: #353535;
-        --color-4: #d75252;
-        --color-5: #e0e0e0;
+        --bgColor1: #1f1f1f;
+        --bgColor2: #343434;
+        --bgColor3: #2d2d2d;
+        --textColor1: #e0e0e0;
+        --textColor2: #a2a2a2;
     }
 
     body {
-        @apply overflow-y-scroll;
-        @apply text-color-2;
-        @apply bg-color-1;
-    }
-
-    /* color transition */
-    body *,
-    body {
-        @apply transition-colors duration-150;
+        @apply overflow-y-scroll bg-bgColor1 font-sans text-textColor1 transition-colors;
     }
 
     input[type="number"]::-webkit-inner-spin-button,
@@ -40,25 +37,25 @@
 
 /* CUSTOM CLASSES */
 .btn {
-    @apply rounded-lg bg-color-3 px-4 py-2 font-bold text-color-2
-    transition-colors duration-300 enabled:hover:bg-color-2 enabled:hover:text-color-3;
+    @apply click-shrink rounded-md enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted;
 }
 
-.oauth-provider-btn {
-    @apply m-2 transition-opacity hover:opacity-80;
+.absolute-center {
+    @apply absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform;
+}
+
+.click-shrink {
+    @apply transition-[transform] active:scale-90;
 }
 
 .auth-form {
-    @apply absolute top-1/2 flex -translate-y-1/2 
-    flex-col items-center
-    p-2 text-left
-    transition-transform duration-200;
+    @apply absolute top-1/2 flex -translate-y-1/2 flex-col items-center p-2 text-left transition-transform duration-200;
 }
 .auth-form input {
     @apply mb-2 w-56;
 }
 .auth-form .text-input {
-    @apply bg-color-3 p-2;
+    @apply bg-bgColor2 p-2;
 }
 
 /* SCROLLBAR */
@@ -68,13 +65,13 @@
 }
 /* Track */
 ::-webkit-scrollbar-track {
-    background: var(--color-1);
+    @apply bg-bgColor1;
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: var(--color-2);
+    @apply bg-primaryColor;
 }
-/* PAGE LOADING PROGRESS BAR */
+/* PAGE LOADING PROGRESS BAR (mobile) */
 ::-webkit-progress-value {
-    background-color: var(--color-2);
+    @apply bg-primaryColor;
 }

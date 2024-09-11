@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TagsFilter from "./TagsFilter";
 import SortOptions from "./SortOptions";
 import SearchBar from "./SearchBar";
@@ -6,6 +6,8 @@ import useFetchProducts from "./useFetchProducts";
 import { FilterTag, SortType, FetchTriggerType } from "./Types";
 import { Tables } from "database.types";
 import ProductCard from "./ProductCard";
+import SpinnerSVG from "~/components/SpinnerSVG";
+import Banner from "./Banner";
 
 export default function StorePage() {
     const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);
@@ -26,6 +28,8 @@ export default function StorePage() {
     const [sortDescending, setSortDescending] = useState<boolean>(true);
 
     const [localStatesLoaded, setLocalStatesLoaded] = useState<boolean>(false);
+
+    const productsContainerRef = useRef<HTMLDivElement>(null);
 
     // set search options from local storage + check types
     useEffect(() => {
@@ -91,9 +95,7 @@ export default function StorePage() {
         setProducts,
 
         fetchTrigger,
-        noMoreResult,
         setNoMoreResult,
-        fetchIsInProgress,
         setFetchIsInProgress,
 
         searchQuery,
@@ -106,51 +108,73 @@ export default function StorePage() {
     });
 
     return (
-        <div>
-            <div>++Banners slider... (on click: set filter)</div>
-
-            <SearchBar
+        <div className="flex w-full max-w-[1200px] flex-col">
+            <Banner
                 setFetchTrigger={setFetchTrigger}
-                searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
-                showOnSalesOnly={showOnSalesOnly}
                 setShowOnSalesOnly={setShowOnSalesOnly}
-            />
-
-            <TagsFilter
-                setFetchTrigger={setFetchTrigger}
-                chosenTags={chosenTags}
                 setChosenTags={setChosenTags}
+                productsContainerRef={productsContainerRef}
             />
 
-            <SortOptions
-                setFetchTrigger={setFetchTrigger}
-                chosenSort={chosenSort}
-                setChosenSort={setChosenSort}
-                sortDescending={sortDescending}
-                setSortDescending={setSortDescending}
-            />
+            <div className="flex flex-col lg:flex-row">
+                <div className="flex flex-col px-4 lg:w-1/4 lg:pr-0">
+                    <SearchBar
+                        setFetchTrigger={setFetchTrigger}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        showOnSalesOnly={showOnSalesOnly}
+                        setShowOnSalesOnly={setShowOnSalesOnly}
+                    />
 
-            {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-            ))}
+                    <TagsFilter
+                        setFetchTrigger={setFetchTrigger}
+                        chosenTags={chosenTags}
+                        setChosenTags={setChosenTags}
+                    />
+                </div>
 
-            {fetchIsInProgress ? <p>Loading....</p> : null}
+                <div className="flex flex-grow flex-col px-2 md:px-4 lg:w-3/4">
+                    <SortOptions
+                        setFetchTrigger={setFetchTrigger}
+                        chosenSort={chosenSort}
+                        setChosenSort={setChosenSort}
+                        sortDescending={sortDescending}
+                        setSortDescending={setSortDescending}
+                    />
+                    <div
+                        className="mt-5 flex flex-wrap"
+                        ref={productsContainerRef}
+                    >
+                        {products.map((product) => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
 
-            {noMoreResult && products.length === 0 ? (
-                <p>No products found.</p>
-            ) : null}
+                    {fetchIsInProgress ? (
+                        <div className="my-3 h-12 w-12 self-center text-primaryColor">
+                            <SpinnerSVG />
+                        </div>
+                    ) : null}
 
-            {!noMoreResult && !fetchIsInProgress ? (
-                <button
-                    className="btn"
-                    onClick={() => {
-                        setFetchTrigger({ fetchMode: "EXTRA" });
-                    }}
-                >
-                    Show more
-                </button>
-            ) : null}
+                    {noMoreResult && products.length === 0 ? (
+                        <p className="self-center text-xl font-medium">
+                            No products found.
+                        </p>
+                    ) : null}
+
+                    {!noMoreResult && !fetchIsInProgress ? (
+                        <button
+                            className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-8 py-2 text-xl text-textColor1 hover:bg-bgColor3"
+                            onClick={() => {
+                                setFetchTrigger({ fetchMode: "EXTRA" });
+                            }}
+                        >
+                            Show more
+                        </button>
+                    ) : null}
+                </div>
+            </div>
         </div>
     );
 }

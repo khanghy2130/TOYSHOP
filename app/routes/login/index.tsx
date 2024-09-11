@@ -49,7 +49,7 @@ export default function Login() {
             return;
         }
 
-        return navigate("/");
+        return navigate("/store");
     };
 
     // SIGNUP
@@ -116,22 +116,7 @@ export default function Login() {
                 return;
             }
 
-            /*
-            // update display_name assuming a profile is already created
-            if (!signUpData.user) {
-                setIsSubmitting(false);
-                setErrorMessage("No user object in response.");
-                return;
-            }
-            await supabase
-                .from("PROFILES")
-                .update({
-                    display_name: formValues.displayName,
-                })
-                .eq("id", signUpData.user.id);
-            */
-
-            return navigate("/");
+            return navigate("/store");
         } else {
             setIsSubmitting(false);
             return;
@@ -144,13 +129,13 @@ export default function Login() {
                 <h1 className="mb-4 text-xl">Continue with</h1>
                 <div className="flex h-20 flex-row justify-center md:h-auto md:w-20 md:flex-col">
                     <button
-                        className="oauth-provider-btn"
+                        className="m-2 transition-opacity hover:opacity-70"
                         onClick={() => providerClicked("google")}
                     >
                         <img className="h-full" src={googleIcon} alt="google" />
                     </button>
                     <button
-                        className="oauth-provider-btn"
+                        className="m-2 transition-opacity hover:opacity-70"
                         onClick={() => providerClicked("github")}
                     >
                         <img className="h-full" src={githubIcon} alt="github" />
@@ -159,7 +144,7 @@ export default function Login() {
             </div>
             <div className="m-8 mx-32 my-12 text-4xl">OR</div>
 
-            <div className="relative h-[520px] w-72 overflow-hidden border-2 border-color-2 text-center">
+            <div className="border-color-2 relative h-[520px] w-72 overflow-hidden border-2 text-center">
                 {/* LOGIN/SIGNUP SWITCH */}
                 <button
                     className="btn absolute right-2 top-2 z-10 min-w-32 text-xs"
