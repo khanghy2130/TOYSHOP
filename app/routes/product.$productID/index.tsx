@@ -84,42 +84,19 @@ export default function ProductPage() {
 
     return (
         <div className="flex w-full max-w-[1200px] flex-col">
-            <div className="relative flex flex-col bg-black lg:flex-row lg:items-start">
-                {/* sticky container */}
-                <div className="flex flex-grow flex-col lg:sticky lg:top-0 lg:flex-row-reverse lg:items-start">
-                    {/* selected image */}
-                    <div className="flex flex-grow justify-center bg-red-950">
-                        <img
-                            className="w-full max-w-[420px] lg:max-w-[600px]"
-                            src={
-                                "https://static.vecteezy.com/system/resources/thumbnails/027/971/388/small_2x/3d-render-round-warm-orange-fire-flame-icon-realistic-hot-sparks-light-gas-logo-design-for-emoticon-energy-power-ui-png.png"
-                            }
-                        />
-                    </div>
-                    {/* images list */}
-                    <div className="flex overflow-x-auto lg:w-32 lg:flex-col">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                            <img
-                                className="h-auto w-24 lg:w-full"
-                                key={i}
-                                src={
-                                    "https://static.vecteezy.com/system/resources/thumbnails/027/971/388/small_2x/3d-render-round-warm-orange-fire-flame-icon-realistic-hot-sparks-light-gas-logo-design-for-emoticon-energy-power-ui-png.png"
-                                }
-                            />
-                        ))}
-                    </div>
-                </div>
+            <div className="relative flex flex-col lg:flex-row lg:items-start">
+                <Gallery
+                    productInfo={productInfo}
+                    SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
+                />
 
-                <div className="h-[1200px] w-full bg-orange-900 lg:w-[480px]"></div>
+                <div className="h-[1200px] w-full bg-sky-800 lg:w-[480px]"></div>
             </div>
 
             <div className="h-[400px] w-full bg-sky-600"></div>
             {/* <Tags productInfo={productInfo} />
 
-            <Gallery
-                productInfo={productInfo}
-                SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
-            />
+            
 
             <BuyOptions
                 chosenQuantity={chosenQuantity}

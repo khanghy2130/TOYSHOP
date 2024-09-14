@@ -112,7 +112,7 @@ export default function Banner({
                     <button
                         key={i}
                         onClick={() => setCurrentIndex(i)}
-                        className={`${i === currentIndex ? "bg-textColor1" : "bg-textColor2"} mx-1 h-3 w-3 rounded-full hover:bg-textColor1`}
+                        className={`${i === currentIndex ? "bg-primaryColor" : "bg-textColor2"} mx-1 h-3 w-3 rounded-full hover:bg-textColor1`}
                     ></button>
                 ))}
             </div>
