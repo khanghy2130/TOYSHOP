@@ -71,10 +71,12 @@ export default function Gallery({ productInfo, SUPABASE_IMAGES_PATH }: Props) {
         <div className="flex flex-grow flex-col duration-100 lg:sticky lg:top-0 lg:flex-row-reverse lg:items-start">
             {/* selected image */}
             <div className="flex flex-grow justify-center p-1">
-                <div className="relative">
+                <div
+                    ref={selectedImageRef}
+                    className="relative w-full max-w-[420px] transition-transform lg:max-w-[600px]"
+                >
                     <img
-                        ref={selectedImageRef}
-                        className="w-full max-w-[420px] transition-transform lg:max-w-[600px]"
+                        className="w-full"
                         src={`${SUPABASE_IMAGES_PATH}/${productInfo.id}/${productInfo.imgNames[selectedImageIndex]}`}
                     />
                     <button
@@ -95,7 +97,7 @@ export default function Gallery({ productInfo, SUPABASE_IMAGES_PATH }: Props) {
                         onClick={() => setSelectedImageIndex(i)}
                     >
                         <img
-                            className={`${selectedImageIndex === i ? "" : "opacity-50"} h-auto min-w-24 lg:w-full`}
+                            className={`${selectedImageIndex === i ? "" : "opacity-50"} h-auto min-w-24 max-w-28 lg:w-full`}
                             src={`${SUPABASE_IMAGES_PATH}/${productInfo.id}/${imgName}`}
                         />
                     </button>

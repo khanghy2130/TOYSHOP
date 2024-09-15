@@ -165,7 +165,7 @@ export default function StorePage() {
 
                     {!noMoreResult && !fetchIsInProgress ? (
                         <button
-                            className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-8 py-2 text-xl text-textColor1 hover:bg-bgColor3"
+                            className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-8 py-2 text-xl font-medium text-textColor1 hover:bg-bgColor3"
                             onClick={() => {
                                 setFetchTrigger({ fetchMode: "EXTRA" });
                             }}

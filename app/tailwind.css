@@ -10,7 +10,7 @@
         --primaryTextColor: #f6f6f6;
     }
     html {
-        --bgColor1: #f4f4f4;
+        --bgColor1: #f5cce5;
         --bgColor2: #e6e6e6;
         --bgColor3: #dddddd;
         --textColor1: #373737;
@@ -61,8 +61,8 @@
 /* SCROLLBAR */
 /* width */
 ::-webkit-scrollbar {
-    width: 0.5em;
-    height: 0.4em;
+    width: 0.3em;
+    height: 0.2em;
 }
 /* Track */
 ::-webkit-scrollbar-track {

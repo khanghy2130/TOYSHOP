@@ -87,7 +87,7 @@ export default function Banner({
         <div className="flex w-full flex-col items-center pb-10">
             <div
                 ref={sliderRef}
-                className="flex aspect-[4] w-11/12 max-w-[600px] snap-x snap-mandatory self-center overflow-x-hidden"
+                className="flex aspect-[4] w-11/12 max-w-[800px] snap-x snap-mandatory self-center overflow-x-hidden"
             >
                 {bannerHandlers.map(({ imgSrc, handler }, i) => (
                     <button

@@ -3,19 +3,16 @@ import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
 import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
-import Tags from "./Tags";
 import Reviews from "./Reviews";
 import ReviewForm from "./ReviewForm";
-import { BuyOptions } from "./BuyOptions";
 import OtherProducts from "./other_products/OtherProducts";
+import ProductDetails from "./ProductDetails";
 
 export default function ProductPage() {
-    const { supabase, user, env } = useOutletContext<ContextProps>();
+    const { supabase, env } = useOutletContext<ContextProps>();
     const { productID } = useParams();
     const [productInfo, setProductInfo] = useState<ProductInfo>();
     const [successfulFetch, setSuccessfulFetch] = useState<boolean>(true);
-
-    const [chosenQuantity, setChosenQuantity] = useState<number>(1);
 
     const [reviewsFetchTrigger, setReviewsFetchTrigger] =
         useState<ReviewsFetchTriggerType>({
@@ -90,19 +87,14 @@ export default function ProductPage() {
                     SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
                 />
 
-                <div className="h-[1200px] w-full bg-sky-800 lg:w-[480px]"></div>
+                <div className="w-full lg:w-[480px]">
+                    <ProductDetails productInfo={productInfo} />
+                </div>
             </div>
 
-            <div className="h-[400px] w-full bg-sky-600"></div>
-            {/* <Tags productInfo={productInfo} />
-
-            
-
-            <BuyOptions
-                chosenQuantity={chosenQuantity}
-                setChosenQuantity={setChosenQuantity}
-                productInfo={productInfo}
-            /> */}
+            <div className="h-[400px] w-full bg-sky-600">
+                {/* other products */}
+            </div>
 
             {/* 
             <ReviewForm
@@ -111,7 +103,7 @@ export default function ProductPage() {
             />
 
             <Reviews
-                reviewsFetchTrigger={reviewsFetchTrigger}
+                reviewsFetchTrigger={reviewsFetchTrigger} <<< put this state in component >>>
                 setReviewsFetchTrigger={setReviewsFetchTrigger}
                 productInfo={productInfo}
             />
