@@ -148,6 +148,7 @@ export default function ProductCard({ product }: Props) {
                     <button
                         className="click-shrink absolute right-2 top-2 text-primaryColor hover:text-primaryColorMuted"
                         onClick={addToWishlist}
+                        title="Wishlist"
                     >
                         {isInWishlist ? filledHeartIcon : emptyHeartIcon}
                     </button>
