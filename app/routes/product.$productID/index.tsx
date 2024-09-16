@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
 import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
-import Reviews from "./Reviews";
-import ReviewForm from "./ReviewForm";
 import OtherProducts from "./other_products/OtherProducts";
 import ProductDetails from "./ProductDetails";
 
@@ -13,11 +11,6 @@ export default function ProductPage() {
     const { productID } = useParams();
     const [productInfo, setProductInfo] = useState<ProductInfo>();
     const [successfulFetch, setSuccessfulFetch] = useState<boolean>(true);
-
-    const [reviewsFetchTrigger, setReviewsFetchTrigger] =
-        useState<ReviewsFetchTriggerType>({
-            fetchMode: "NEW",
-        });
 
     // fetch product
     useEffect(() => {
@@ -93,22 +86,8 @@ export default function ProductPage() {
             </div>
 
             <div className="h-[400px] w-full bg-sky-600">
-                {/* other products */}
+                {/* <OtherProducts productID={productInfo.id} /> */}
             </div>
-
-            {/* 
-            <ReviewForm
-                setReviewsFetchTrigger={setReviewsFetchTrigger}
-                productInfo={productInfo}
-            />
-
-            <Reviews
-                reviewsFetchTrigger={reviewsFetchTrigger} <<< put this state in component >>>
-                setReviewsFetchTrigger={setReviewsFetchTrigger}
-                productInfo={productInfo}
-            />
-
-            <OtherProducts productID={productInfo.id} /> */}
         </div>
     );
 }

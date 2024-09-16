@@ -5,7 +5,7 @@
 @layer base {
     /* update tailwind.config.ts when add/remove colors */
     :root {
-        --primaryColor: #f734ac;
+        --primaryColor: #fc36b0;
         --primaryColorMuted: #cc1d89;
         --primaryTextColor: #f6f6f6;
     }

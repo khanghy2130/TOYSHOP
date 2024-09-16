@@ -3,6 +3,7 @@ import { ProductInfo } from "./Types";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import SpinnerSVG from "~/components/SpinnerSVG";
 import { useState } from "react";
+import ReviewSection from "./reviews_section/ReviewSection";
 
 type Props = {
     productInfo: ProductInfo;
@@ -138,8 +139,25 @@ export default function ProductDetails({ productInfo }: Props) {
                 </span>
             </button>
 
-            <p>description & tags</p>
-            <p>Reviews + form in 1 component. includes fetchTrigger</p>
+            <h1 className="mt-10 text-xl font-medium text-primaryColor">
+                About this product
+            </h1>
+            <p className="text-md sm:text-lg">
+                {productInfo.description} afadfsd sdfs fsg sf sfgd r fsfgsfg
+                dgdg dsffb.
+            </p>
+
+            <div className="sm:text-md mt-3 flex flex-wrap gap-x-2 gap-y-2 text-sm text-textColor1">
+                {productInfo.tags.map((tag) => (
+                    <span
+                        key={tag}
+                        className="rounded-full bg-bgColor2 px-3 py-1 font-medium"
+                    >
+                        {tag}
+                    </span>
+                ))}
+            </div>
+            <ReviewSection productInfo={productInfo} />
         </div>
     );
 }
@@ -174,7 +192,7 @@ const renderAddToCartText = function (isAddingToCart: boolean) {
 };
 
 const StockCounter = (quantity: number) => (
-    <p className="text-md mt-4 w-full text-right text-textColor2 sm:text-lg">
+    <p className="text-md mt-2 w-full text-right text-textColor2 sm:text-lg">
         {quantity <= 0
             ? "Out of stock"
             : quantity > 10

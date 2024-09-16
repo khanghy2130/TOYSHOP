@@ -128,7 +128,10 @@ export default function ProductCard({ product }: Props) {
         <div className="flex w-1/2 p-1 sm:p-2 md:w-1/3">
             <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-gradient-to-tl from-bgColor1 to-bgColor2 shadow-md sm:rounded-xl">
                 <div className="relative flex aspect-square w-full cursor-pointer items-center justify-center">
-                    <Link to={`/product/${product.id}`}>
+                    <Link
+                        to={`/product/${product.id}`}
+                        className="flex w-full justify-center"
+                    >
                         {imgName === null || !imgIsLoaded ? (
                             <div className="h-1/3 w-1/3 text-primaryColor">
                                 <SpinnerSVG />

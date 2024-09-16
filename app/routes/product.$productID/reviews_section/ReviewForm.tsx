@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
+import { ProductInfo, ReviewsFetchTriggerType } from "../Types";
 import { Form, useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
@@ -16,7 +16,11 @@ export default function ReviewForm({
 
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [enableFormInput, setEnableFormInput] = useState<boolean>(true);
+
     const [rating, setRating] = useState<number>(0);
+    const [hoverRating, setHoverRating] = useState<number | null>(null);
+    const [mouseDownOnStar, setMouseDownOnStar] = useState<boolean>(false);
+
     const [feedback, setFeedback] = useState<string>("");
 
     // load current user review
@@ -42,11 +46,6 @@ export default function ReviewForm({
         })();
     }, []);
 
-    function starClicked(selectedRating: number) {
-        setRating(selectedRating);
-        //// trigger stars animation
-    }
-
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (rating < 1 || rating > 5) {
@@ -57,6 +56,7 @@ export default function ReviewForm({
             return console.error("Not logged in.");
         }
 
+        if (isSubmitting) return;
         setIsSubmitting(true);
 
         // check if review already exists
@@ -124,10 +124,6 @@ export default function ReviewForm({
         setReviewsFetchTrigger({ fetchMode: "NEW" });
     }
 
-    async function enableEdit() {
-        setEnableFormInput(true);
-    }
-
     if (!user) return null;
 
     return (
@@ -135,38 +131,36 @@ export default function ReviewForm({
             className="flex w-full max-w-3xl flex-col"
             onSubmit={handleSubmit}
         >
-            <h1>My Review</h1>
-            {!enableFormInput ? (
-                <div>
-                    <button className="btn" type="button" onClick={enableEdit}>
-                        Edit review
-                    </button>
-                    <button
-                        className="btn"
-                        type="button"
-                        onClick={deleteReview}
-                    >
-                        Delete review
-                    </button>
-                </div>
-            ) : null}
+            <h1 className="mt-10 text-xl font-medium text-primaryColor">
+                My review
+            </h1>
 
-            <div>
-                {[1, 2, 3, 4, 5].map((n) => (
-                    <button
-                        key={n}
-                        className="btn"
-                        disabled={!enableFormInput}
-                        type="button"
-                        onClick={() => starClicked(n)}
-                    >
-                        {n > rating ? "_" : "O"}
-                    </button>
-                ))}
+            <div
+                className="mt-1 flex"
+                onMouseLeave={() => setMouseDownOnStar(false)}
+            >
+                {[1, 2, 3, 4, 5].map((num) => {
+                    const isEmpty = num > (hoverRating || rating);
+                    return (
+                        <button
+                            key={num}
+                            className={`${mouseDownOnStar && !isEmpty ? "scale-125" : ""} pl-1 transition-transform duration-150`}
+                            disabled={!enableFormInput}
+                            type="button"
+                            onMouseEnter={() => setHoverRating(num)}
+                            onMouseLeave={() => setHoverRating(null)}
+                            onMouseDown={() => setMouseDownOnStar(true)}
+                            onMouseUp={() => setMouseDownOnStar(false)}
+                            onClick={() => setRating(num)}
+                        >
+                            {isEmpty ? emptyStar : filledStar}
+                        </button>
+                    );
+                })}
             </div>
 
             <textarea
-                className="bg-color-3 p-2"
+                className="my-2 rounded-lg bg-bgColor2 p-2 text-textColor1 disabled:text-textColor2"
                 required
                 placeholder="Feedback"
                 name="feedback"
@@ -176,10 +170,65 @@ export default function ReviewForm({
             />
 
             {enableFormInput ? (
-                <button disabled={isSubmitting} className="btn" type="submit">
-                    {isSubmitting ? "Processing..." : "Submit review"}
+                <button
+                    disabled={isSubmitting}
+                    className="rounded-lg bg-primaryColor py-1 text-lg font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                    type="submit"
+                >
+                    {isSubmitting ? "Processing..." : "Submit"}
                 </button>
+            ) : null}
+
+            {!enableFormInput ? (
+                <div className="flex justify-end">
+                    <button
+                        className="rounded-lg bg-primaryColor px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                        type="button"
+                        onClick={() => setEnableFormInput(true)}
+                    >
+                        Edit
+                    </button>
+                    <button
+                        className="ml-2 rounded-lg bg-primaryColor px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                        type="button"
+                        onClick={deleteReview}
+                    >
+                        Delete
+                    </button>
+                </div>
             ) : null}
         </Form>
     );
 }
+
+const filledStar = (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="size-8 text-orange-500 dark:text-yellow-400"
+    >
+        <path
+            fillRule="evenodd"
+            d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
+            clipRule="evenodd"
+        />
+    </svg>
+);
+
+const emptyStar = (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="size-8 text-orange-500 dark:text-yellow-400"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+        />
+    </svg>
+);
