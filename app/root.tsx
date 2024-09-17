@@ -9,6 +9,7 @@ import {
     Outlet,
     Scripts,
     useLoaderData,
+    useLocation,
     useRevalidator,
 } from "@remix-run/react";
 import { useState, useEffect, useMemo, useCallback } from "react";
@@ -105,6 +106,7 @@ function App() {
         };
     }, [supabase /*, revalidator*/]);
 
+    const location = useLocation();
     const [theme] = useTheme();
     const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
@@ -198,7 +200,10 @@ function App() {
                 />
 
                 {/* space for navbar above main page content */}
-                <div className="flex justify-center pt-24">
+                <div
+                    className="flex justify-center pt-24"
+                    key={location.pathname}
+                >
                     <Outlet
                         context={{
                             supabase,

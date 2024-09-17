@@ -2,25 +2,15 @@ import { useOutletContext, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
-import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
-import Tags from "./Tags";
-import Reviews from "./Reviews";
-import ReviewForm from "./ReviewForm";
-import { BuyOptions } from "./BuyOptions";
+import { ProductInfo } from "./Types";
 import OtherProducts from "./other_products/OtherProducts";
+import ProductDetails from "./ProductDetails";
 
 export default function ProductPage() {
-    const { supabase, user, env } = useOutletContext<ContextProps>();
+    const { supabase, env } = useOutletContext<ContextProps>();
     const { productID } = useParams();
     const [productInfo, setProductInfo] = useState<ProductInfo>();
     const [successfulFetch, setSuccessfulFetch] = useState<boolean>(true);
-
-    const [chosenQuantity, setChosenQuantity] = useState<number>(1);
-
-    const [reviewsFetchTrigger, setReviewsFetchTrigger] =
-        useState<ReviewsFetchTriggerType>({
-            fetchMode: "NEW",
-        });
 
     // fetch product
     useEffect(() => {
@@ -83,35 +73,19 @@ export default function ProductPage() {
     }
 
     return (
-        <div>
-            <h1>{productInfo.title}</h1>
-            <p>{productInfo.description}</p>
+        <div className="flex w-full max-w-[1200px] flex-col">
+            <div className="relative flex flex-col lg:flex-row lg:items-start">
+                <Gallery
+                    productInfo={productInfo}
+                    SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
+                />
 
-            <Tags productInfo={productInfo} />
+                <div className="w-full lg:w-[480px]">
+                    <ProductDetails productInfo={productInfo} />
+                </div>
+            </div>
 
-            <Gallery
-                productInfo={productInfo}
-                SUPABASE_IMAGES_PATH={env.SUPABASE_IMAGES_PATH}
-            />
-
-            <BuyOptions
-                chosenQuantity={chosenQuantity}
-                setChosenQuantity={setChosenQuantity}
-                productInfo={productInfo}
-            />
-
-            <ReviewForm
-                setReviewsFetchTrigger={setReviewsFetchTrigger}
-                productInfo={productInfo}
-            />
-
-            <Reviews
-                reviewsFetchTrigger={reviewsFetchTrigger}
-                setReviewsFetchTrigger={setReviewsFetchTrigger}
-                productInfo={productInfo}
-            />
-
-            <OtherProducts productID={productInfo.id} />
+            <OtherProducts productInfo={productInfo} />
         </div>
     );
 }

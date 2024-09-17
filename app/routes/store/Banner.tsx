@@ -87,7 +87,7 @@ export default function Banner({
         <div className="flex w-full flex-col items-center pb-10">
             <div
                 ref={sliderRef}
-                className="flex aspect-[4] w-11/12 max-w-[600px] snap-x snap-mandatory self-center overflow-x-hidden"
+                className="flex aspect-[4] w-11/12 max-w-[800px] snap-x snap-mandatory self-center overflow-x-hidden"
             >
                 {bannerHandlers.map(({ imgSrc, handler }, i) => (
                     <button
@@ -112,7 +112,7 @@ export default function Banner({
                     <button
                         key={i}
                         onClick={() => setCurrentIndex(i)}
-                        className={`${i === currentIndex ? "bg-textColor1" : "bg-textColor2"} mx-1 h-3 w-3 rounded-full hover:bg-textColor1`}
+                        className={`${i === currentIndex ? "bg-primaryColor" : "bg-textColor2"} mx-1 h-3 w-3 rounded-full hover:bg-textColor1`}
                     ></button>
                 ))}
             </div>

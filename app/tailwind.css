@@ -5,13 +5,13 @@
 @layer base {
     /* update tailwind.config.ts when add/remove colors */
     :root {
-        --primaryColor: #f734ac;
+        --primaryColor: #fc36b0;
         --primaryColorMuted: #cc1d89;
         --primaryTextColor: #f6f6f6;
     }
     html {
-        --bgColor1: #fdfdfd;
-        --bgColor2: #eaeaea;
+        --bgColor1: #f5cce5;
+        --bgColor2: #e6e6e6;
         --bgColor3: #dddddd;
         --textColor1: #373737;
         --textColor2: #6b6b6b;
@@ -61,7 +61,8 @@
 /* SCROLLBAR */
 /* width */
 ::-webkit-scrollbar {
-    width: 1em;
+    width: 0.3em;
+    height: 0.2em;
 }
 /* Track */
 ::-webkit-scrollbar-track {
@@ -69,7 +70,7 @@
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    @apply bg-primaryColor;
+    @apply bg-primaryColorMuted;
 }
 /* PAGE LOADING PROGRESS BAR (mobile) */
 ::-webkit-progress-value {

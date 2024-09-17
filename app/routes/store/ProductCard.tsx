@@ -1,4 +1,4 @@
-import { useNavigate, useOutletContext } from "@remix-run/react";
+import { Link, useNavigate, useOutletContext } from "@remix-run/react";
 import { Tables } from "database.types";
 import { MouseEvent, useEffect, useState } from "react";
 import SpinnerSVG from "~/components/SpinnerSVG";
@@ -119,53 +119,54 @@ export default function ProductCard({ product }: Props) {
         }
     }
 
-    const goToProductPage = () => navigate(`/product/${product.id}`);
-
-    const isInCart = rawCartItems.some((rci) => rci.product_id === product.id);
     const isInWishlist = wishlist.includes(product.id);
+    const isInCart = rawCartItems.some((rci) => rci.product_id === product.id);
     const outOfStock = product.quantity <= 0;
     const imgSrc = `${env.SUPABASE_IMAGES_PATH}/${product.id}/${imgName}`;
 
     return (
         <div className="flex w-1/2 p-1 sm:p-2 md:w-1/3">
-            <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-gradient-to-br from-bgColor1 to-bgColor2 shadow-md dark:bg-gradient-to-tl sm:rounded-xl">
-                <div
-                    className="relative flex aspect-square w-full cursor-pointer items-center justify-center"
-                    onClick={goToProductPage}
-                >
-                    {imgName === null || !imgIsLoaded ? (
-                        <div className="h-1/3 w-1/3 text-primaryColor">
-                            <SpinnerSVG />
-                        </div>
-                    ) : null}
-                    {imgName !== null ? (
-                        <img
-                            className={`${imgIsLoaded ? "" : "hidden"} w-full`}
-                            src={imgSrc}
-                            onLoad={() => setImgIsLoaded(true)}
-                        />
-                    ) : null}
-                    <button
-                        className="click-shrink absolute right-2 top-2 text-primaryColor hover:text-primaryColorMuted"
-                        onClick={addToWishlist}
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-gradient-to-tl from-bgColor1 to-bgColor2 shadow-md sm:rounded-xl">
+                <div className="relative flex aspect-square w-full cursor-pointer items-center justify-center">
+                    <Link
+                        to={`/product/${product.id}`}
+                        className="flex w-full justify-center"
                     >
-                        {isInWishlist ? filledHeartIcon : emptyHeartIcon}
-                    </button>
+                        {imgName === null || !imgIsLoaded ? (
+                            <div className="h-1/3 w-1/3 text-primaryColor">
+                                <SpinnerSVG />
+                            </div>
+                        ) : null}
+                        {imgName !== null ? (
+                            <img
+                                className={`${imgIsLoaded ? "" : "hidden"} w-full`}
+                                src={imgSrc}
+                                onLoad={() => setImgIsLoaded(true)}
+                            />
+                        ) : null}
+                        <button
+                            className="click-shrink absolute right-2 top-2 text-primaryColor hover:text-primaryColorMuted"
+                            onClick={addToWishlist}
+                            title="Wishlist"
+                        >
+                            {isInWishlist ? filledHeartIcon : emptyHeartIcon}
+                        </button>
+                    </Link>
                 </div>
 
                 <div className="p-1 sm:p-2">
-                    <h1
+                    <Link
+                        to={`/product/${product.id}`}
                         className="text-md cursor-pointer leading-none hover:text-primaryColor sm:text-xl"
-                        onClick={goToProductPage}
                     >
                         {product.title}
-                    </h1>
+                    </Link>
                     <div className="flex items-center">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
                             fill="currentColor"
-                            className="size-5 text-yellow-400 sm:size-6"
+                            className="size-5 text-orange-500 dark:text-yellow-400 sm:size-6"
                         >
                             <path
                                 fillRule="evenodd"
@@ -189,7 +190,7 @@ export default function ProductCard({ product }: Props) {
                         {product.discount > 0 ? (
                             <h3 className="text-md sm:text-lg">
                                 <span className="text-textColor2 line-through">
-                                    ${product.price}
+                                    ${product.price.toFixed(2)}
                                 </span>
                                 <span className="ms-1 font-medium text-primaryColor">
                                     -{product.discount}%
@@ -199,11 +200,11 @@ export default function ProductCard({ product }: Props) {
                     </div>
 
                     <button
-                        className="mt-1 h-10 w-full enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:text-textColor2"
+                        className="mt-1 w-full enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:bg-bgColor2 disabled:text-textColor2"
                         disabled={isInCart || outOfStock}
                         onClick={addToCart}
                     >
-                        <span className="flex justify-center text-sm sm:text-xl">
+                        <span className="text-md flex justify-center py-2 sm:text-xl">
                             {isInCart
                                 ? "In cart"
                                 : outOfStock
@@ -226,14 +227,14 @@ const renderAddToCartText = function (isAddingToCart: boolean) {
         );
     }
     return (
-        <div className="flex flex-row px-2">
+        <div className="flex flex-row items-center px-2">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="size-6"
+                className="size-5 sm:size-6"
             >
                 <path
                     strokeLinecap="round"

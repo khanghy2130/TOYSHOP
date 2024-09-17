@@ -1,9 +1,10 @@
 import { ContextProps } from "~/utils/types/ContextProps.type";
-import { ProductInfo, Review, ReviewsFetchTriggerType } from "./Types";
+import { ProductInfo, Review, ReviewsFetchTriggerType } from "../Types";
 import { useOutletContext } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import ReviewCard from "./ReviewCard";
+import SpinnerSVG from "~/components/SpinnerSVG";
 
 type Props = {
     productInfo: ProductInfo;
@@ -97,48 +98,59 @@ export default function Reviews({
     }, [reviewsFetchTrigger]);
 
     function sortOptionButton(displayText: string, type: typeof chosenSort) {
+        const isSelected = chosenSort === type;
         return (
             <button
-                className="btn"
-                disabled={chosenSort === type}
+                className="flex items-center bg-bgColor2 px-3 py-1 text-textColor1 hover:bg-bgColor3 disabled:bg-primaryColor disabled:text-primaryTextColor"
+                disabled={isSelected}
                 onClick={() => {
                     setChosenSort(type);
                     setReviewsFetchTrigger({ fetchMode: "NEW" });
                 }}
             >
-                {displayText} {chosenSort === type ? "(x)" : null}
+                {displayText}
             </button>
         );
     }
 
     return (
         <div>
-            <h1>Reviews</h1>
-            <div className="flex">
-                {sortOptionButton("Recent", "RECENT")}
-                {sortOptionButton("Rating", "RATING")}
+            <div className="mt-10 flex">
+                <h1 className="flex-grow text-xl font-medium text-primaryColor">
+                    Reviews
+                </h1>
+                <div className="sm:text-md flex flex-wrap overflow-hidden rounded-md text-sm font-medium">
+                    {sortOptionButton("Recent", "RECENT")}
+                    {sortOptionButton("Rating", "RATING")}
+                </div>
             </div>
 
-            {reviews.map((review) => (
-                <ReviewCard key={review.id} review={review} />
-            ))}
+            <div className="flex flex-col">
+                {reviews.map((review) => (
+                    <ReviewCard key={review.id} review={review} />
+                ))}
 
-            {fetchIsInProgress ? <p>Loading....</p> : null}
+                {fetchIsInProgress ? (
+                    <div className="my-3 h-12 w-12 self-center text-primaryColor">
+                        <SpinnerSVG />
+                    </div>
+                ) : null}
 
-            {noMoreResult && reviews.length === 0 ? (
-                <p>No reviews found.</p>
-            ) : null}
+                {noMoreResult && reviews.length === 0 ? (
+                    <p>No reviews found.</p>
+                ) : null}
 
-            {!noMoreResult && !fetchIsInProgress ? (
-                <button
-                    className="btn"
-                    onClick={() => {
-                        setReviewsFetchTrigger({ fetchMode: "EXTRA" });
-                    }}
-                >
-                    Show more
-                </button>
-            ) : null}
+                {!noMoreResult && !fetchIsInProgress ? (
+                    <button
+                        className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-6 py-1 text-lg font-medium text-textColor1 hover:bg-bgColor3"
+                        onClick={() => {
+                            setReviewsFetchTrigger({ fetchMode: "EXTRA" });
+                        }}
+                    >
+                        Show more
+                    </button>
+                ) : null}
+            </div>
         </div>
     );
 }
