@@ -2,7 +2,7 @@ import { useOutletContext, useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import Gallery from "./Gallery";
-import { ProductInfo, ReviewsFetchTriggerType } from "./Types";
+import { ProductInfo } from "./Types";
 import OtherProducts from "./other_products/OtherProducts";
 import ProductDetails from "./ProductDetails";
 
@@ -85,9 +85,7 @@ export default function ProductPage() {
                 </div>
             </div>
 
-            <div className="h-[400px] w-full bg-sky-600">
-                {/* <OtherProducts productID={productInfo.id} /> */}
-            </div>
+            <OtherProducts productInfo={productInfo} />
         </div>
     );
 }

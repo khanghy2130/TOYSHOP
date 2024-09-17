@@ -142,7 +142,7 @@ export default function Reviews({
 
                 {!noMoreResult && !fetchIsInProgress ? (
                     <button
-                        className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-8 py-2 text-xl font-medium text-textColor1 hover:bg-bgColor3"
+                        className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-6 py-1 text-lg font-medium text-textColor1 hover:bg-bgColor3"
                         onClick={() => {
                             setReviewsFetchTrigger({ fetchMode: "EXTRA" });
                         }}
