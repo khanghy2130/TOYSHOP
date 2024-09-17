@@ -160,7 +160,7 @@ export default function ReviewForm({
             </div>
 
             <textarea
-                className="my-2 rounded-lg bg-bgColor2 p-2 text-textColor1 disabled:text-textColor2"
+                className="my-2 rounded-md bg-bgColor2 p-2 text-textColor1 disabled:text-textColor2"
                 required
                 placeholder="Feedback"
                 name="feedback"
@@ -182,14 +182,14 @@ export default function ReviewForm({
             {!enableFormInput ? (
                 <div className="flex justify-end">
                     <button
-                        className="rounded-lg bg-primaryColor px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                        className="rounded-md bg-bgColor2 px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-bgColor3"
                         type="button"
                         onClick={() => setEnableFormInput(true)}
                     >
                         Edit
                     </button>
                     <button
-                        className="ml-2 rounded-lg bg-primaryColor px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                        className="ml-2 rounded-md bg-bgColor2 px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-bgColor3"
                         type="button"
                         onClick={deleteReview}
                     >

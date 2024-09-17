@@ -4,6 +4,7 @@ import { useOutletContext } from "@remix-run/react";
 import { useEffect, useState } from "react";
 
 import ReviewCard from "./ReviewCard";
+import SpinnerSVG from "~/components/SpinnerSVG";
 
 type Props = {
     productInfo: ProductInfo;
@@ -124,14 +125,16 @@ export default function Reviews({
                 </div>
             </div>
 
-            <div
-                className={`${fetchIsInProgress ? "min-h-52" : ""} flex flex-col`}
-            >
+            <div className="flex flex-col">
                 {reviews.map((review) => (
                     <ReviewCard key={review.id} review={review} />
                 ))}
 
-                {fetchIsInProgress ? <p>Loading....</p> : null}
+                {fetchIsInProgress ? (
+                    <div className="my-3 h-12 w-12 self-center text-primaryColor">
+                        <SpinnerSVG />
+                    </div>
+                ) : null}
 
                 {noMoreResult && reviews.length === 0 ? (
                     <p>No reviews found.</p>
@@ -139,7 +142,7 @@ export default function Reviews({
 
                 {!noMoreResult && !fetchIsInProgress ? (
                     <button
-                        className="btn"
+                        className="click-shrink my-3 self-center rounded-lg bg-bgColor2 px-8 py-2 text-xl font-medium text-textColor1 hover:bg-bgColor3"
                         onClick={() => {
                             setReviewsFetchTrigger({ fetchMode: "EXTRA" });
                         }}
