@@ -182,14 +182,14 @@ export default function ReviewForm({
             {!enableFormInput ? (
                 <div className="flex justify-end">
                     <button
-                        className="rounded-md bg-bgColor2 px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-bgColor3"
+                        className="rounded-md bg-bgColor2 px-3 py-1 text-sm font-medium text-textColor1 hover:bg-bgColor3"
                         type="button"
                         onClick={() => setEnableFormInput(true)}
                     >
                         Edit
                     </button>
                     <button
-                        className="ml-2 rounded-md bg-bgColor2 px-3 py-1 text-sm font-medium text-primaryTextColor hover:bg-bgColor3"
+                        className="ml-2 rounded-md bg-bgColor2 px-3 py-1 text-sm font-medium text-textColor1 hover:bg-bgColor3"
                         type="button"
                         onClick={deleteReview}
                     >

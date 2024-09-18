@@ -31,6 +31,7 @@ import {
     RawCartItem,
 } from "./utils/types/ContextProps.type";
 import PopupNotificationsList from "./components/PopupNotificationsList";
+import Footer from "./components/Footer";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -217,6 +218,8 @@ function App() {
                         }}
                     />
                 </div>
+
+                <Footer />
 
                 <PopupNotificationsList notifications={notifications} />
 

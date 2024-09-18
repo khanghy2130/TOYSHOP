@@ -4,6 +4,7 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import ProductItem from "./ProductItem";
 import { Tables } from "database.types";
 
+////////// remove this route
 export default function WishlistPage() {
     const { supabase, user, wishlist, setWishlist } =
         useOutletContext<ContextProps>();

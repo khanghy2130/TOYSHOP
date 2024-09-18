@@ -251,15 +251,15 @@ export type Database = {
       }
       PROFILES: {
         Row: {
-          display_name: string | null
+          display_name: string
           id: string
         }
         Insert: {
-          display_name?: string | null
+          display_name?: string
           id?: string
         }
         Update: {
-          display_name?: string | null
+          display_name?: string
           id?: string
         }
         Relationships: [

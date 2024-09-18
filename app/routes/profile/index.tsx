@@ -8,19 +8,13 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import AvatarCustomization from "./AvatarCustomization";
 import SpinnerSVG from "~/components/SpinnerSVG";
 
-type ProfileData = {
-    display_name: string;
-    //// reviews, purchases
-};
-
 export default function Profile() {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
 
     const [enableNameEdit, setEnableNameEdit] = useState<boolean>(false);
     const [enableAvatarCustomization, setEnableAvatarCustomization] =
         useState<boolean>(false);
-
-    const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
     const [nameValue, setNameValue] = useState<string>("");
     const [defaultNameValue, setDefaultNameValue] = useState<string>("");
@@ -41,6 +35,7 @@ export default function Profile() {
 
             if (error) {
                 console.error("Error fetching avatar");
+                addNotification("Error fetching avatar", "FAIL");
                 return;
             }
 
@@ -64,26 +59,36 @@ export default function Profile() {
         })();
     }, [avatarUriTrigger]);
 
-    // fetch profile data
-    //// get more data here (reviews, orders, ...)
+    // fetch display_name
     useEffect(() => {
         (async function () {
             if (!user) return;
-            const { data, error } = await supabase
+            const { data: profileData, error: profileError } = await supabase
                 .from("PROFILES")
                 .select("display_name")
                 .eq("id", user.id)
-                .returns<ProfileData[]>()
                 .single();
-            if (error) {
-                console.error("Error fetching profile", error);
+            if (profileError) {
+                console.error("Error fetching profile", profileError);
+                addNotification("Error fetching profile", "FAIL");
                 return;
             }
-            setProfileData(data);
-            setNameValue(data.display_name);
-            setDefaultNameValue(data.display_name);
+            setNameValue(profileData.display_name);
+            setDefaultNameValue(profileData.display_name);
         })();
     }, []);
+
+    /*
+    const location = useLocation();
+    // scroll to element
+    useEffect(() => {
+        if (!hasScrolled && location.hash) {
+            const elementId = location.hash.replace("#", "");
+            const element = document.getElementById(elementId);
+            if (element) element.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [hasScrolled, location.hash]);
+    */
 
     const submitNameEdit: React.FormEventHandler<HTMLFormElement> =
         async function (event) {
@@ -125,15 +130,6 @@ export default function Profile() {
         );
     }
 
-    // loading render
-    if (profileData === null) {
-        return (
-            <div>
-                <h1>Loading...</h1>
-            </div>
-        );
-    }
-
     return (
         <div>
             <h1>My Profile</h1>
@@ -141,7 +137,7 @@ export default function Profile() {
             <div>
                 <div className="flex h-40 w-40 items-center justify-center">
                     {avatarUri === "" ? (
-                        <div className="h-1/3 w-1/3">
+                        <div className="h-1/3 w-1/3 text-primaryColor">
                             <SpinnerSVG />
                         </div>
                     ) : (

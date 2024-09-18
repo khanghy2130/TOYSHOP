@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from "react";
 import { Link } from "@remix-run/react";
 
 import brandTextImage from "~/assets/brand_text.png";

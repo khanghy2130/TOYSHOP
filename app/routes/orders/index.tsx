@@ -5,6 +5,7 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import { Tables } from "database.types";
 import OrderModal from "./OrderModal";
 
+////////// remove this route
 export default function OrdersPage() {
     const { supabase, user } = useOutletContext<ContextProps>();
     const [orders, setOrders] = useState<Tables<"ORDERS">[]>([]);
