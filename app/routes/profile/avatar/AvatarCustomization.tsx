@@ -196,7 +196,7 @@ export default function AvatarCustomization({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-            <div className="h-3/4 w-11/12 max-w-[800px] overflow-y-scroll bg-color-1">
+            <div className="bg-color-1 h-3/4 w-11/12 max-w-[800px] overflow-y-scroll">
                 <h1>Avatar customization</h1>
 
                 <div className="flex h-52 w-52 items-center justify-center">
