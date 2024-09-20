@@ -49,7 +49,7 @@ export default function TagsFilter({
         <>
             <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
                 <button
-                    className="btn text-md mr-2 flex flex-row px-2 py-2"
+                    className="text-md mr-2 flex flex-row rounded-md bg-primaryColor px-2 py-2 font-medium text-primaryTextColor hover:bg-primaryColorMuted"
                     onClick={() => setShowTagsModal(!showTagsModal)}
                 >
                     <svg
@@ -99,9 +99,9 @@ export default function TagsFilter({
             </div>
 
             {showTagsModal ? (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                    <div className="z-50 mx-4 flex h-80 w-full max-w-[600px] flex-col rounded-lg border-2 border-bgColor3 bg-bgColor1">
-                        <div className="flex w-full flex-row border-b-2 border-bgColor3">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+                    <div className="z-50 mx-4 flex h-80 w-full max-w-[600px] flex-col rounded-lg border-2 border-textColor2 bg-bgColor1">
+                        <div className="flex w-full flex-row border-b-2 border-textColor2">
                             <h1 className="px-4 py-2 text-2xl">Tags</h1>
                             <button
                                 className="ml-auto mr-4 text-textColor1 hover:text-primaryColor"

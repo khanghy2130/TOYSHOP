@@ -1,5 +1,4 @@
 import { Link, useOutletContext } from "@remix-run/react";
-import { Tables } from "database.types";
 import { useEffect, useState, MouseEvent } from "react";
 import SpinnerSVG from "~/components/SpinnerSVG";
 import { ContextProps } from "~/utils/types/ContextProps.type";
@@ -21,6 +20,7 @@ export default function ProductItem({ setProducts, products, product }: Props) {
 
     const [imgName, setImgName] = useState<string | null>(null);
     const [imgIsLoaded, setImgIsLoaded] = useState<boolean>(false);
+    const [isRemoving, setIsRemoving] = useState<boolean>(false);
 
     // fetch image
     useEffect(() => {
@@ -46,9 +46,9 @@ export default function ProductItem({ setProducts, products, product }: Props) {
     }, []);
 
     async function removeFromWishlist(event: MouseEvent) {
-        event.stopPropagation();
         if (!user) return;
 
+        setIsRemoving(true);
         const { error: deleteError } = await supabase
             .from("WISHLIST")
             .delete()
@@ -68,7 +68,9 @@ export default function ProductItem({ setProducts, products, product }: Props) {
 
     const imgSrc = `${env.SUPABASE_IMAGES_PATH}/${product.id}/${imgName}`;
     return (
-        <div className="my-1 flex w-full items-center overflow-hidden rounded-md bg-gradient-to-tl from-bgColor1 to-bgColor2 sm:rounded-xl">
+        <div
+            className={`${isRemoving ? "opacity-50" : ""} my-1 flex w-full items-center overflow-hidden rounded-md bg-bgColor2`}
+        >
             {/* Product image */}
             <div className="flex w-16">
                 <div className="flex w-full justify-center">
@@ -98,26 +100,21 @@ export default function ProductItem({ setProducts, products, product }: Props) {
             {/* Heart button */}
             <div className="flex flex-grow justify-end px-3">
                 <button
-                    className="click-shrink text-primaryColor hover:text-primaryColorMuted"
+                    className="click-shrink text-textColor1 hover:text-textColor2"
                     onClick={removeFromWishlist}
                     title="Remove"
+                    disabled={isRemoving}
                 >
-                    {filledHeartIcon}
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        className="size-6"
+                    >
+                        <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                    </svg>
                 </button>
             </div>
         </div>
     );
 }
-
-const filledHeartIcon = (
-    <>
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="size-8"
-        >
-            <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-        </svg>
-    </>
-);

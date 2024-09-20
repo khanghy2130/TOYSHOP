@@ -9,12 +9,12 @@ import { useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 type Props = {
-    setEnableAvatarCustomization: SetState<boolean>;
+    setShowAvatarModal: SetState<boolean>;
     setAvatarUriTrigger: SetState<{}>;
 };
 
 export default function AvatarCustomization({
-    setEnableAvatarCustomization,
+    setShowAvatarModal,
     setAvatarUriTrigger,
 }: Props) {
     const { supabase, user } = useOutletContext<ContextProps>();
@@ -181,7 +181,7 @@ export default function AvatarCustomization({
 
             // successfully updated
             setAvatarUriTrigger({});
-            setEnableAvatarCustomization(false);
+            setShowAvatarModal(false);
         };
 
     const customizeOptions: [
@@ -196,93 +196,156 @@ export default function AvatarCustomization({
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
-            <div className="bg-color-1 h-3/4 w-11/12 max-w-[800px] overflow-y-scroll">
-                <h1>Avatar customization</h1>
-
-                <div className="flex h-52 w-52 items-center justify-center">
-                    {avatarUri === "" ? (
-                        <div className="h-1/3 w-1/3">
-                            <SpinnerSVG />
-                        </div>
-                    ) : (
-                        <img className="h-full w-full" src={avatarUri} />
-                    )}
+            <div className="flex h-5/6 w-11/12 max-w-[800px] flex-col rounded-lg border-2 border-textColor2 bg-bgColor1">
+                {/* Modal header */}
+                <div className="flex w-full flex-row border-b-2 border-textColor2">
+                    <h1 className="px-4 py-2 text-xl">Customize avatar</h1>
+                    <button
+                        className="ml-auto mr-4 text-textColor1 hover:text-primaryColor"
+                        onClick={() => setShowAvatarModal(false)}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth={1.5}
+                            stroke="currentColor"
+                            className="size-8"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18 18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
                 </div>
 
-                {
-                    // render option samples
-                    customizeOptions.map(([category, list], categoryIndex) => (
-                        <div key={categoryIndex}>
-                            <h2>{category}</h2>
-                            <div className="flex flex-wrap">
-                                {list.map((item, itemIndex) => (
-                                    <button
-                                        key={itemIndex}
-                                        className="btn m-2 !p-0"
-                                        onClick={item.applyToOptions}
-                                    >
-                                        <img
-                                            className="h-20 w-20"
-                                            src={item.uri}
-                                        />
-                                    </button>
-                                ))}
+                <div className="relative flex w-full flex-grow flex-col overflow-hidden md:flex-row">
+                    {/* Avatar */}
+                    <div className="sticky flex flex-col items-start px-4 md:top-0 md:pt-20">
+                        <div className="mx-auto my-2 flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg md:h-52 md:w-52">
+                            {avatarUri === "" ? (
+                                <div className="h-1/3 w-1/3">
+                                    <SpinnerSVG />
+                                </div>
+                            ) : (
+                                <img
+                                    className="h-full w-full"
+                                    src={avatarUri}
+                                />
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Options */}
+                    <div className="flex flex-grow flex-col overflow-y-auto px-2 md:mt-0">
+                        {
+                            // render option samples
+                            customizeOptions.map(
+                                ([category, list], categoryIndex) => (
+                                    <div key={categoryIndex} className="mt-2">
+                                        <h2 className="text-lg italic">
+                                            {category}
+                                        </h2>
+                                        <div className="flex flex-wrap justify-center border-b-2 border-textColor2 pb-2">
+                                            {list.map((item, itemIndex) => (
+                                                <div
+                                                    key={itemIndex}
+                                                    className="flex w-1/4 justify-center sm:w-1/5"
+                                                >
+                                                    <button
+                                                        onClick={
+                                                            item.applyToOptions
+                                                        }
+                                                        className="click-shrink rounded-md border-2 border-bgColor1 hover:border-primaryColor"
+                                                    >
+                                                        <img
+                                                            className="h-20 w-20"
+                                                            src={item.uri}
+                                                        />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ),
+                            )
+                        }
+
+                        <h2 className="mt-2 text-lg italic">Colors</h2>
+                        <div className="mt-2 flex justify-around">
+                            <div className="flex flex-col items-center">
+                                <input
+                                    className="w-10 cursor-pointer bg-transparent sm:w-20"
+                                    type="color"
+                                    id="skin-color"
+                                    value={"#" + avatarOptions?.skinColor}
+                                    onChange={(e) => {
+                                        setAvatarOptions({
+                                            ...avatarOptions,
+                                            skinColor: [
+                                                e.currentTarget.value
+                                                    .toString()
+                                                    .substring(1),
+                                            ],
+                                        });
+                                    }}
+                                />
+                                <label htmlFor="skin-color">Skin</label>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <input
+                                    className="w-10 cursor-pointer bg-transparent sm:w-20"
+                                    type="color"
+                                    id="hair-color"
+                                    value={"#" + avatarOptions?.hairColor}
+                                    onChange={(e) => {
+                                        setAvatarOptions({
+                                            ...avatarOptions,
+                                            hairColor: [
+                                                e.currentTarget.value
+                                                    .toString()
+                                                    .substring(1),
+                                            ],
+                                        });
+                                    }}
+                                />
+                                <label htmlFor="hair-color">Hair</label>
+                            </div>
+
+                            <div className="flex flex-col items-center">
+                                <input
+                                    className="w-10 cursor-pointer bg-transparent sm:w-20"
+                                    type="color"
+                                    id="background-color"
+                                    value={"#" + avatarOptions?.backgroundColor}
+                                    onChange={(e) => {
+                                        setAvatarOptions({
+                                            ...avatarOptions,
+                                            backgroundColor: [
+                                                e.currentTarget.value
+                                                    .toString()
+                                                    .substring(1),
+                                            ],
+                                        });
+                                    }}
+                                />
+                                <label htmlFor="background-color">
+                                    Background
+                                </label>
                             </div>
                         </div>
-                    ))
-                }
 
-                <h2>Skin color</h2>
-                <input
-                    type="color"
-                    value={"#" + avatarOptions?.skinColor}
-                    onChange={(e) => {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            skinColor: [
-                                e.currentTarget.value.toString().substring(1),
-                            ],
-                        });
-                    }}
-                />
-
-                <h2>Hair color</h2>
-                <input
-                    type="color"
-                    value={"#" + avatarOptions?.hairColor}
-                    onChange={(e) => {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            hairColor: [
-                                e.currentTarget.value.toString().substring(1),
-                            ],
-                        });
-                    }}
-                />
-
-                <h2>Background color</h2>
-                <input
-                    type="color"
-                    value={"#" + avatarOptions?.backgroundColor}
-                    onChange={(e) => {
-                        setAvatarOptions({
-                            ...avatarOptions,
-                            backgroundColor: [
-                                e.currentTarget.value.toString().substring(1),
-                            ],
-                        });
-                    }}
-                />
-
-                <button
-                    className="btn"
-                    onClick={() => setEnableAvatarCustomization(false)}
-                >
-                    Cancel
-                </button>
-                <button className="btn" onClick={saveAvatar}>
-                    Save
-                </button>
+                        <button
+                            className="click-shrink mx-3 mb-4 mt-6 self-end rounded-md bg-primaryColor px-4 py-1 text-lg font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                            onClick={saveAvatar}
+                        >
+                            Save
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
