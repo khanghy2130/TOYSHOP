@@ -83,7 +83,7 @@ export default function ProductCard({ product }: Props) {
     }
 
     async function addToWishlist(e: MouseEvent) {
-        e.stopPropagation();
+        e.preventDefault();
 
         if (!user) {
             return navigate("/login");
@@ -204,7 +204,7 @@ export default function ProductCard({ product }: Props) {
                         disabled={isInCart || outOfStock}
                         onClick={addToCart}
                     >
-                        <span className="text-md flex justify-center py-2 sm:text-xl">
+                        <span className="text-md flex justify-center py-2 text-textColor2 sm:text-xl">
                             {isInCart
                                 ? "In cart"
                                 : outOfStock
@@ -227,7 +227,7 @@ const renderAddToCartText = function (isAddingToCart: boolean) {
         );
     }
     return (
-        <div className="flex flex-row items-center px-2">
+        <div className="flex flex-row items-center px-2 text-primaryTextColor">
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

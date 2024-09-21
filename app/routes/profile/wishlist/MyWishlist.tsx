@@ -1,19 +1,19 @@
 import { useOutletContext } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
-import ProductItem from "./ProductItem";
-import { Tables } from "database.types";
+import ProductItem, { WishlistProduct } from "./ProductItem";
 
-export default function WishlistPage() {
-    const { supabase, user, wishlist, setWishlist } =
+export default function MyWishlist() {
+    const { supabase, user, setWishlist, addNotification } =
         useOutletContext<ContextProps>();
 
-    const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);
+    const [products, setProducts] = useState<WishlistProduct[]>([]);
 
+    // refetch wishlist and fetch products
     useEffect(() => {
         if (!user) return;
         (async function () {
-            // fetch wishlist again
+            // refetch wishlist
             const { data: wishlistData, error: wishlistError } = await supabase
                 .from("WISHLIST")
                 .select("product_id")
@@ -22,6 +22,7 @@ export default function WishlistPage() {
 
             if (wishlistError) {
                 console.error("Error fetching wishlist", wishlistError);
+                addNotification("Error fetching wishlist", "FAIL");
                 return;
             }
 
@@ -31,18 +32,19 @@ export default function WishlistPage() {
             // fetch products
             const { data: productsData, error: productsError } = await supabase
                 .from("PRODUCTS")
-                .select("*")
+                .select("id, title")
                 .in("id", newWishlist);
 
             if (productsError) {
                 console.error(
-                    "Error fetching wishlisted products",
+                    "Error fetching wishlist products",
                     productsError,
                 );
+                addNotification("Error fetching wishlist products", "FAIL");
                 return;
             }
             // order products by wishlist order
-            const orderedProducts: Tables<"PRODUCTS">[] = [];
+            const orderedProducts: WishlistProduct[] = [];
             for (let wi = 0; wi < newWishlist.length; wi++) {
                 for (let pi = 0; pi < productsData.length; pi++) {
                     const product = productsData[pi];
@@ -56,20 +58,26 @@ export default function WishlistPage() {
         })();
     }, []);
 
-    if (!user) {
-        return <p>Log in to see your wishlist</p>;
-    }
-
     return (
-        <div>
-            <h1>
-                Wishlist ({wishlist.length}); Products ({products.length})
+        <div className="w-full">
+            <h1 className="mb-2 text-2xl font-medium text-textColor1">
+                My wishlist
             </h1>
-            {/* ///// user remove action: remove from wishlist AND from products */}
 
-            {products.map((product) => (
-                <ProductItem key={product.id} product={product} />
-            ))}
+            {products.length === 0 ? (
+                <p>Wishlist is empty.</p>
+            ) : (
+                <div className="flex flex-wrap">
+                    {products.map((product) => (
+                        <ProductItem
+                            key={product.id}
+                            product={product}
+                            setProducts={setProducts}
+                            products={products}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

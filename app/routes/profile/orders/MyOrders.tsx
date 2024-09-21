@@ -5,19 +5,21 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 import { Tables } from "database.types";
 import OrderModal from "./OrderModal";
 
-export default function OrdersPage() {
+export default function MyOrders() {
     const { supabase, user } = useOutletContext<ContextProps>();
     const [orders, setOrders] = useState<Tables<"ORDERS">[]>([]);
 
     const [showOrderModal, setShowOrderModal] = useState<boolean>(false);
-    const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<Tables<"ORDERS"> | null>(
+        null,
+    );
 
-    function orderClicked(orderId: number) {
+    function orderClicked(order: Tables<"ORDERS">) {
         setShowOrderModal(true);
-        setSelectedOrderId(orderId);
+        setSelectedOrder(order);
     }
 
-    // fetch orders if logged in
+    // fetch orders
     useEffect(() => {
         if (!user) return;
         (async function () {
@@ -35,32 +37,31 @@ export default function OrdersPage() {
         })();
     }, []);
 
-    if (!user) {
-        ////////
-        return <div>Not logged in</div>;
-    }
-
     return (
-        <div>
-            <h1>Orders</h1>
-            <p>Click to open modal</p>
-            <div className="flex flex-col">
+        <div className="mt-6 w-full">
+            <h1 className="mb-2 text-2xl font-medium text-textColor1">
+                My orders
+            </h1>
+            <div className="flex h-96 flex-col overflow-auto text-xl sm:text-2xl">
                 {orders.map((order) => (
                     <button
-                        className="btn"
+                        className="flex justify-between bg-bgColor2 px-3 py-2 text-textColor1 hover:bg-bgColor3 hover:text-primaryColor sm:px-5"
                         key={order.id}
-                        onClick={() => orderClicked(order.id)}
+                        onClick={() => orderClicked(order)}
                     >
-                        order: {new Date(order.created_at).toDateString()}
+                        <span className="underline">Order #{order.id}</span>
+                        <span className="ms-3 text-lg text-textColor2">
+                            {new Date(order.created_at).toLocaleDateString()}
+                        </span>
                     </button>
                 ))}
             </div>
-            <OrderModal
-                supabase={supabase}
-                showOrderModal={showOrderModal}
-                setShowOrderModal={setShowOrderModal}
-                selectedOrderId={selectedOrderId}
-            />
+            {showOrderModal ? (
+                <OrderModal
+                    setShowOrderModal={setShowOrderModal}
+                    selectedOrder={selectedOrder}
+                />
+            ) : null}
         </div>
     );
 }
