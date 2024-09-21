@@ -67,7 +67,7 @@ export default function MyWishlist() {
             {products.length === 0 ? (
                 <p>Wishlist is empty.</p>
             ) : (
-                <div className="flex flex-col">
+                <div className="flex flex-wrap">
                     {products.map((product) => (
                         <ProductItem
                             key={product.id}
