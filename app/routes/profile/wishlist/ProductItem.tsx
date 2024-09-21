@@ -94,7 +94,7 @@ export default function ProductItem({ setProducts, products, product }: Props) {
                 {/* Product title */}
                 <Link
                     to={`/product/${product.id}`}
-                    className="text-md ms-1 cursor-pointer leading-none underline hover:text-primaryColor sm:ms-3 sm:text-xl"
+                    className="ms-1 cursor-pointer text-lg leading-none underline hover:text-primaryColor sm:ms-3 sm:text-xl"
                 >
                     {product.title}
                 </Link>

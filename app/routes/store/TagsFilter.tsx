@@ -101,6 +101,7 @@ export default function TagsFilter({
             {showTagsModal ? (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
                     <div className="z-50 mx-4 flex h-80 w-full max-w-[600px] flex-col rounded-lg border-2 border-textColor2 bg-bgColor1">
+                        {/* Modal header */}
                         <div className="flex w-full flex-row border-b-2 border-textColor2">
                             <h1 className="px-4 py-2 text-2xl">Tags</h1>
                             <button
@@ -125,7 +126,7 @@ export default function TagsFilter({
                         </div>
 
                         {allTags.length === 0 ? (
-                            <p>No tags found</p>
+                            <p className="w-full p-2">No tags found</p>
                         ) : (
                             <div className="flex flex-wrap items-center gap-2 overflow-y-auto p-5">
                                 {allTags.map((tag) => {

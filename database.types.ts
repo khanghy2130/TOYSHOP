@@ -144,7 +144,7 @@ export type Database = {
       ORDERS_ITEMS: {
         Row: {
           id: number
-          order_id: number | null
+          order_id: number
           product_id: number | null
           quantity: number
           subtotal: number
@@ -152,7 +152,7 @@ export type Database = {
         }
         Insert: {
           id?: number
-          order_id?: number | null
+          order_id: number
           product_id?: number | null
           quantity?: number
           subtotal: number
@@ -160,7 +160,7 @@ export type Database = {
         }
         Update: {
           id?: number
-          order_id?: number | null
+          order_id?: number
           product_id?: number | null
           quantity?: number
           subtotal?: number

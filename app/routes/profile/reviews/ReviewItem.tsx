@@ -64,11 +64,11 @@ export default function ReviewItem({ review }: Props) {
             </div>
 
             <div className="flex overflow-hidden py-2 pl-3">
-                <div className="flex flex-col overflow-auto">
+                <div className="flex flex-col items-start overflow-auto">
                     {/* Product title */}
                     <Link
                         to={`/product/${review.product_id}`}
-                        className="text-md cursor-pointer leading-none underline hover:text-primaryColor sm:text-xl"
+                        className="cursor-pointer text-lg leading-none underline hover:text-primaryColor sm:text-xl"
                     >
                         {review.product?.title}
                     </Link>

@@ -32,7 +32,7 @@ export default function MyReviews() {
     }, []);
 
     return (
-        <div className="w-full">
+        <div className="mt-6 w-full">
             <h1 className="mb-2 text-2xl font-medium text-textColor1">
                 My reviews
             </h1>
