@@ -11,7 +11,7 @@ import {
     createPaymentInfo,
     CreatePaymentInfoReturnType,
 } from "~/utils/payment";
-import { CartItem } from "../cart/CartItemType";
+import { CartItemType } from "../cart/CartItemType";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import { useEffect, useRef, useState } from "react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
@@ -68,17 +68,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
             `
                 id,
                 quantity,
-                product:product_id (
+                product:PRODUCTS (
                     id,
                     title,
-                    price,
-                    discount,
+                    price_with_discount,
                     quantity
                 )
             `,
         )
         .eq("user_id", user.id)
-        .returns<CartItem[]>();
+        .returns<CartItemType[]>();
 
     if (cartItemsError) {
         console.error("Error fetching items in cart", cartItemsError);
@@ -92,6 +91,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     // look for any item that is insufficient in stock
     let insufficientStockItem: null | string = null;
     cartItems.some((ci) => {
+        if (!ci.product) return false;
         if (ci.product.quantity < ci.quantity) {
             insufficientStockItem = ci.product.title;
             return true;
@@ -101,6 +101,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     if (insufficientStockItem) {
         return redirect("/cart?insufficientStockItem=" + insufficientStockItem);
     }
+
     const paymentIntent = await createPaymentInfo(cartItems, user);
     return paymentIntent;
 }

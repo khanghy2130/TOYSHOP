@@ -1,6 +1,6 @@
 import { User } from "@supabase/supabase-js";
 import Stripe from "stripe";
-import { CartItem } from "~/routes/cart/CartItemType";
+import { CartItemType } from "~/routes/cart/CartItemType";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -22,28 +22,31 @@ export type CreatePaymentInfoReturnType = {
 };
 
 export async function createPaymentInfo(
-    cartItems: CartItem[],
+    cartItems: CartItemType[],
     user: User,
 ): Promise<CreatePaymentInfoReturnType> {
-    const shortCartItems: ShortCartItem[] = cartItems.map((ci) => {
-        const singleCost =
-            ci.product.price - (ci.product.price * ci.product.discount) / 100;
-        return {
+    let shortCartItems: ShortCartItem[] = [];
+    // create shorten cart items
+    for (let i = 0; i < cartItems.length; i++) {
+        const ci = cartItems[i];
+        // assert non null
+        if (!ci.product || !ci.product.price_with_discount) continue;
+        shortCartItems.push({
             id: ci.product.id,
             title: ci.product.title,
             quantity: ci.quantity,
-            subtotal: Math.floor(singleCost * ci.quantity * 100) / 100,
-        };
-    });
+            subtotal: ci.quantity * ci.product.price_with_discount,
+        });
+    }
 
     const totalCost = shortCartItems.reduce(
-        (accumulator, cartItem) => accumulator + cartItem.subtotal,
+        (accumulator, shortCartItem) => accumulator + shortCartItem.subtotal,
         0,
     );
 
     const paymentIntent = await stripe.paymentIntents.create({
-        // amount must be int, 150 would be $1.50
-        amount: Math.floor(totalCost * 100),
+        // amount must be int, $1.50 would be 150 (multiply by 100)
+        amount: Math.round(totalCost * 100),
         currency: "usd",
         receipt_email: user.email,
         metadata: {

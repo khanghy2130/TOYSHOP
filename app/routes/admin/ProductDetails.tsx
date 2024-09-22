@@ -237,7 +237,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
             onSubmit={handleSubmit}
         >
             <input
-                className="mb-10 bg-color-3 p-2"
+                className="mb-10 bg-bgColor2 p-2 text-textColor1"
                 type="text"
                 required
                 placeholder="Title"
@@ -245,14 +245,14 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                 defaultValue={updateFormState.title}
             />
             <textarea
-                className="mb-10 bg-color-3 p-2"
+                className="mb-10 bg-bgColor2 p-2 text-textColor1"
                 required
                 placeholder="Description"
                 name="description"
                 defaultValue={updateFormState.description}
             />
             <input
-                className="mb-10 bg-color-3 p-2"
+                className="mb-10 bg-bgColor2 p-2 text-textColor1"
                 type="number"
                 min={0}
                 required
@@ -264,7 +264,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
             <div>
                 {tags.map((tag, i) => (
                     <div className="flex" key={tag}>
-                        <p className="rounded-lg border-2 border-solid border-color-2 p-1">
+                        <p className="border-color-2 rounded-lg border-2 border-solid p-1">
                             {tag}
                         </p>
                         <button
@@ -279,7 +279,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
             </div>
             <div>
                 <input
-                    className="mb-10 bg-color-3 p-2"
+                    className="mb-10 bg-bgColor2 p-2 text-textColor1"
                     type="text"
                     placeholder="Tag name"
                     ref={tagInput}
@@ -291,7 +291,11 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                         }
                     }}
                 />
-                <button className="btn" type="button" onClick={addTag}>
+                <button
+                    className="bg-primaryColor text-primaryTextColor"
+                    type="button"
+                    onClick={addTag}
+                >
                     Add tag
                 </button>
             </div>
@@ -325,7 +329,11 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                 onChange={addImages}
             />
 
-            <button className="btn" type="submit" disabled={isSubmitting}>
+            <button
+                className="bg-primaryColor text-primaryTextColor"
+                type="submit"
+                disabled={isSubmitting}
+            >
                 {isSubmitting
                     ? "Processing..."
                     : mode === "CREATE"

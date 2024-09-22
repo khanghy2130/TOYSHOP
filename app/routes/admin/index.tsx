@@ -106,7 +106,7 @@ export default function Admin() {
         <div className="flex flex-col items-center">
             <div className="flex w-full flex-row items-center justify-around">
                 <button
-                    className="btn enabled:cursor-pointer disabled:opacity-30"
+                    className="bg-primaryColor text-primaryTextColor enabled:cursor-pointer disabled:opacity-30"
                     onClick={createBtnClicked}
                     disabled={mode === "CREATE"}
                 >
@@ -126,7 +126,10 @@ export default function Admin() {
                             }
                         }}
                     />
-                    <button className="btn" onClick={getProductBtnClicked}>
+                    <button
+                        className="bg-primaryColor text-primaryTextColor"
+                        onClick={getProductBtnClicked}
+                    >
                         Load existing product
                     </button>
                 </div>
