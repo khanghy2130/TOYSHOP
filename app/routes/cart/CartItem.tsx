@@ -11,8 +11,14 @@ type Props = {
 };
 
 export default function CartItem({ cartItem, cartItems, setCartItems }: Props) {
-    const { supabase, env, user, addNotification } =
-        useOutletContext<ContextProps>();
+    const {
+        supabase,
+        env,
+        user,
+        addNotification,
+        setRawCartItems,
+        rawCartItems,
+    } = useOutletContext<ContextProps>();
 
     const [imgName, setImgName] = useState<string | null>(null);
     const [imgIsLoaded, setImgIsLoaded] = useState<boolean>(false);
@@ -70,6 +76,11 @@ export default function CartItem({ cartItem, cartItems, setCartItems }: Props) {
             return;
         }
         setCartItems(cartItems.filter((ci) => ci.id !== cartItem.id));
+        setRawCartItems(
+            rawCartItems.filter(
+                (rci) => rci.product_id !== cartItem.product?.id,
+            ),
+        );
         addNotification("Removed from cart", "SUCCESS");
     }
 

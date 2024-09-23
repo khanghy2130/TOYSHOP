@@ -5,7 +5,7 @@ import { CartItemType } from "./CartItemType";
 import CartItem from "./CartItem";
 
 export default function CartPage() {
-    const { supabase, user, addNotification } =
+    const { supabase, user, addNotification, setRawCartItems } =
         useOutletContext<ContextProps>();
     const [cartItems, setCartItems] = useState<CartItemType[]>([]);
 
@@ -52,6 +52,12 @@ export default function CartPage() {
                 return;
             }
             setCartItems(data);
+            setRawCartItems(
+                data.map((item) => ({
+                    quantity: item.quantity,
+                    product_id: item.product!.id,
+                })),
+            );
         })();
     }, []);
 
