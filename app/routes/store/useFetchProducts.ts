@@ -55,7 +55,7 @@ export default function useFetchProducts({
         const signal = controller.signal;
 
         (async function () {
-            const FETCH_LIMIT = 6; /// 12
+            const FETCH_LIMIT = 12;
             try {
                 setFetchIsInProgress(true);
 

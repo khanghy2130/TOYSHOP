@@ -90,10 +90,10 @@ export default function CartItem({ cartItem, cartItems, setCartItems }: Props) {
         (cartItem.product.price_with_discount || 0) * cartItem.quantity;
     return (
         <div className={`${isRemoving ? "opacity-50" : ""} relative w-full`}>
-            <div className="my-1 flex h-20 items-center overflow-hidden rounded-md bg-bgColor2 sm:h-32 lg:mx-2">
+            <div className="my-1 flex h-20 items-center overflow-hidden rounded-md bg-bgColor2 sm:h-28 lg:mx-2">
                 {/* Product image */}
-                <div className="flex h-20 w-20 sm:h-32 sm:w-32">
-                    <div className="flex w-full items-center justify-center">
+                <div className="flex h-20 w-20 sm:h-28 sm:w-28">
+                    <div className="flex h-20 w-20 items-center justify-center sm:h-28 sm:w-28">
                         {imgName === null || !imgIsLoaded ? (
                             <div className="h-1/3 w-1/3 text-primaryColor">
                                 <SpinnerSVG />
@@ -110,10 +110,10 @@ export default function CartItem({ cartItem, cartItems, setCartItems }: Props) {
                 </div>
 
                 {/* Product title & quantity */}
-                <div className="flex h-full flex-grow flex-col items-start px-2 py-2 sm:px-4">
+                <div className="flex h-full flex-col items-start overflow-auto px-2 py-2 sm:px-4">
                     <Link
                         to={`/product/${cartItem.product.id}`}
-                        className="cursor-pointer text-lg leading-none underline hover:text-primaryColor sm:text-2xl"
+                        className="cursor-pointer text-base leading-none underline hover:text-primaryColor sm:text-xl"
                     >
                         {cartItem.product.title}
                     </Link>
@@ -123,8 +123,8 @@ export default function CartItem({ cartItem, cartItems, setCartItems }: Props) {
                 </div>
 
                 {/* Subtotal */}
-                <div className="flex h-full items-center">
-                    <p className="px-4 text-lg font-medium sm:text-2xl">
+                <div className="flex h-full flex-grow items-center justify-end">
+                    <p className="px-2 text-base font-medium sm:px-4 sm:text-2xl">
                         ${subtotal.toFixed(2)}
                     </p>
                 </div>

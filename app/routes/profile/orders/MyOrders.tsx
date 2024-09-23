@@ -1,4 +1,4 @@
-import { useOutletContext } from "@remix-run/react";
+import { useOutletContext, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
@@ -13,6 +13,8 @@ export default function MyOrders() {
     const [selectedOrder, setSelectedOrder] = useState<Tables<"ORDERS"> | null>(
         null,
     );
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     function orderClicked(order: Tables<"ORDERS">) {
         setShowOrderModal(true);
@@ -34,6 +36,15 @@ export default function MyOrders() {
             }
 
             setOrders(data);
+
+            // view order? open lastest order & remove query
+            const viewOrder = searchParams.get("viewOrder");
+            if (viewOrder === "true") {
+                setShowOrderModal(true);
+                setSelectedOrder(data[0]);
+                searchParams.delete("viewOrder");
+                setSearchParams(searchParams);
+            }
         })();
     }, []);
 

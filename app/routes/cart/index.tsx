@@ -75,6 +75,12 @@ export default function CartPage() {
         );
     }
 
+    // assert non null
+    const totalCost = cartItems.reduce(
+        (prev, cur) => prev + cur.product!.price_with_discount! * cur.quantity,
+        0,
+    );
+
     return (
         <div className="flex w-full max-w-[800px] flex-col">
             <h1 className="px-2 text-2xl font-medium">My cart</h1>
@@ -93,11 +99,14 @@ export default function CartPage() {
                     No items in cart.
                 </p>
             ) : (
-                <div className="mt-6 flex w-full justify-center">
+                <div className="mt-4 flex w-full flex-col items-end px-4">
+                    <p className="w-full text-right text-2xl font-medium">
+                        Total: ${totalCost.toFixed(2)}
+                    </p>
                     <Link to="/pay">
                         <button
                             disabled={cartItems.length === 0}
-                            className="rounded-lg bg-primaryColor px-6 py-2 text-xl font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                            className="mt-4 rounded-lg bg-primaryColor px-6 py-2 text-xl font-medium text-primaryTextColor hover:bg-primaryColorMuted"
                             onClick={() => {
                                 notifSentRef.current = false;
                             }}

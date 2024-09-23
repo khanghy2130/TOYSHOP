@@ -1,9 +1,4 @@
-import {
-    Link,
-    Outlet,
-    useLoaderData,
-    useOutletContext,
-} from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useTheme } from "~/utils/Navbar/ThemeProvider";
@@ -13,7 +8,7 @@ import {
 } from "~/utils/payment";
 import { CartItemType } from "../cart/CartItemType";
 import { ContextProps } from "~/utils/types/ContextProps.type";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 
 import {
@@ -22,6 +17,7 @@ import {
     serializeCookieHeader,
 } from "@supabase/ssr";
 import Stripe from "stripe";
+import OrderDetails from "./OrderDetails";
 
 // public key doesn't need to be hidden
 const stripePromise = loadStripe(
@@ -193,15 +189,12 @@ export default function PayPage() {
     }
 
     return (
-        <div>
-            <p>
-                (COMPONENT) receipt listing and total cost $
-                {paymentIntent.amount / 100}
-            </p>
-            {shortCartItems.map((cartItem, i) => (
-                <div key={i}>product: {cartItem.title}</div>
-            ))}
-            <div className="w-1/2">
+        <div className="flex w-full max-w-[800px] flex-col px-2">
+            <OrderDetails
+                shortCartItems={shortCartItems}
+                paymentIntent={paymentIntent}
+            />
+            <div className="w-full">
                 <Elements
                     stripe={stripePromise}
                     options={{
