@@ -72,9 +72,7 @@ export default function SignupForm({
                     <div className="relative">
                         <div
                             hidden={!showPassReqs}
-                            className="absolute bottom-0 
-                w-full rounded-md border-2 border-color-2 
-                bg-color-1 p-2"
+                            className="absolute bottom-0 w-full rounded-md bg-bgColor2 p-2"
                         >
                             <p
                                 className={
@@ -138,12 +136,12 @@ export default function SignupForm({
                         className="text-input"
                         required
                     />
-                    <em className="text-color-4">{errorMessage}</em>
+                    <em className="text-red-500">{errorMessage}</em>
 
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="btn mt-2 inline-flex justify-center"
+                        className="mt-2 inline-flex justify-center rounded-md bg-primaryColor px-2 py-1 text-base font-medium text-primaryTextColor hover:bg-primaryColorMuted"
                     >
                         {isSubmitting ? (
                             <div className="h-6 w-6">
