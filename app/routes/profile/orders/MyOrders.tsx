@@ -1,4 +1,4 @@
-import { useOutletContext } from "@remix-run/react";
+import { useOutletContext, useSearchParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
@@ -13,6 +13,8 @@ export default function MyOrders() {
     const [selectedOrder, setSelectedOrder] = useState<Tables<"ORDERS"> | null>(
         null,
     );
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     function orderClicked(order: Tables<"ORDERS">) {
         setShowOrderModal(true);
@@ -34,6 +36,15 @@ export default function MyOrders() {
             }
 
             setOrders(data);
+
+            // view order? open lastest order & remove query
+            const viewOrder = searchParams.get("viewOrder");
+            if (viewOrder === "true") {
+                setShowOrderModal(true);
+                setSelectedOrder(data[0]);
+                searchParams.delete("viewOrder");
+                setSearchParams(searchParams);
+            }
         })();
     }, []);
 
@@ -42,7 +53,12 @@ export default function MyOrders() {
             <h1 className="mb-2 text-2xl font-medium text-textColor1">
                 My orders
             </h1>
-            <div className="flex h-96 flex-col overflow-auto text-xl sm:text-2xl">
+            <div className="flex max-h-96 flex-col overflow-auto text-xl sm:text-2xl">
+                {orders.length === 0 ? (
+                    <p className="w-full text-center text-lg">
+                        No orders found.
+                    </p>
+                ) : null}
                 {orders.map((order) => (
                     <button
                         className="flex justify-between bg-bgColor2 px-3 py-2 text-textColor1 hover:bg-bgColor3 hover:text-primaryColor sm:px-5"

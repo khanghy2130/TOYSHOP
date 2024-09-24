@@ -88,7 +88,7 @@ export default function OrderModal({
                         <div className="text:lg flex flex-col px-3 py-2 sm:text-xl">
                             <p>
                                 <span className="font-medium">Total:</span> $
-                                {selectedOrder?.total_amount}
+                                {selectedOrder?.total_amount.toFixed(2)}
                             </p>
                             <p>
                                 <span className="font-medium">

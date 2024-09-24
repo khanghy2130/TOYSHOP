@@ -71,7 +71,9 @@ export default function ProductItem({ setProducts, products, product }: Props) {
 
     const imgSrc = `${env.SUPABASE_IMAGES_PATH}/${product.id}/${imgName}`;
     return (
-        <div className={`${isRemoving ? "opacity-50" : ""} w-full lg:w-1/2`}>
+        <div
+            className={`${isRemoving ? "opacity-50" : ""} relative w-full lg:w-1/2`}
+        >
             <div className="my-1 flex items-center overflow-hidden rounded-md bg-bgColor2 lg:mx-2">
                 {/* Product image */}
                 <div className="flex h-16 w-16">
@@ -99,10 +101,10 @@ export default function ProductItem({ setProducts, products, product }: Props) {
                     {product.title}
                 </Link>
 
-                {/* Heart button */}
-                <div className="flex flex-grow justify-end px-3">
+                {/* Remove button */}
+                <div className="absolute -right-1 top-0">
                     <button
-                        className="click-shrink text-textColor1 hover:text-textColor2"
+                        className="click-shrink rounded-full bg-textColor1 text-bgColor1 hover:bg-textColor2"
                         onClick={removeFromWishlist}
                         title="Remove"
                         disabled={isRemoving}

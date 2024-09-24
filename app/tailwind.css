@@ -11,8 +11,8 @@
     }
     html {
         --bgColor1: #f5cce5;
-        --bgColor2: #e6e6e6;
-        --bgColor3: #dddddd;
+        --bgColor2: #f1f1f1;
+        --bgColor3: #e7e7e7;
         --textColor1: #373737;
         --textColor2: #6b6b6b;
     }
@@ -45,13 +45,13 @@
 }
 
 .auth-form {
-    @apply absolute top-1/2 flex -translate-y-1/2 flex-col items-center p-2 text-left transition-transform duration-200;
+    @apply absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center p-2 text-left transition-transform duration-200;
 }
 .auth-form input {
-    @apply mb-2 w-56;
+    @apply mb-2 w-full;
 }
 .auth-form .text-input {
-    @apply bg-bgColor2 p-2;
+    @apply bg-bgColor2 p-2 text-textColor1;
 }
 
 /* SCROLLBAR */

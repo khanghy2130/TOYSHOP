@@ -69,7 +69,7 @@ export default function SearchBar({
                         }}
                         className="peer sr-only"
                     />
-                    <div className="peer relative h-6 w-11 rounded-lg bg-bgColor2 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-lg after:bg-white after:transition-all after:content-[''] peer-checked:bg-primaryColor peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
+                    <div className="peer relative h-6 w-11 rounded-lg bg-bgColor3 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-lg after:bg-white after:transition-all after:content-[''] peer-checked:bg-primaryColor peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
                     <span className="text-md ms-2 font-medium text-textColor1">
                         On sale
                     </span>

@@ -1,11 +1,10 @@
-export type CartItem = {
+export type CartItemType = {
     id: number;
     quantity: number;
     product: {
         id: number;
         title: string;
-        price: number;
-        discount: number;
+        price_with_discount: number | null;
         quantity: number;
-    };
+    } | null;
 };

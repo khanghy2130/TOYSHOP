@@ -24,10 +24,12 @@ export default function Profile() {
     // unauthenticated render
     if (!user) {
         return (
-            <div>
-                <h1>Log in to see your profile.</h1>
+            <div className="flex flex-col items-center">
+                <h1 className="text-xl">Log in to see your profile.</h1>
                 <Link to="/login">
-                    <button className="btn">Login</button>
+                    <button className="mt-3 rounded-md bg-primaryColor px-3 py-1 text-xl font-medium text-primaryTextColor hover:bg-primaryColorMuted">
+                        Login
+                    </button>
                 </Link>
             </div>
         );

@@ -69,7 +69,7 @@ export default function LoginForm({
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="btn mt-2 inline-flex justify-center"
+                        className="mt-2 inline-flex justify-center rounded-md bg-primaryColor px-2 py-1 text-base font-medium text-primaryTextColor hover:bg-primaryColorMuted"
                     >
                         {isSubmitting ? (
                             <div className="h-6 w-6">
@@ -79,12 +79,16 @@ export default function LoginForm({
                             "Log in"
                         )}
                     </button>
-                    <em className="text-color-4">{errorMessage}</em>
+                    <em className="text-red-500">{errorMessage}</em>
+                    <button
+                        className="mt-4 w-full rounded-md bg-bgColor2 py-1 text-base font-medium text-textColor1 hover:bg-bgColor3"
+                        onClick={fillDemoAcc}
+                        type="button"
+                    >
+                        Fill demo account
+                    </button>
                 </div>
             </Form>
-            <button className="btn mt-4 text-xs" onClick={fillDemoAcc}>
-                Fill demo account
-            </button>
         </div>
     );
 }

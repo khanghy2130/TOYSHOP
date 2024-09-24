@@ -124,7 +124,7 @@ export default function Login() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center md:flex-row">
+        <div className="flex w-full flex-col items-center justify-center md:flex-row">
             <div className="flex flex-col items-center">
                 <h1 className="mb-4 text-xl">Continue with</h1>
                 <div className="flex h-20 flex-row justify-center md:h-auto md:w-20 md:flex-col">
@@ -144,10 +144,10 @@ export default function Login() {
             </div>
             <div className="m-8 mx-32 my-12 text-4xl">OR</div>
 
-            <div className="border-color-2 relative h-[520px] w-72 overflow-hidden border-2 text-center">
+            <div className="relative h-[520px] w-full max-w-72 overflow-hidden rounded-xl border-2 border-bgColor2 text-center">
                 {/* LOGIN/SIGNUP SWITCH */}
                 <button
-                    className="btn absolute right-2 top-2 z-10 min-w-32 text-xs"
+                    className="absolute right-2 top-2 z-10 min-w-24 rounded-md bg-bgColor2 py-1 text-sm font-medium hover:bg-bgColor3"
                     onClick={() => {
                         setIsAtLogin(!isAtLogin);
                         resetErrorMessage();
