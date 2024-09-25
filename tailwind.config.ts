@@ -16,6 +16,15 @@ export default {
                 primaryColorMuted: "var(--primaryColorMuted)",
                 primaryTextColor: "var(--primaryTextColor)",
             },
+            keyframes: {
+                shrink: {
+                    "0%": { width: "100%" },
+                    "100%": { width: "0%" },
+                },
+            },
+            animation: {
+                "shrink-width": "shrink 4s linear forwards",
+            },
         },
     },
     plugins: [],

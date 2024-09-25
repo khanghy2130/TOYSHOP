@@ -6,7 +6,8 @@ import { Tables } from "database.types";
 import OrderModal from "./OrderModal";
 
 export default function MyOrders() {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
     const [orders, setOrders] = useState<Tables<"ORDERS">[]>([]);
 
     const [showOrderModal, setShowOrderModal] = useState<boolean>(false);
@@ -32,6 +33,7 @@ export default function MyOrders() {
 
             if (error) {
                 console.error("Error fetching orders", error);
+                addNotification("Error fetching orders", "FAIL");
                 return;
             }
 

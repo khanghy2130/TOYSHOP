@@ -49,6 +49,7 @@ export default function CartPage() {
 
             if (error) {
                 console.error("Error fetching items in cart", error);
+                addNotification("Error fetching items in cart", "FAIL");
                 return;
             }
             setCartItems(data);

@@ -19,13 +19,17 @@ export default function Login() {
 
     // switch between login & signup
     const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
 
     const providerClicked = async (providerName: Provider) => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: providerName,
         });
-        if (error) return console.error("Error logging in.", error);
+        if (error) {
+            console.error("Error logging in.", error);
+            addNotification("Error logging in.", "FAIL");
+        }
     };
 
     // LOGIN

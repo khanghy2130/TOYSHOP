@@ -12,7 +12,8 @@ export default function ReviewForm({
     productInfo,
     setReviewsFetchTrigger,
 }: Props) {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
 
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [enableFormInput, setEnableFormInput] = useState<boolean>(true);
@@ -83,8 +84,11 @@ export default function ReviewForm({
                 .eq("product_id", productInfo.id);
 
             if (error) {
-                return console.error("Error updating review", error);
+                console.error("Error updating review", error);
+                addNotification("Error updating review", "FAIL");
+                return;
             }
+            addNotification("Review updated", "SUCCESS");
         }
         // insert review
         else {
@@ -96,8 +100,11 @@ export default function ReviewForm({
             });
 
             if (error) {
-                return console.error("Error inserting review", error);
+                console.error("Error inserting review", error);
+                addNotification("Error inserting review", "FAIL");
+                return;
             }
+            addNotification("Review added", "SUCCESS");
         }
 
         setIsSubmitting(false);
@@ -115,9 +122,12 @@ export default function ReviewForm({
             .eq("product_id", productInfo.id);
 
         if (error) {
-            return console.error("Error deleting review", error);
+            console.error("Error deleting review", error);
+            addNotification("Error deleting review", "FAIL");
+            return;
         }
 
+        addNotification("Review removed", "SUCCESS");
         setEnableFormInput(true);
         setFeedback("");
         setRating(0);

@@ -39,6 +39,7 @@ export default function ProductCard({ product }: Props) {
 
             if (imageError) {
                 console.error("Error fetching image", imageError);
+                addNotification("Error fetching image", "FAIL");
                 return;
             }
 
@@ -65,6 +66,7 @@ export default function ProductCard({ product }: Props) {
 
         if (error) {
             console.error("Error adding product to cart", error);
+            addNotification("Error adding product to cart", "FAIL");
             return;
         }
 
@@ -74,6 +76,7 @@ export default function ProductCard({ product }: Props) {
 
         if (selectError) {
             console.error("Error fetching cart items", selectError);
+            addNotification("Error fetching cart items", "FAIL");
             return;
         }
 
@@ -98,7 +101,8 @@ export default function ProductCard({ product }: Props) {
             .select();
 
         if (deleteError) {
-            console.error("Un-wishlist failed:", deleteError);
+            console.error("Un-wishlist failed", deleteError);
+            addNotification("Un-wishlist failed", "FAIL");
             return;
         }
 
@@ -109,7 +113,8 @@ export default function ProductCard({ product }: Props) {
                 .insert([{ user_id: user.id, product_id: product.id }]);
 
             if (insertError) {
-                console.error("Wishlist failed:", insertError);
+                console.error("Wishlist failed", insertError);
+                addNotification("Wishlist failed", "FAIL");
             }
             setWishlist([...wishlist, product.id]);
             addNotification("Added to wishlist", "SUCCESS");

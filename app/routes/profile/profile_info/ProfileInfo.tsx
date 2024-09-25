@@ -92,7 +92,9 @@ export default function ProfileInfo() {
 
             if (error) {
                 console.error("Error updating name", error);
+                addNotification("Error updating name", "FAIL");
             }
+            addNotification("Name updated", "SUCCESS");
         };
     const cancelNameEdit: React.DOMAttributes<HTMLButtonElement>["onClick"] =
         function (event) {

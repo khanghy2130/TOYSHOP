@@ -103,7 +103,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function PayPage() {
-    const { supabase, user, setRawCartItems } =
+    const { supabase, user, setRawCartItems, addNotification } =
         useOutletContext<ContextProps>();
 
     const [theme] = useTheme();
@@ -140,6 +140,7 @@ export default function PayPage() {
             // ignore duplicate order error
             if (orderError.code === "23505") return;
             console.error("Error creating new order", orderError);
+            addNotification("Error creating new order", "FAIL");
             return;
         }
 
@@ -158,10 +159,12 @@ export default function PayPage() {
 
         if (itemsError) {
             console.error("Error inserting order items", itemsError);
+            addNotification("Error inserting order items", "FAIL");
             return;
         }
 
         clearCart();
+        addNotification("Order added", "SUCCESS");
     }
 
     async function clearCart() {
@@ -174,6 +177,7 @@ export default function PayPage() {
 
         if (deleteCartError) {
             console.error("Error deleting cart items", deleteCartError);
+            addNotification("Error deleting cart items", "FAIL");
             return;
         }
 
