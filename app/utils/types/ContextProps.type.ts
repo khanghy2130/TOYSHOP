@@ -20,5 +20,7 @@ export type ContextProps = {
     setWishlist: SetState<number[]>;
     rawCartItems: RawCartItem[];
     setRawCartItems: SetState<RawCartItem[]>;
+    userDisplayName: string;
+    setUserDisplayName: SetState<string>;
     addNotification: (message: string, type: PopupNotification["type"]) => void;
 };

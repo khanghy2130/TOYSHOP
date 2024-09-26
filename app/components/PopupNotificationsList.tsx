@@ -5,8 +5,6 @@ type Props = {
 };
 
 export default function PopupNotificationsList({ notifications }: Props) {
-    const dummy = "FAIL";
-
     return (
         <div className="pointer-events-none fixed inset-0 z-50 flex flex-col items-end justify-end px-4 py-4">
             {notifications.map((notif) => (
@@ -16,7 +14,7 @@ export default function PopupNotificationsList({ notifications }: Props) {
                         <span className="ms-2">{notif.message}</span>
                     </div>
                     <div
-                        className={`${popupColor(notif.type)} animate-shrink-width h-1`}
+                        className={`${popupColor(notif.type)} h-1 animate-shrink-width`}
                     ></div>
                 </div>
             ))}

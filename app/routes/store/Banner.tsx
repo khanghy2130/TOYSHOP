@@ -43,7 +43,7 @@ export default function Banner({
                 setSearchQuery("");
                 setShowOnSalesOnly(false);
                 // example double tags string: bob_1&john_2
-                const tagPairs = env.DOUBLE_TAGS_JSON.split("&");
+                const tagPairs = env.PROMO_DOUBLE_TAGS_JSON.split("&");
                 const tags = tagPairs.map((pair) => {
                     const [name, id] = pair.split("_");
                     return { id: Number(id), name };
@@ -56,7 +56,7 @@ export default function Banner({
             handler: () => {
                 setShowOnSalesOnly(false);
                 setChosenTags([]);
-                setSearchQuery("yellow");
+                setSearchQuery(env.PROMO_BRAND);
             },
         },
     ];
