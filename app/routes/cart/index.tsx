@@ -3,6 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import { CartItemType } from "./CartItemType";
 import CartItem from "./CartItem";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+    return [{ title: "My cart" }];
+};
 
 export default function CartPage() {
     const { supabase, user, addNotification, setRawCartItems } =

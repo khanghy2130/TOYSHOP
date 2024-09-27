@@ -1,5 +1,5 @@
 import { useOutletContext, useSearchParams } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 import { Tables } from "database.types";
@@ -21,6 +21,21 @@ export default function MyOrders() {
         setShowOrderModal(true);
         setSelectedOrder(order);
     }
+
+    const [highlighted, setHighlighted] = useState<boolean>(false);
+    const highlightedRef = useRef<HTMLHeadingElement>(null);
+    useEffect(() => {
+        const highlightWishlist = searchParams.get("orders");
+        setHighlighted(highlightWishlist === "true");
+
+        const timeoutId = setTimeout(() => {
+            if (highlightWishlist === "true") {
+                highlightedRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 1000);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchParams]);
 
     // fetch orders
     useEffect(() => {
@@ -53,7 +68,12 @@ export default function MyOrders() {
     return (
         <div className="mt-6 w-full">
             <h1 className="mb-2 text-2xl font-medium text-textColor1">
-                My orders
+                <span
+                    ref={highlightedRef}
+                    className={`${highlighted ? "bg-yellow-500 bg-opacity-20 transition duration-150" : ""}`}
+                >
+                    My orders
+                </span>
             </h1>
             <div className="flex max-h-96 flex-col overflow-auto text-xl sm:text-2xl">
                 {orders.length === 0 ? (

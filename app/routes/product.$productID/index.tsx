@@ -61,6 +61,9 @@ export default function ProductPage() {
                 tags: productData.tags.map(({ tag_id }) => tag_id.name),
                 imgNames: fetchedImagesData.map((imgData) => imgData.name),
             });
+
+            // set page title
+            document.title = productData.title;
         })();
     }, []);
 

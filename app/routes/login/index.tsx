@@ -9,6 +9,11 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+    return [{ title: "Login" }];
+};
 
 export default function Login() {
     const navigate = useNavigate();

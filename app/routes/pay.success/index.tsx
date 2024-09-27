@@ -19,6 +19,7 @@ export default function PaySuccessPage() {
     };
     useEffect(() => {
         saveOrder(paidPaymentIntent);
+        document.title = "Thank you!";
     }, []);
 
     return (

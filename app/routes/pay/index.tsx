@@ -19,6 +19,12 @@ import {
 import Stripe from "stripe";
 import OrderDetails from "./OrderDetails";
 
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+    return [{ title: "Checkout" }];
+};
+
 // public key doesn't need to be hidden
 const stripePromise = loadStripe(
     "pk_test_51PpgFh089fO0rbrj5R1T7614VbTjH5UJeu5DYHsQrP9Qf6dIoG5tds3sWx0knaV2mahirYa0jx57sWMhUismcAy100DdTwGfCm",

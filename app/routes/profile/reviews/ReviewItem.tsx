@@ -44,49 +44,51 @@ export default function ReviewItem({ review }: Props) {
     const imgSrc = `${env.SUPABASE_IMAGES_PATH}/${review.product_id}/${imgName}`;
 
     return (
-        <div className="my-1 flex h-28 overflow-hidden rounded-md bg-bgColor2 lg:mx-2">
-            {/* Product image */}
-            <div className="flex max-h-28 min-h-28 min-w-28 max-w-28">
-                <div className="flex w-full items-center justify-center">
-                    {imgName === null || !imgIsLoaded ? (
-                        <div className="h-1/3 w-1/3 text-primaryColor">
-                            <SpinnerSVG />
-                        </div>
-                    ) : null}
-                    {imgName !== null ? (
-                        <img
-                            className={`${imgIsLoaded ? "" : "hidden"} w-full`}
-                            src={imgSrc}
-                            onLoad={() => setImgIsLoaded(true)}
-                        />
-                    ) : null}
-                </div>
-            </div>
-
-            <div className="flex overflow-hidden py-2 pl-3">
-                <div className="flex flex-col items-start overflow-auto">
-                    {/* Product title */}
-                    <Link
-                        to={`/product/${review.product_id}`}
-                        className="cursor-pointer text-lg leading-none underline hover:text-primaryColor sm:text-xl"
-                    >
-                        {review.product?.title}
-                    </Link>
-
-                    {/* Rating */}
-                    <div className="flex items-center py-2">
-                        {[1, 2, 3, 4, 5].map((num) => {
-                            const isEmpty = num > review.rating;
-                            return (
-                                <div key={num} className="">
-                                    {isEmpty ? emptyStar : filledStar}
-                                </div>
-                            );
-                        })}
+        <div className="w-full lg:w-1/2">
+            <div className="my-1 flex h-28 overflow-hidden rounded-md bg-bgColor2 lg:mx-2">
+                {/* Product image */}
+                <div className="flex max-h-28 min-h-28 min-w-28 max-w-28">
+                    <div className="flex w-full items-center justify-center">
+                        {imgName === null || !imgIsLoaded ? (
+                            <div className="h-1/3 w-1/3 text-primaryColor">
+                                <SpinnerSVG />
+                            </div>
+                        ) : null}
+                        {imgName !== null ? (
+                            <img
+                                className={`${imgIsLoaded ? "" : "hidden"} w-full`}
+                                src={imgSrc}
+                                onLoad={() => setImgIsLoaded(true)}
+                            />
+                        ) : null}
                     </div>
+                </div>
 
-                    {/* Feedback */}
-                    <p className="">{review.feedback}</p>
+                <div className="flex overflow-hidden px-3 py-2">
+                    <div className="flex flex-col items-start overflow-auto">
+                        {/* Product title */}
+                        <Link
+                            to={`/product/${review.product_id}`}
+                            className="cursor-pointer text-lg leading-none underline hover:text-primaryColor sm:text-xl"
+                        >
+                            {review.product?.title}
+                        </Link>
+
+                        {/* Rating */}
+                        <div className="flex items-center py-2">
+                            {[1, 2, 3, 4, 5].map((num) => {
+                                const isEmpty = num > review.rating;
+                                return (
+                                    <div key={num} className="">
+                                        {isEmpty ? emptyStar : filledStar}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Feedback */}
+                        <p className="pr-2">{review.feedback}</p>
+                    </div>
                 </div>
             </div>
         </div>
