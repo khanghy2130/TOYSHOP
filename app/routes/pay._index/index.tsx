@@ -40,7 +40,7 @@ export default function PayPageDefault() {
         <div>
             <Form onSubmit={handleSubmit}>
                 <p className="mb-4 bg-yellow-500 bg-opacity-30 px-2 text-lg">
-                    <span className="font-bold">Important: </span>
+                    <span className="font-bold">Note: </span>
                     this is a demo project, do not enter real information. To
                     test payment, please enter card number: 4242 4242 4242 4242.
                 </p>

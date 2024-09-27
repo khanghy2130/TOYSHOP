@@ -5,21 +5,14 @@ import MyWishlist from "./wishlist/MyWishlist";
 import MyOrders from "./orders/MyOrders";
 import MyReviews from "./reviews/MyReviews";
 import ProfileInfo from "./profile_info/ProfileInfo";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+    return [{ title: "My profile" }];
+};
 
 export default function Profile() {
     const { user } = useOutletContext<ContextProps>();
-
-    /*
-    const location = useLocation();
-    // scroll to element
-    useEffect(() => {
-        if (!hasScrolled && location.hash) {
-            const elementId = location.hash.replace("#", "");
-            const element = document.getElementById(elementId);
-            if (element) element.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [hasScrolled, location.hash]);
-    */
 
     // unauthenticated render
     if (!user) {

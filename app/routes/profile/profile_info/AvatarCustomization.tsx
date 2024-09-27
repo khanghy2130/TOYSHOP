@@ -17,7 +17,8 @@ export default function AvatarCustomization({
     setShowAvatarModal,
     setAvatarUriTrigger,
 }: Props) {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
 
     const [avatarOptions, setAvatarOptions] = useState<AvatarOptions | null>(
         null,
@@ -36,6 +37,7 @@ export default function AvatarCustomization({
 
             if (error) {
                 console.error("Error fetching avatar");
+                addNotification("Error fetching avatar", "FAIL");
                 return;
             }
 
@@ -176,12 +178,14 @@ export default function AvatarCustomization({
                 .eq("id", user!.id);
             if (error) {
                 console.error("Error update avatar", error);
+                addNotification("Error update avatar", "FAIL");
                 return;
             }
 
             // successfully updated
             setAvatarUriTrigger({});
             setShowAvatarModal(false);
+            addNotification("Avatar updated", "SUCCESS");
         };
 
     const customizeOptions: [

@@ -1,5 +1,5 @@
-import { useOutletContext } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useOutletContext, useSearchParams } from "@remix-run/react";
+import { useEffect, useRef, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import ProductItem, { WishlistProduct } from "./ProductItem";
 
@@ -58,10 +58,31 @@ export default function MyWishlist() {
         })();
     }, []);
 
+    const [highlighted, setHighlighted] = useState<boolean>(false);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const highlightedRef = useRef<HTMLHeadingElement>(null);
+    useEffect(() => {
+        const highlightWishlist = searchParams.get("wishlist");
+        setHighlighted(highlightWishlist === "true");
+
+        const timeoutId = setTimeout(() => {
+            if (highlightWishlist === "true") {
+                highlightedRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 1000);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchParams]);
+
     return (
         <div className="w-full">
             <h1 className="mb-2 text-2xl font-medium text-textColor1">
-                My wishlist
+                <span
+                    ref={highlightedRef}
+                    className={`${highlighted ? "bg-yellow-500 bg-opacity-20" : ""}`}
+                >
+                    My wishlist
+                </span>
             </h1>
 
             {products.length === 0 ? (

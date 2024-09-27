@@ -37,14 +37,16 @@ export default function MyReviews() {
                 My reviews
             </h1>
             <div className="flex flex-col">
-                {reviews.length === 0 ? (
+                {reviews.length === 0 && (
                     <p className="w-full text-center text-lg">
                         No reviews found.
                     </p>
-                ) : null}
-                {reviews.map((r) => (
-                    <ReviewItem review={r} key={r.id} />
-                ))}
+                )}
+                <div className="flex w-full flex-wrap">
+                    {reviews.map((r) => (
+                        <ReviewItem review={r} key={r.id} />
+                    ))}
+                </div>
             </div>
         </div>
     );

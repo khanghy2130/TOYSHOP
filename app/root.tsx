@@ -32,6 +32,7 @@ import {
 } from "./utils/types/ContextProps.type";
 import PopupNotificationsList from "./components/PopupNotificationsList";
 import Footer from "./components/Footer";
+import { useNotification } from "./components/useNotification";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -51,7 +52,8 @@ export const loader: LoaderFunction = async ({ request }) => {
             SUPABASE_URL: process.env.SUPABASE_URL!,
             SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
             SUPABASE_IMAGES_PATH: process.env.SUPABASE_IMAGES_PATH!,
-            DOUBLE_TAGS_JSON: process.env.DOUBLE_TAGS_JSON!,
+            PROMO_DOUBLE_TAGS_JSON: process.env.PROMO_DOUBLE_TAGS_JSON!,
+            PROMO_BRAND: process.env.PROMO_BRAND!,
         },
     };
 
@@ -111,6 +113,7 @@ function App() {
     const [theme] = useTheme();
     const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
+    const [userDisplayName, setUserDisplayName] = useState<string>("");
     const [wishlist, setWishlist] = useState<number[]>([]);
     const [rawCartItems, setRawCartItems] = useState<RawCartItem[]>([]);
     const [cartCount, setCartCount] = useState<number>(0);
@@ -125,14 +128,16 @@ function App() {
         );
     }, [rawCartItems]);
 
-    // fetch wishlist & cartCount
+    // fetch wishlist & cartCount & display name
     useEffect(() => {
         if (!user) {
             setWishlist([]);
             setRawCartItems([]);
+            setUserDisplayName("");
             return;
         }
         (async function () {
+            // wishlist
             const { data: wishlistData, error: wishlistError } = await supabase
                 .from("WISHLIST")
                 .select("product_id")
@@ -145,6 +150,7 @@ function App() {
                 setWishlist(wishlistData.map((item) => item.product_id));
             }
 
+            // cart items
             const { data: rawCartItemsData, error: rawCartItemsError } =
                 await supabase
                     .from("CARTS")
@@ -158,24 +164,23 @@ function App() {
             } else {
                 setRawCartItems(rawCartItemsData);
             }
+
+            // display name
+            const { data: profileData, error: profileError } = await supabase
+                .from("PROFILES")
+                .select("display_name")
+                .eq("id", user.id)
+                .single();
+            if (profileError) {
+                console.error("Error fetching profile", profileError);
+                addNotification("Error fetching profile", "FAIL");
+            } else {
+                setUserDisplayName(profileData.display_name);
+            }
         })();
     }, [user]);
 
-    // popup notifications
-    const [notifications, setNotifications] = useState<PopupNotification[]>([]);
-    const addNotification = useCallback(
-        (message: string, type: PopupNotification["type"]) => {
-            const id: number = Date.now() + Math.floor(Math.random() * 10000);
-            setNotifications((prev) => [...prev, { id, message, type }]);
-
-            setTimeout(() => {
-                setNotifications((prev) =>
-                    prev.filter((notification) => notification.id !== id),
-                );
-            }, 4000); // remove after 4 seconds
-        },
-        [],
-    );
+    const [notifications, addNotification] = useNotification();
 
     return (
         <html lang="en" className={theme ?? ""}>
@@ -194,10 +199,12 @@ function App() {
                     setSidePanelIsShown={setSidePanelIsShown}
                 />
                 <SidePanel
-                    user={user}
-                    supabase={supabase}
                     sidePanelIsShown={sidePanelIsShown}
                     setSidePanelIsShown={setSidePanelIsShown}
+                    supabase={supabase}
+                    user={user}
+                    addNotification={addNotification}
+                    userDisplayName={userDisplayName}
                 />
 
                 {/* space for navbar above main page content */}
@@ -214,6 +221,8 @@ function App() {
                             setWishlist,
                             rawCartItems,
                             setRawCartItems,
+                            userDisplayName,
+                            setUserDisplayName,
                             addNotification,
                         }}
                     />

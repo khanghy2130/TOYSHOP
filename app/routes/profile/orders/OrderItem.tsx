@@ -9,7 +9,7 @@ type Props = {
 };
 
 export default function OrderItem({ orderItem }: Props) {
-    const { supabase, env } = useOutletContext<ContextProps>();
+    const { supabase, env, addNotification } = useOutletContext<ContextProps>();
     const [imgName, setImgName] = useState<string | null>(null);
     const [imgIsLoaded, setImgIsLoaded] = useState<boolean>(false);
 
@@ -30,6 +30,7 @@ export default function OrderItem({ orderItem }: Props) {
 
             if (imageError) {
                 console.error("Error fetching image", imageError);
+                addNotification("Error fetching image", "FAIL");
                 return;
             }
 

@@ -1,12 +1,13 @@
 import { useOutletContext, useSearchParams } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 import { Tables } from "database.types";
 import OrderModal from "./OrderModal";
 
 export default function MyOrders() {
-    const { supabase, user } = useOutletContext<ContextProps>();
+    const { supabase, user, addNotification } =
+        useOutletContext<ContextProps>();
     const [orders, setOrders] = useState<Tables<"ORDERS">[]>([]);
 
     const [showOrderModal, setShowOrderModal] = useState<boolean>(false);
@@ -21,6 +22,21 @@ export default function MyOrders() {
         setSelectedOrder(order);
     }
 
+    const [highlighted, setHighlighted] = useState<boolean>(false);
+    const highlightedRef = useRef<HTMLHeadingElement>(null);
+    useEffect(() => {
+        const highlightWishlist = searchParams.get("orders");
+        setHighlighted(highlightWishlist === "true");
+
+        const timeoutId = setTimeout(() => {
+            if (highlightWishlist === "true") {
+                highlightedRef.current?.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 1000);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchParams]);
+
     // fetch orders
     useEffect(() => {
         if (!user) return;
@@ -32,6 +48,7 @@ export default function MyOrders() {
 
             if (error) {
                 console.error("Error fetching orders", error);
+                addNotification("Error fetching orders", "FAIL");
                 return;
             }
 
@@ -51,7 +68,12 @@ export default function MyOrders() {
     return (
         <div className="mt-6 w-full">
             <h1 className="mb-2 text-2xl font-medium text-textColor1">
-                My orders
+                <span
+                    ref={highlightedRef}
+                    className={`${highlighted ? "bg-yellow-500 bg-opacity-20 transition duration-150" : ""}`}
+                >
+                    My orders
+                </span>
             </h1>
             <div className="flex max-h-96 flex-col overflow-auto text-xl sm:text-2xl">
                 {orders.length === 0 ? (

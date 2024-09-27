@@ -3,15 +3,15 @@ import { useState } from "react";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "New App" },
-        { name: "description", content: "Project in progress" },
+        { title: "TOYSHOP" },
+        { name: "description", content: "Online store for toys." },
     ];
 };
 
 export default function Index() {
     return (
         <div>
-            <h1 className="text-5xl text-color-2">Landing page</h1>
+            <h1 className="text-color-2 text-5xl">Landing page</h1>
         </div>
     );
 }

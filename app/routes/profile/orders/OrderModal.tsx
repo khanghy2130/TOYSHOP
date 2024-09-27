@@ -13,7 +13,7 @@ export default function OrderModal({
     setShowOrderModal,
     selectedOrder,
 }: Props) {
-    const { supabase } = useOutletContext<ContextProps>();
+    const { supabase, addNotification } = useOutletContext<ContextProps>();
     const [orderItems, setOrderItems] = useState<Tables<"ORDERS_ITEMS">[]>([]);
 
     // fetch order-items for selected order
@@ -28,6 +28,7 @@ export default function OrderModal({
 
             if (error) {
                 console.error("Error fetching order items", error);
+                addNotification("Error fetching order items", "FAIL");
                 return;
             }
 

@@ -19,6 +19,12 @@ import {
 import Stripe from "stripe";
 import OrderDetails from "./OrderDetails";
 
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+    return [{ title: "Checkout" }];
+};
+
 // public key doesn't need to be hidden
 const stripePromise = loadStripe(
     "pk_test_51PpgFh089fO0rbrj5R1T7614VbTjH5UJeu5DYHsQrP9Qf6dIoG5tds3sWx0knaV2mahirYa0jx57sWMhUismcAy100DdTwGfCm",
@@ -103,7 +109,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function PayPage() {
-    const { supabase, user, setRawCartItems } =
+    const { supabase, user, setRawCartItems, addNotification } =
         useOutletContext<ContextProps>();
 
     const [theme] = useTheme();
@@ -140,6 +146,7 @@ export default function PayPage() {
             // ignore duplicate order error
             if (orderError.code === "23505") return;
             console.error("Error creating new order", orderError);
+            addNotification("Error creating new order", "FAIL");
             return;
         }
 
@@ -158,10 +165,12 @@ export default function PayPage() {
 
         if (itemsError) {
             console.error("Error inserting order items", itemsError);
+            addNotification("Error inserting order items", "FAIL");
             return;
         }
 
         clearCart();
+        addNotification("Order added", "SUCCESS");
     }
 
     async function clearCart() {
@@ -174,6 +183,7 @@ export default function PayPage() {
 
         if (deleteCartError) {
             console.error("Error deleting cart items", deleteCartError);
+            addNotification("Error deleting cart items", "FAIL");
             return;
         }
 

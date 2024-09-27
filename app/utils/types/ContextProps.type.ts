@@ -1,5 +1,5 @@
 import { SupabaseClient, User } from "@supabase/supabase-js";
-import { Database, Tables } from "database.types";
+import { Database } from "database.types";
 
 export type RawCartItem = {
     product_id: number;
@@ -9,7 +9,7 @@ export type RawCartItem = {
 export type PopupNotification = {
     id: number;
     message: string;
-    type: "NEUTRAL" | "SUCCESS" | "FAIL";
+    type: "SUCCESS" | "FAIL";
 };
 
 export type ContextProps = {
@@ -20,5 +20,7 @@ export type ContextProps = {
     setWishlist: SetState<number[]>;
     rawCartItems: RawCartItem[];
     setRawCartItems: SetState<RawCartItem[]>;
+    userDisplayName: string;
+    setUserDisplayName: SetState<string>;
     addNotification: (message: string, type: PopupNotification["type"]) => void;
 };

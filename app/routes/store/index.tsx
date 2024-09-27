@@ -8,6 +8,11 @@ import { Tables } from "database.types";
 import ProductCard from "./ProductCard";
 import SpinnerSVG from "~/components/SpinnerSVG";
 import Banner from "./Banner";
+import { MetaFunction } from "@remix-run/node";
+
+export const meta: MetaFunction = () => {
+    return [{ title: "Browse Store" }];
+};
 
 export default function StorePage() {
     const [products, setProducts] = useState<Tables<"PRODUCTS">[]>([]);

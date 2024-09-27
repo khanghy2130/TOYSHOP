@@ -8,15 +8,37 @@ import AvatarCustomization from "./AvatarCustomization";
 import SpinnerSVG from "~/components/SpinnerSVG";
 
 export default function ProfileInfo() {
-    const { supabase, user, addNotification } =
-        useOutletContext<ContextProps>();
+    const {
+        supabase,
+        user,
+        addNotification,
+        userDisplayName,
+        setUserDisplayName,
+    } = useOutletContext<ContextProps>();
 
     const [enableNameEdit, setEnableNameEdit] = useState<boolean>(false);
+    const [nameValue, setNameValue] = useState<string>(userDisplayName);
+
+    // fetch display name
+    useEffect(() => {
+        if (!user) return;
+        (async function () {
+            const { data: profileData, error: profileError } = await supabase
+                .from("PROFILES")
+                .select("display_name")
+                .eq("id", user.id)
+                .single();
+            if (profileError) {
+                console.error("Error fetching profile", profileError);
+                addNotification("Error fetching profile", "FAIL");
+                return;
+            }
+            setUserDisplayName(profileData.display_name);
+            setNameValue(profileData.display_name);
+        })();
+    }, []);
+
     const [showAvatarModal, setShowAvatarModal] = useState<boolean>(false);
-
-    const [nameValue, setNameValue] = useState<string>("");
-    const [defaultNameValue, setDefaultNameValue] = useState<string>("");
-
     const [avatarUri, setAvatarUri] = useState<string>("");
     // trigger a refetch
     const [avatarUriTrigger, setAvatarUriTrigger] = useState<{}>({});
@@ -57,32 +79,13 @@ export default function ProfileInfo() {
         })();
     }, [avatarUriTrigger]);
 
-    // fetch display_name
-    useEffect(() => {
-        (async function () {
-            if (!user) return;
-            const { data: profileData, error: profileError } = await supabase
-                .from("PROFILES")
-                .select("display_name")
-                .eq("id", user.id)
-                .single();
-            if (profileError) {
-                console.error("Error fetching profile", profileError);
-                addNotification("Error fetching profile", "FAIL");
-                return;
-            }
-            setNameValue(profileData.display_name);
-            setDefaultNameValue(profileData.display_name);
-        })();
-    }, []);
-
     const submitNameEdit: React.FormEventHandler<HTMLFormElement> =
         async function (event) {
             event.preventDefault();
 
             // disable edit and set new default name
             setEnableNameEdit(false);
-            setDefaultNameValue(nameValue);
+            setUserDisplayName(nameValue);
 
             // send update
             const { error } = await supabase
@@ -92,12 +95,14 @@ export default function ProfileInfo() {
 
             if (error) {
                 console.error("Error updating name", error);
+                addNotification("Error updating name", "FAIL");
             }
+            addNotification("Name updated", "SUCCESS");
         };
     const cancelNameEdit: React.DOMAttributes<HTMLButtonElement>["onClick"] =
         function (event) {
             setEnableNameEdit(false);
-            setNameValue(defaultNameValue);
+            setNameValue(userDisplayName);
         };
     const onChangeNameEdit: React.ChangeEventHandler<HTMLInputElement> =
         function (event) {

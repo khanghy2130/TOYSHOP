@@ -15,7 +15,7 @@ export default function TagsFilter({
     chosenTags,
     setChosenTags,
 }: Props) {
-    const { supabase } = useOutletContext<ContextProps>();
+    const { supabase, addNotification } = useOutletContext<ContextProps>();
     const [allTags, setAllTags] = useState<FilterTag[]>([]);
     const [showTagsModal, setShowTagsModal] = useState<boolean>(false);
 
@@ -25,6 +25,7 @@ export default function TagsFilter({
 
             if (error) {
                 console.error("Error fetching tags", error);
+                addNotification("Error fetching tags", "FAIL");
                 return;
             }
 
