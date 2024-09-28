@@ -23,7 +23,7 @@ export default function MyWishlist({ newWishlist, orderedProducts }: Props) {
     }, []);
 
     const [highlighted, setHighlighted] = useState<boolean>(false);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const highlightedRef = useRef<HTMLHeadingElement>(null);
     useEffect(() => {
         const highlightWishlist = searchParams.get("wishlist");

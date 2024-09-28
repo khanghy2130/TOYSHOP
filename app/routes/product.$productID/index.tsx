@@ -5,6 +5,7 @@ import Gallery from "./Gallery";
 import { ProductInfo } from "./Types";
 import OtherProducts from "./other_products/OtherProducts";
 import ProductDetails from "./ProductDetails";
+import SpinnerSVG from "~/components/SpinnerSVG";
 
 export default function ProductPage() {
     const { supabase, env } = useOutletContext<ContextProps>();
@@ -68,11 +69,21 @@ export default function ProductPage() {
     }, []);
 
     if (!successfulFetch) {
-        return <div>No product found.</div>;
+        return (
+            <div>
+                <h1 className="text-2xl">No product found.</h1>
+            </div>
+        );
     }
 
     if (!productInfo) {
-        return <div>Loading product...</div>;
+        return (
+            <div className="flex items-center">
+                <div className="mt-10 h-20 w-20 text-primaryColor">
+                    <SpinnerSVG />
+                </div>
+            </div>
+        );
     }
 
     return (

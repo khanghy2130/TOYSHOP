@@ -26,15 +26,14 @@ export default function ProfileInfo() {
             const { data: profileData, error: profileError } = await supabase
                 .from("PROFILES")
                 .select("display_name")
-                .eq("id", user.id)
-                .single();
-            if (profileError) {
+                .eq("id", user.id);
+            if (profileError || profileData.length === 0) {
                 console.error("Error fetching profile", profileError);
                 addNotification("Error fetching profile", "FAIL");
                 return;
             }
-            setUserDisplayName(profileData.display_name);
-            setNameValue(profileData.display_name);
+            setUserDisplayName(profileData[0].display_name);
+            setNameValue(profileData[0].display_name);
         })();
     }, []);
 
@@ -50,30 +49,31 @@ export default function ProfileInfo() {
             const { data, error } = await supabase
                 .from("AVATARS")
                 .select(`*`)
-                .eq("id", user.id)
-                .single();
+                .eq("id", user.id);
 
-            if (error) {
+            if (error || data.length === 0) {
                 console.error("Error fetching avatar");
                 addNotification("Error fetching avatar", "FAIL");
                 return;
             }
 
+            const avt = data[0];
+
             setAvatarUri(
                 createAvatar(bigSmile, {
-                    accessoriesProbability: data.accessoriesProbability!,
-                    backgroundColor: [data.backgroundColor!],
-                    skinColor: [data.skinColor!],
-                    hairColor: [data.hairColor!],
+                    accessoriesProbability: avt.accessoriesProbability!,
+                    backgroundColor: [avt.backgroundColor!],
+                    skinColor: [avt.skinColor!],
+                    hairColor: [avt.hairColor!],
                     // expect errors of not matching types
                     // @ts-expect-error
-                    hair: [data.hair!],
+                    hair: [avt.hair!],
                     // @ts-expect-error
-                    eyes: [data.eyes!],
+                    eyes: [avt.eyes!],
                     // @ts-expect-error
-                    mouth: [data.mouth!],
+                    mouth: [avt.mouth!],
                     // @ts-expect-error
-                    accessories: [data.accessories!],
+                    accessories: [avt.accessories!],
                 }).toDataUri(),
             );
         })();
