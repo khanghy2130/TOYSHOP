@@ -2,60 +2,24 @@ import { useOutletContext, useSearchParams } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import ProductItem, { WishlistProduct } from "./ProductItem";
+import { loaderDataReturnType } from "..";
 
-export default function MyWishlist() {
-    const { supabase, user, setWishlist, addNotification } =
-        useOutletContext<ContextProps>();
+type Props = {
+    newWishlist: loaderDataReturnType["newWishlist"] | undefined;
+    orderedProducts: loaderDataReturnType["orderedProducts"] | undefined;
+};
 
-    const [products, setProducts] = useState<WishlistProduct[]>([]);
+export default function MyWishlist({ newWishlist, orderedProducts }: Props) {
+    const { setWishlist } = useOutletContext<ContextProps>();
 
-    // refetch wishlist and fetch products
+    const [products, setProducts] = useState<WishlistProduct[]>(
+        orderedProducts || [],
+    );
+
     useEffect(() => {
-        if (!user) return;
-        (async function () {
-            // refetch wishlist
-            const { data: wishlistData, error: wishlistError } = await supabase
-                .from("WISHLIST")
-                .select("product_id")
-                .order("created_at", { ascending: true })
-                .eq("user_id", user.id);
-
-            if (wishlistError) {
-                console.error("Error fetching wishlist", wishlistError);
-                addNotification("Error fetching wishlist", "FAIL");
-                return;
-            }
-
-            const newWishlist = wishlistData.map((item) => item.product_id);
+        if (newWishlist) {
             setWishlist(newWishlist);
-
-            // fetch products
-            const { data: productsData, error: productsError } = await supabase
-                .from("PRODUCTS")
-                .select("id, title")
-                .in("id", newWishlist);
-
-            if (productsError) {
-                console.error(
-                    "Error fetching wishlist products",
-                    productsError,
-                );
-                addNotification("Error fetching wishlist products", "FAIL");
-                return;
-            }
-            // order products by wishlist order
-            const orderedProducts: WishlistProduct[] = [];
-            for (let wi = 0; wi < newWishlist.length; wi++) {
-                for (let pi = 0; pi < productsData.length; pi++) {
-                    const product = productsData[pi];
-                    if (product.id === newWishlist[wi]) {
-                        orderedProducts.push(product);
-                        break;
-                    }
-                }
-            }
-            setProducts(orderedProducts);
-        })();
+        }
     }, []);
 
     const [highlighted, setHighlighted] = useState<boolean>(false);
@@ -69,7 +33,7 @@ export default function MyWishlist() {
             if (highlightWishlist === "true") {
                 highlightedRef.current?.scrollIntoView({ behavior: "smooth" });
             }
-        }, 1000);
+        }, 100);
 
         return () => clearTimeout(timeoutId);
     }, [searchParams]);

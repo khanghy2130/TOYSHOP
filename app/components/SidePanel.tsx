@@ -226,14 +226,17 @@ export default function SidePanel({
 
                 {/* Unauthenticated */}
                 {!user && (
-                    <Link to="/login">
-                        <button
-                            className=""
-                            onClick={() => setSidePanelIsShown(false)}
-                        >
-                            Login
-                        </button>
-                    </Link>
+                    <div className="flex flex-col items-center">
+                        <h1 className="mb-4 text-lg">Log in to see profile</h1>
+                        <Link to="/login">
+                            <button
+                                className="click-shrink rounded-md bg-primaryColor px-4 py-2 text-xl text-primaryTextColor hover:bg-primaryColorMuted"
+                                onClick={() => setSidePanelIsShown(false)}
+                            >
+                                Login
+                            </button>
+                        </Link>
+                    </div>
                 )}
             </div>
         </div>
