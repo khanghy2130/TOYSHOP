@@ -126,6 +126,7 @@ export default function ProductDetails({ productInfo }: Props) {
             </select>
 
             <button
+                data-testid="add-to-cart-button"
                 className="mt-3 w-full rounded-lg enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:bg-bgColor2 disabled:text-textColor2"
                 disabled={isInCart || outOfStock}
                 onClick={addToCart}
@@ -142,10 +143,7 @@ export default function ProductDetails({ productInfo }: Props) {
             <h1 className="mt-10 text-xl font-medium text-primaryColor">
                 About this product
             </h1>
-            <p className="text-md sm:text-lg">
-                {productInfo.description} afadfsd sdfs fsg sf sfgd r fsfgsfg
-                dgdg dsffb.
-            </p>
+            <p className="text-md sm:text-lg">{productInfo.description}</p>
 
             <div className="sm:text-md mt-3 flex flex-wrap gap-x-2 gap-y-2 text-sm text-textColor1">
                 {productInfo.tags.map((tag) => (

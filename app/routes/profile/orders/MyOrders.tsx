@@ -1,14 +1,16 @@
-import { useOutletContext, useSearchParams } from "@remix-run/react";
+import { useSearchParams } from "@remix-run/react";
 import { useEffect, useRef, useState } from "react";
-import { ContextProps } from "~/utils/types/ContextProps.type";
 
 import { Tables } from "database.types";
 import OrderModal from "./OrderModal";
+import { loaderDataReturnType } from "..";
 
-export default function MyOrders() {
-    const { supabase, user, addNotification } =
-        useOutletContext<ContextProps>();
-    const [orders, setOrders] = useState<Tables<"ORDERS">[]>([]);
+type Props = {
+    ordersData: loaderDataReturnType["ordersData"] | undefined;
+};
+
+export default function MyOrders({ ordersData }: Props) {
+    const [orders, setOrders] = useState<Tables<"ORDERS">[]>(ordersData || []);
 
     const [showOrderModal, setShowOrderModal] = useState<boolean>(false);
     const [selectedOrder, setSelectedOrder] = useState<Tables<"ORDERS"> | null>(
@@ -32,37 +34,20 @@ export default function MyOrders() {
             if (highlightWishlist === "true") {
                 highlightedRef.current?.scrollIntoView({ behavior: "smooth" });
             }
-        }, 1000);
+        }, 100);
 
         return () => clearTimeout(timeoutId);
     }, [searchParams]);
 
-    // fetch orders
     useEffect(() => {
-        if (!user) return;
-        (async function () {
-            const { data, error } = await supabase
-                .from("ORDERS")
-                .select("*")
-                .order("created_at", { ascending: false });
-
-            if (error) {
-                console.error("Error fetching orders", error);
-                addNotification("Error fetching orders", "FAIL");
-                return;
-            }
-
-            setOrders(data);
-
-            // view order? open lastest order & remove query
-            const viewOrder = searchParams.get("viewOrder");
-            if (viewOrder === "true") {
-                setShowOrderModal(true);
-                setSelectedOrder(data[0]);
-                searchParams.delete("viewOrder");
-                setSearchParams(searchParams);
-            }
-        })();
+        // view order? open lastest order & remove query
+        const viewOrder = searchParams.get("viewOrder");
+        if (viewOrder === "true" && orders[0]) {
+            setShowOrderModal(true);
+            setSelectedOrder(orders[0]);
+            searchParams.delete("viewOrder");
+            setSearchParams(searchParams);
+        }
     }, []);
 
     return (
