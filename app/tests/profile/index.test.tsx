@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, Mock } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { userEvent } from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 
-import Profile from "../../routes/profile/index";
+import Profile from "~/routes/profile/index";
 import {
     useLoaderData,
     useOutletContext,
@@ -55,6 +54,7 @@ describe("Profile page", () => {
                         }),
                         eq: vi.fn().mockResolvedValue({
                             data: [{ id: 1 }, { id: 2 }],
+                            range: vi.fn(),
                         }),
                     }),
                 }),

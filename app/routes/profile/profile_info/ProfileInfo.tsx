@@ -27,9 +27,15 @@ export default function ProfileInfo() {
                 .from("PROFILES")
                 .select("display_name")
                 .eq("id", user.id);
-            if (profileError || profileData.length === 0) {
+
+            if (profileError) {
                 console.error("Error fetching profile", profileError);
                 addNotification("Error fetching profile", "FAIL");
+                return;
+            }
+
+            if (profileData.length === 0) {
+                addNotification("No profile found", "FAIL");
                 return;
             }
             setUserDisplayName(profileData[0].display_name);
@@ -51,9 +57,14 @@ export default function ProfileInfo() {
                 .select(`*`)
                 .eq("id", user.id);
 
-            if (error || data.length === 0) {
+            if (error) {
                 console.error("Error fetching avatar");
                 addNotification("Error fetching avatar", "FAIL");
+                return;
+            }
+
+            if (data.length === 0) {
+                addNotification("No avatar found", "FAIL");
                 return;
             }
 
