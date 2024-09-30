@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useState } from "react";
+import ThreeCanvas from "./ThreeCanvas";
 
 export const meta: MetaFunction = () => {
     return [
@@ -10,8 +10,11 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
     return (
-        <div>
-            <h1 className="text-color-2 text-5xl">Landing page</h1>
+        <div className="relative h-full w-full">
+            <ThreeCanvas />
+            {Array.from(Array(100)).map((item, i) => (
+                <p key={i}>{i}</p>
+            ))}
         </div>
     );
 }
