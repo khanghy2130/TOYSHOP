@@ -88,7 +88,7 @@ export default function SidePanel({
         <div
             className={
                 (sidePanelIsShown ? "right-0" : "-right-96") +
-                ` fixed z-50 flex h-screen w-96 max-w-full flex-col items-center overflow-y-auto border-l-2 border-bgColor2 bg-bgColor1 transition-[right] duration-500 ease-in-out`
+                ` fixed z-50 flex h-screen w-96 max-w-full flex-col items-center overflow-y-auto bg-bgColor1 transition-[right] duration-500 ease-in-out`
             }
         >
             <div className="flex w-full flex-grow flex-col">

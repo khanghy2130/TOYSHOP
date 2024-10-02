@@ -34,7 +34,7 @@ export default function ReviewCard({ review }: Props) {
     }, []);
 
     return (
-        <div className="mt-5 overflow-hidden rounded-lg bg-gradient-to-tl from-bgColor1 to-bgColor2 p-3">
+        <div className="mt-5 overflow-hidden rounded-lg bg-bgColor2 p-3 shadow-md">
             <div className="flex">
                 {/* avatar image */}
                 <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-md">
