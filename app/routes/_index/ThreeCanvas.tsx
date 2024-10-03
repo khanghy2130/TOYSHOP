@@ -97,7 +97,7 @@ function FlippingSquare() {
 
     const scaling = Math.min(1, viewport.width / 3);
     const deg90 = Math.PI / 2;
-    const rotationYValue = scrollY * 0.005 + deg90;
+    const rotationYValue = scrollY * 0.006 + deg90;
     const imgIndex =
         Math.floor((rotationYValue - deg90) / (deg90 * 2)) % images.length;
     const texture = useLoader(TextureLoader, images[Math.max(imgIndex, 0)]);
@@ -105,7 +105,7 @@ function FlippingSquare() {
     const calculatedRotation: [number, number, number] = [
         0.1,
         rotationYValue,
-        -1.3 + scrollY * 0.002,
+        -1.3 + scrollY * 0.003,
     ];
     const calculatedPosition: [number, number, number] = [
         Math.cos(scrollY * 0.004) * 0.35 * scaling,

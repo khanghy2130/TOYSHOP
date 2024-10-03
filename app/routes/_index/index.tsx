@@ -12,7 +12,7 @@ export default function Index() {
     return (
         <div className="relative h-full w-full">
             <ThreeCanvas />
-            {Array.from(Array(200)).map((item, i) => (
+            {Array.from(Array(300)).map((item, i) => (
                 <p key={i}>{i}</p>
             ))}
         </div>
