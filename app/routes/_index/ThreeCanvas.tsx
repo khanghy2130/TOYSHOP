@@ -1,17 +1,17 @@
-import { Canvas, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { TextureLoader, Mesh, Group } from "three";
 import * as THREE from "three";
 
-import img1 from "~/assets/landing_page_products_images/img1.jpg";
-import img2 from "~/assets/landing_page_products_images/img2.jpg";
-import img3 from "~/assets/landing_page_products_images/img3.jpg";
-import img4 from "~/assets/landing_page_products_images/img4.jpg";
-import img5 from "~/assets/landing_page_products_images/img5.jpg";
-import img6 from "~/assets/landing_page_products_images/img6.jpg";
-import img7 from "~/assets/landing_page_products_images/img7.jpg";
-import img8 from "~/assets/landing_page_products_images/img8.jpg";
+import img1 from "~/assets/landing_page/frame_images/img1.jpg";
+import img2 from "~/assets/landing_page/frame_images/img2.jpg";
+import img3 from "~/assets/landing_page/frame_images/img3.jpg";
+import img4 from "~/assets/landing_page/frame_images/img4.jpg";
+import img5 from "~/assets/landing_page/frame_images/img5.jpg";
+import img6 from "~/assets/landing_page/frame_images/img6.jpg";
+import img7 from "~/assets/landing_page/frame_images/img7.jpg";
+import img8 from "~/assets/landing_page/frame_images/img8.jpg";
 
 type PictureFrameProps = {
     imageSize: [number, number];
@@ -110,7 +110,7 @@ function FlippingSquare() {
     const calculatedPosition: [number, number, number] = [
         Math.cos(scrollY * 0.004) * 0.35 * scaling,
         Math.min(-10 + scrollY * 0.03, 0),
-        Math.max(15 - scrollY * 0.05, 0),
+        Math.max(15 - scrollY * 0.045, 0),
     ];
 
     return (
