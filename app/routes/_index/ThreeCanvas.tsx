@@ -1,6 +1,5 @@
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { TextureLoader, Mesh, Group } from "three";
 import * as THREE from "three";
 
@@ -154,9 +153,9 @@ export default function ThreeCanvas() {
 
     if (!mounted) return null;
 
-    return createPortal(
+    return (
         <Canvas
-            className="left-0 top-0 -z-10 h-full w-full"
+            className="left-0 top-0 z-10"
             style={{ position: "fixed" }}
             camera={{ fov: 40, position: [0, 0, -5] }}
         >
@@ -167,7 +166,6 @@ export default function ThreeCanvas() {
                 intensity={1.8}
             />
             <FlippingSquare />
-        </Canvas>,
-        document.body,
+        </Canvas>
     );
 }
