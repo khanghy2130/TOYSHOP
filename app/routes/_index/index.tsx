@@ -9,6 +9,8 @@ import save_outline from "~/assets/landing_page/headlines/save_outline.png";
 import save_fill from "~/assets/landing_page/headlines/save_fill.png";
 import share_outline from "~/assets/landing_page/headlines/share_outline.png";
 import share_fill from "~/assets/landing_page/headlines/share_fill.png";
+import Headlines from "./Headlines";
+import BriefCard from "./BriefCard";
 
 export const meta: MetaFunction = () => {
     return [
@@ -17,30 +19,33 @@ export const meta: MetaFunction = () => {
     ];
 };
 
-export default function Index() {
-    const highlights: {
-        headline: [string, string]; // [outline, fill]
-        brief: string;
-    }[] = [
+export type HighlightInfo = {
+    headline: string;
+    headlineImages: [string, string]; // [outline, fill]
+    brief: string;
+};
+
+export default function LandingPage() {
+    const highlights: HighlightInfo[] = [
         {
-            // EXPLORE
-            headline: [explore_outline, explore_fill],
-            brief: "exploreeee",
+            headline: "Explore",
+            headlineImages: [explore_outline, explore_fill],
+            brief: "Browse our huge selection of unique and exciting toys, from futuristic vehicles to powerful battle machines, all waiting to be explored.",
         },
         {
-            // COLLECT
-            headline: [collect_outline, collect_fill],
-            brief: "colllecettt",
+            headline: "Collect",
+            headlineImages: [collect_outline, collect_fill],
+            brief: "Build your ultimate collection with limited editions and series designed for true enthusiasts and collectors alike.",
         },
         {
-            // SAVE
-            headline: [save_outline, save_fill],
-            brief: "sassavavee",
+            headline: "Save",
+            headlineImages: [save_outline, save_fill],
+            brief: "Save big on every purchase! We offer unbeatable deals and exclusive discounts. Don't miss our regular flash sales for your favorite toys!",
         },
         {
-            // SHARE
-            headline: [share_outline, share_fill],
-            brief: "shharrree",
+            headline: "Share",
+            headlineImages: [share_outline, share_fill],
+            brief: "Join the conversation! Share your experience, rate your favorites, and help others find the perfect toy by leaving your feedback and reviews.",
         },
     ];
 
@@ -48,31 +53,23 @@ export default function Index() {
         <div className="relative h-full w-full">
             <ThreeCanvas />
             {/* Hero section */}
-            <div className="relative z-10 h-96 w-full bg-bgColor2">
+            <div className="relative z-10 mb-20 h-96 w-full bg-bgColor2">
                 <h1>Welcome</h1>
             </div>
+
+            {/* Headlines scrollzone */}
             {highlights.map((highlight, i) => (
-                <div key={i} className="h-screen">
-                    <div className="sticky top-0 -z-10 flex justify-center pt-16">
-                        <div className="relative flex justify-start">
-                            <img
-                                className="w-screen max-w-[800px]"
-                                src={highlight.headline[0]}
-                            />
-                            <div className="absolute left-0 top-0 w-[50%] overflow-x-hidden bg-bgColor2">
-                                <img
-                                    className="w-screen max-w-[800px]"
-                                    src={highlight.headline[1]}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <p className="relative z-10">
-                        {highlight.brief} Online store for toys. Online store
-                        for toys. Online store for toys. Online store for toys.
-                    </p>
-                </div>
+                <Headlines key={i} highlight={highlight} />
             ))}
+
+            {/* Highlight briefs */}
+            <div className="relative z-10 -mb-10 py-40 backdrop-blur-md">
+                <div className="mx-auto flex w-full max-w-[400px] flex-wrap px-2 sm:max-w-[800px]">
+                    {highlights.map((highlight, i) => (
+                        <BriefCard key={i} highlight={highlight} />
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

@@ -10,9 +10,9 @@
         --primaryTextColor: #f6f6f6;
     }
     html {
-        --bgColor1: #f8d6eb;
-        --bgColor2: #f8f6d9;
-        --bgColor3: #f7f1bc;
+        --bgColor1: #faf9ee;
+        --bgColor2: #f3f0d6;
+        --bgColor3: #f3edb8;
         --textColor1: #373737;
         --textColor2: #6b6b6b;
     }
@@ -42,6 +42,10 @@
 
 .click-shrink {
     @apply transition-[transform] active:scale-90;
+}
+
+.custom-text-shadow {
+    text-shadow: 0 0 0.15em black;
 }
 
 .auth-form {
