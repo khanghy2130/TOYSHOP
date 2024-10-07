@@ -1,6 +1,8 @@
 import type { MetaFunction } from "@remix-run/node";
 import ThreeCanvas from "./ThreeCanvas";
 
+import heroBgImage from "~/assets/landing_page/hero-section-background.webp";
+
 import explore_outline from "~/assets/landing_page/headlines/explore_outline.png";
 import explore_fill from "~/assets/landing_page/headlines/explore_fill.png";
 import collect_outline from "~/assets/landing_page/headlines/collect_outline.png";
@@ -11,6 +13,8 @@ import share_outline from "~/assets/landing_page/headlines/share_outline.png";
 import share_fill from "~/assets/landing_page/headlines/share_fill.png";
 import Headlines from "./Headlines";
 import BriefCard from "./BriefCard";
+import { Link } from "@remix-run/react";
+import { useEffect, useRef } from "react";
 
 export const meta: MetaFunction = () => {
     return [
@@ -49,12 +53,42 @@ export default function LandingPage() {
         },
     ];
 
+    const heroSectionRef = useRef<HTMLDivElement>(null);
+    // move hero section on scroll
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!heroSectionRef.current) return;
+            heroSectionRef.current.style.transform = `translateY(-${window.scrollY * 0.14}vh)`;
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        };
+    }, []);
+
     return (
         <div className="relative h-full w-full">
             <ThreeCanvas />
+
             {/* Hero section */}
-            <div className="relative z-10 mb-20 h-96 w-full bg-bgColor2">
-                <h1>Welcome</h1>
+            <div
+                ref={heroSectionRef}
+                style={{
+                    backgroundImage: `url(${heroBgImage})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+                className="relative z-30 -mt-24 flex h-[90vh] w-full flex-col items-center justify-center overflow-hidden"
+            >
+                <h1 className="mb-32 text-center text-5xl text-white">
+                    Welcome to TOYSHOP
+                </h1>
+                <Link to="/store" className="relative">
+                    <button className="click-shrink rounded-lg bg-primaryColor px-5 py-3 text-2xl font-medium text-primaryTextColor shadow-md hover:bg-primaryColorMuted">
+                        Browse store
+                    </button>
+                </Link>
             </div>
 
             {/* Headlines scrollzone */}

@@ -9,7 +9,6 @@ export default function Headlines({ highlight }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [headlineWidth, setHeadlineWidth] = useState<number>(0);
 
-    // Update scrollY on scroll
     useEffect(() => {
         const handleScroll = () => {
             if (!containerRef.current) return;

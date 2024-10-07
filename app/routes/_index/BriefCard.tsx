@@ -17,7 +17,7 @@ export default function BriefCard({ highlight }: Props) {
                 <h1 className="-mb-2 ms-4 text-4xl font-bold text-primaryColor sm:text-5xl">
                     {highlight.headline}
                 </h1>
-                <p className="w-full flex-grow rounded-lg bg-primaryColor px-2 py-4 text-2xl text-primaryTextColor shadow-md sm:rounded-xl sm:text-3xl">
+                <p className="w-full flex-grow rounded-lg bg-primaryColor px-3 py-5 text-2xl text-primaryTextColor shadow-md sm:rounded-xl sm:text-3xl">
                     {highlight.brief.split(" ").map((word, index) => (
                         <span
                             key={index}

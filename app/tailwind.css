@@ -44,10 +44,6 @@
     @apply transition-[transform] active:scale-90;
 }
 
-.custom-text-shadow {
-    text-shadow: 0 0 0.15em black;
-}
-
 .auth-form {
     @apply absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center p-2 text-left transition-transform duration-200;
 }
