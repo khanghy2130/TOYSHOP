@@ -44,6 +44,14 @@
     @apply transition-[transform] active:scale-90;
 }
 
+.custom-text-shadow {
+    text-shadow: 0.1em 0.1em 0.1em black;
+}
+
+.custom-box-shadow {
+    box-shadow: 0.2em 0.2em 0.4em black;
+}
+
 .auth-form {
     @apply absolute top-1/2 flex w-full -translate-y-1/2 flex-col items-center p-2 text-left transition-transform duration-200;
 }
@@ -71,4 +79,9 @@
 /* PAGE LOADING PROGRESS BAR (mobile) */
 ::-webkit-progress-value {
     @apply bg-primaryColor;
+}
+
+::selection {
+    background: var(--primaryColorMuted);
+    color: var(--primaryTextColor);
 }

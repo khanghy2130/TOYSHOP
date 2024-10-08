@@ -81,12 +81,12 @@ export default function LandingPage() {
                 }}
                 className="relative z-30 -mt-24 flex h-[90vh] w-full flex-col items-center justify-center overflow-hidden"
             >
-                <h1 className="mb-32 text-center text-5xl text-white">
-                    Welcome to TOYSHOP
+                <h1 className="custom-text-shadow mx-2 mb-24 text-center text-2xl text-white sm:mx-5 sm:text-4xl">
+                    Discover your next favorite toys here at TOYSHOP.
                 </h1>
                 <Link to="/store" className="relative">
-                    <button className="click-shrink rounded-lg bg-primaryColor px-5 py-3 text-2xl font-medium text-primaryTextColor shadow-md hover:bg-primaryColorMuted">
-                        Browse store
+                    <button className="click-shrink custom-box-shadow rounded-lg bg-primaryColor px-5 py-3 text-xl font-medium text-primaryTextColor hover:bg-primaryColorMuted sm:text-2xl">
+                        Shop now
                     </button>
                 </Link>
             </div>
