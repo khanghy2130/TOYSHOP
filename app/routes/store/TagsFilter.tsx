@@ -50,7 +50,7 @@ export default function TagsFilter({
         <>
             <div className="flex flex-wrap items-center gap-x-1 gap-y-2">
                 <button
-                    className="text-md mr-2 flex flex-row rounded-md bg-primaryColor px-2 py-2 font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                    className="text-md mr-2 flex flex-row rounded-md bg-bgColor2 px-2 py-2 font-medium text-textColor1 hover:bg-bgColor3"
                     onClick={() => setShowTagsModal(!showTagsModal)}
                 >
                     <svg

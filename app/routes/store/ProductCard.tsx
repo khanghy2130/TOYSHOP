@@ -131,7 +131,7 @@ export default function ProductCard({ product }: Props) {
 
     return (
         <div className="flex w-1/2 p-1 sm:p-2 md:w-1/3">
-            <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-gradient-to-tl from-bgColor1 to-bgColor2 shadow-md sm:rounded-xl">
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-bgColor2 shadow-md sm:rounded-xl">
                 <div className="relative flex aspect-square w-full cursor-pointer items-center justify-center">
                     <Link
                         to={`/product/${product.id}`}
@@ -205,7 +205,7 @@ export default function ProductCard({ product }: Props) {
                     </div>
 
                     <button
-                        className="mt-1 w-full enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:bg-bgColor2 disabled:text-textColor2"
+                        className="mt-1 w-full enabled:bg-primaryColor enabled:font-medium enabled:text-primaryTextColor enabled:hover:bg-primaryColorMuted disabled:bg-bgColor3 disabled:text-textColor2"
                         disabled={isInCart || outOfStock}
                         onClick={addToCart}
                     >

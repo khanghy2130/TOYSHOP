@@ -1,5 +1,10 @@
 import { useOutletContext, useNavigate } from "@remix-run/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import {
+    createServerClient,
+    parseCookieHeader,
+    serializeCookieHeader,
+} from "@supabase/ssr";
 
 import googleIcon from "~/assets/oauth_providers/google-icon.png";
 import githubIcon from "~/assets/oauth_providers/github-icon.png";
@@ -9,10 +14,46 @@ import { ContextProps } from "~/utils/types/ContextProps.type";
 
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-import { MetaFunction } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
     return [{ title: "Login" }];
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+    const headers = new Headers();
+    const supabase = createServerClient(
+        process.env.SUPABASE_URL!,
+        process.env.SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return parseCookieHeader(
+                        request.headers.get("Cookie") ?? "",
+                    );
+                },
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        headers.append(
+                            "Set-Cookie",
+                            serializeCookieHeader(name, value, options),
+                        ),
+                    );
+                },
+            },
+        },
+    );
+
+    const {
+        data: { user },
+    } = await supabase.auth.getUser();
+
+    // already logged in?
+    if (user) {
+        return redirect("/store");
+    }
+
+    return null;
 };
 
 export default function Login() {

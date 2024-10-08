@@ -42,7 +42,7 @@ export default function PayPageDefault() {
                 <p className="mb-4 bg-yellow-500 bg-opacity-30 px-2 text-lg">
                     <span className="font-bold">Note: </span>
                     this is a demo project, do not enter real information. To
-                    test payment, please enter card number: 4242 4242 4242 4242.
+                    test payment, please enter card number 4242 4242 4242 4242 and any valid value for the rest.
                 </p>
                 <PaymentElement />
                 <div className="mt-6 flex w-full justify-center">
