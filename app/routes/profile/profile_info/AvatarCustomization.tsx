@@ -206,7 +206,7 @@ export default function AvatarCustomization({
                     <h1 className="px-4 py-2 text-xl">Customize avatar</h1>
                     <button
                         className="ml-auto mr-4 text-textColor1 hover:text-primaryColor"
-                        onClick={() => setShowAvatarModal(false)}
+                        onClick={saveAvatar}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -278,7 +278,7 @@ export default function AvatarCustomization({
                         }
 
                         <h2 className="mt-2 text-lg italic">Colors</h2>
-                        <div className="mt-2 flex justify-around">
+                        <div className="mb-6 mt-2 flex justify-around">
                             <div className="flex flex-col items-center">
                                 <input
                                     className="w-10 cursor-pointer bg-transparent sm:w-20"
@@ -341,13 +341,6 @@ export default function AvatarCustomization({
                                 </label>
                             </div>
                         </div>
-
-                        <button
-                            className="click-shrink mx-3 mb-4 mt-6 self-end rounded-md bg-primaryColor px-4 py-1 text-lg font-medium text-primaryTextColor hover:bg-primaryColorMuted"
-                            onClick={saveAvatar}
-                        >
-                            Save
-                        </button>
                     </div>
                 </div>
             </div>
