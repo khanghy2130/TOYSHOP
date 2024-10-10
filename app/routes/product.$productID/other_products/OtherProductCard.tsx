@@ -41,6 +41,9 @@ export default function OtherProductCard({ product }: Props) {
             <Link
                 to={`/product/${product.id}`}
                 className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-bgColor2 shadow-md sm:rounded-xl"
+                onClick={() => {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
             >
                 <div className="relative flex aspect-square w-full cursor-pointer items-center justify-center">
                     {imgName === null ? (
