@@ -52,6 +52,7 @@ export const loader: LoaderFunction = async ({ request }) => {
             SUPABASE_URL: process.env.SUPABASE_URL!,
             SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
             SUPABASE_IMAGES_PATH: process.env.SUPABASE_IMAGES_PATH!,
+            SITE_URL: process.env.SITE_URL!,
             PROMO_DOUBLE_TAGS_JSON: process.env.PROMO_DOUBLE_TAGS_JSON!,
             PROMO_BRAND: process.env.PROMO_BRAND!,
         },
