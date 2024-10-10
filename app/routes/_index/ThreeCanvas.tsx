@@ -73,6 +73,7 @@ function PictureFrame({
     );
 }
 
+const images = [img1, img2, img3, img4, img5, img6, img7, img8];
 function FlippingSquare() {
     const imgMeshRef = useRef<Mesh>(null);
     const frameMeshRef = useRef<Group>(null);
@@ -80,7 +81,6 @@ function FlippingSquare() {
 
     const [scrollY, setScrollY] = useState(0);
     const imgSize: [number, number] = [2, 2];
-    const images = [img1, img2, img3, img4, img5, img6, img7, img8];
 
     // Update scrollY on scroll
     useEffect(() => {
@@ -97,9 +97,12 @@ function FlippingSquare() {
     const scaling = Math.min(1, viewport.width / 3);
     const deg90 = Math.PI / 2;
     const rotationYValue = scrollY * 0.006 + deg90;
+
+    const textures = useLoader(TextureLoader, images);
     const imgIndex =
         Math.floor((rotationYValue - deg90) / (deg90 * 2)) % images.length;
-    const texture = useLoader(TextureLoader, images[Math.max(imgIndex, 0)]);
+    // current image
+    const texture = textures[Math.max(imgIndex, 0)];
 
     const calculatedRotation: [number, number, number] = [
         0.1,
@@ -151,11 +154,34 @@ export default function ThreeCanvas() {
         setMounted(true);
     }, []);
 
+    const [dimensions, setDimensions] = useState({
+        width: 0,
+        height: 0,
+    });
+    useEffect(() => {
+        const handleResize = () => {
+            setDimensions({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        };
+        handleResize(); // set initial size
+
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
     if (!mounted) return null;
     return (
         <Canvas
             className="pointer-events-none inset-0 z-10"
-            style={{ position: "fixed" }}
+            style={{
+                position: "fixed",
+                width: dimensions.width,
+                height: dimensions.height,
+            }}
             camera={{ fov: 40, position: [0, 0, -5] }}
         >
             <ambientLight intensity={1.2} />
