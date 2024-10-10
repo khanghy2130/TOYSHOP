@@ -65,12 +65,11 @@ export default function Login() {
 
     // switch between login & signup
     const [isAtLogin, setIsAtLogin] = useState<boolean>(true);
-    const { supabase, env, addNotification } = useOutletContext<ContextProps>();
+    const { supabase, addNotification } = useOutletContext<ContextProps>();
 
     const providerClicked = async (providerName: Provider) => {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: providerName,
-            options: { redirectTo: env.SITE_URL },
         });
         if (error) {
             console.error("Error logging in.", error);
