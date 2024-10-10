@@ -31,6 +31,7 @@ export default function SearchBar({
                         if (e.key == "Enter") {
                             e.preventDefault();
                             initiateFetching();
+                            e.currentTarget.blur();
                         }
                     }}
                     value={searchQuery}
