@@ -52,6 +52,7 @@ export default function ProfileInfo() {
     useEffect(() => {
         (async function () {
             if (!user) return;
+            setAvatarUri("");
             const { data, error } = await supabase
                 .from("AVATARS")
                 .select(`*`)
@@ -135,7 +136,7 @@ export default function ProfileInfo() {
                     className="group relative"
                     onClick={() => setShowAvatarModal(true)}
                 >
-                    <div className="h-36 w-36 overflow-hidden rounded-lg">
+                    <div className="flex h-36 w-36 items-center justify-center overflow-hidden rounded-lg">
                         {avatarUri === "" ? (
                             <div className="h-1/3 w-1/3 text-primaryColor">
                                 <SpinnerSVG />
