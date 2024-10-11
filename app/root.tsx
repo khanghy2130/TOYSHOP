@@ -174,7 +174,6 @@ function App() {
                 .single();
             if (profileError) {
                 console.error("Error fetching profile", profileError);
-                addNotification("Error fetching profile", "FAIL");
             } else {
                 setUserDisplayName(profileData.display_name);
             }
