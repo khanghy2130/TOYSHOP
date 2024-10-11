@@ -193,10 +193,10 @@ export default function Login() {
             </div>
             <div className="m-8 mx-32 my-12 text-4xl">OR</div>
 
-            <div className="relative h-[520px] w-full max-w-72 overflow-hidden rounded-xl border-2 border-bgColor2 text-center">
+            <div className="relative h-[520px] w-full max-w-72 overflow-hidden rounded-xl border-2 border-textColor2 text-center">
                 {/* LOGIN/SIGNUP SWITCH */}
                 <button
-                    className="absolute right-2 top-2 z-10 min-w-24 rounded-md bg-bgColor2 py-1 text-sm font-medium hover:bg-bgColor3"
+                    className="absolute right-2 top-2 z-10 min-w-32 rounded-md bg-bgColor2 py-1 text-base font-medium hover:bg-bgColor3"
                     onClick={() => {
                         setIsAtLogin(!isAtLogin);
                         resetErrorMessage();
