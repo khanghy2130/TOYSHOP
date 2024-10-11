@@ -1,3 +1,5 @@
+yarn run v1.22.22
+$ "C:\Users\khang\OneDrive\Máy tính\MAIN\remix-app-01\node_modules\.bin\supabase" gen types typescript --project-id ulaqqblqcmrlbvnsehxg
 export type Json =
   | string
   | number
@@ -489,3 +491,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+Done in 1.10s.

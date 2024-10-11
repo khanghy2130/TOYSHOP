@@ -29,7 +29,7 @@ export default function Headlines({ highlight }: Props) {
     return (
         <div ref={containerRef} className="flex h-[1000px] flex-col">
             {/* Headline image */}
-            <div className="sticky top-0 -z-10 flex justify-center">
+            <div className="sticky top-0 -z-10 flex justify-center pt-10 sm:pt-4">
                 <div className="relative flex justify-start">
                     <img
                         className="w-screen max-w-[800px]"

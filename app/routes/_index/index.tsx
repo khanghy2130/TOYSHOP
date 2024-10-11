@@ -81,7 +81,7 @@ export default function LandingPage() {
                 }}
                 className="relative z-30 -mt-24 flex h-[90vh] w-full flex-col items-center justify-center overflow-hidden"
             >
-                <h1 className="custom-text-shadow mx-2 mb-24 text-center text-2xl text-white sm:mx-5 sm:text-4xl">
+                <h1 className="custom-text-shadow mx-2 mb-24 max-w-[700px] text-center text-3xl font-bold text-white sm:mx-5 sm:text-5xl">
                     Discover your next favorite toys here at TOYSHOP.
                 </h1>
                 <Link to="/store" className="relative">

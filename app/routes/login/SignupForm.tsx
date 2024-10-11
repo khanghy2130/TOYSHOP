@@ -50,14 +50,6 @@ export default function SignupForm({
                     <h1 className="pb-4 text-center text-2xl">Register</h1>
 
                     <input name="form_type" type="hidden" value="REGISTER" />
-                    {/* <label htmlFor="reg_display_name_input">Display name</label>
-                    <input
-                        name="reg_display_name_input"
-                        id="reg_display_name_input"
-                        type="text"
-                        required
-                        className="text-input"
-                    /> */}
                     <label htmlFor="reg_email_input">Email</label>
                     <input
                         name="reg_email_input"

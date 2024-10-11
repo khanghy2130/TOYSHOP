@@ -21,7 +21,7 @@ yarn test
 Replace `abcd12345` with project ID.
 
 ```sh
-npx supabase gen types typescript --project-id abcd12345 > database.types.ts
+yarn supabase gen types typescript --project-id abcd12345 > database.types.ts
 ```
 
 ## Environment variables
