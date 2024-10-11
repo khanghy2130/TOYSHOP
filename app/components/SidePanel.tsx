@@ -229,7 +229,7 @@ export default function SidePanel({
                         <h1 className="mb-4 text-lg">Log in to see profile</h1>
                         <Link to="/login">
                             <button
-                                className="click-shrink rounded-md bg-primaryColor px-4 py-2 text-xl text-primaryTextColor hover:bg-primaryColorMuted"
+                                className="click-shrink rounded-md bg-primaryColor px-4 py-2 text-xl font-medium text-primaryTextColor hover:bg-primaryColorMuted"
                                 onClick={() => setSidePanelIsShown(false)}
                             >
                                 Login
