@@ -47,8 +47,7 @@ export default function SidePanel({
                 .single();
 
             if (error) {
-                console.error("Error fetching avatar");
-                addNotification("Error fetching avatar", "FAIL");
+                console.error("Error fetching avatar", error);
                 return;
             }
 
@@ -158,7 +157,7 @@ export default function SidePanel({
                     <>
                         {/* Avatar & display name */}
                         <div className="flex flex-col items-center px-4">
-                            <div className="h-28 w-28 items-center justify-center overflow-hidden rounded-lg">
+                            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-lg">
                                 {avatarUri === "" ? (
                                     <div className="h-1/3 w-1/3 text-primaryColor">
                                         <SpinnerSVG />
