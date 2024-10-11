@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react";
+
 export default function Footer() {
     return (
         <div className="z-10 flex w-full flex-grow items-end pt-10">
@@ -7,6 +9,12 @@ export default function Footer() {
                     <span className="font-bold">Disclaimer:</span> This is a
                     demo website project, not a real online store!
                 </h2>
+                <Link
+                    to="/login"
+                    className="font-medium underline hover:text-primaryColor"
+                >
+                    See policy
+                </Link>
             </div>
         </div>
     );
