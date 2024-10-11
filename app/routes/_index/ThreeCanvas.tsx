@@ -154,33 +154,12 @@ export default function ThreeCanvas() {
         setMounted(true);
     }, []);
 
-    const [dimensions, setDimensions] = useState({
-        width: 0,
-        height: 0,
-    });
-    useEffect(() => {
-        const handleResize = () => {
-            setDimensions({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-        };
-        handleResize(); // set initial size
-
-        window.addEventListener("resize", handleResize);
-        return () => {
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
     if (!mounted) return null;
     return (
         <Canvas
             className="pointer-events-none inset-0 z-10"
             style={{
                 position: "fixed",
-                width: dimensions.width,
-                height: dimensions.height,
             }}
             camera={{ fov: 40, position: [0, 0, -5] }}
         >
