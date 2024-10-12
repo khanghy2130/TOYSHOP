@@ -16,6 +16,8 @@ type Props = {
     supabase: ContextProps["supabase"];
     addNotification: AddNotificationFunction;
     userDisplayName: string;
+    avatarUri: string;
+    setAvatarUri: SetState<string>;
 };
 
 export default function SidePanel({
@@ -25,13 +27,13 @@ export default function SidePanel({
     supabase,
     addNotification,
     userDisplayName,
+    avatarUri,
+    setAvatarUri,
 }: Props) {
     const [theme, setTheme] = useTheme();
     const toggleTheme = () => {
         setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
     };
-
-    const [avatarUri, setAvatarUri] = useState<string>("");
 
     // generate avatar
     useEffect(() => {

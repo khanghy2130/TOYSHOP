@@ -1,3 +1,7 @@
+import { createAvatar } from "@dicebear/core";
+import * as bigSmile from "@dicebear/big-smile";
+
+import { AddNotificationFunction } from "~/components/useNotification";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 
 async function checkProfileExists(
@@ -39,6 +43,9 @@ export default async function insertNewUser(
         id: string;
         display_name: string;
     },
+    setAvatarUri: SetState<string>,
+    setUserDisplayName: SetState<string>,
+    addNotification: AddNotificationFunction,
 ) {
     // PROFILE
     const profileExists = await checkProfileExists(supabase, profileObj.id);
@@ -50,17 +57,39 @@ export default async function insertNewUser(
             console.error("Error inserting new profile", profileInsertError);
             return;
         }
+        setUserDisplayName(profileObj.display_name);
     }
 
     // AVATAR
     const avatarExists = await checkAvatarExists(supabase, profileObj.id);
     if (!avatarExists) {
-        const { error: avatarInsertError } = await supabase
+        const { data, error: avatarInsertError } = await supabase
             .from("AVATARS")
-            .insert({ id: profileObj.id });
+            .insert({ id: profileObj.id })
+            .select()
+            .single();
         if (avatarInsertError) {
             console.error("Error inserting new avatar", avatarInsertError);
             return;
         }
+
+        setAvatarUri(
+            createAvatar(bigSmile, {
+                accessoriesProbability: data.accessoriesProbability!,
+                backgroundColor: [data.backgroundColor!],
+                skinColor: [data.skinColor!],
+                hairColor: [data.hairColor!],
+                // expect errors of not matching types
+                // @ts-expect-error
+                hair: [data.hair!],
+                // @ts-expect-error
+                eyes: [data.eyes!],
+                // @ts-expect-error
+                mouth: [data.mouth!],
+                // @ts-expect-error
+                accessories: [data.accessories!],
+            }).toDataUri(),
+        );
+        addNotification("Profile created", "SUCCESS");
     }
 }

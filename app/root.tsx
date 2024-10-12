@@ -26,10 +26,7 @@ import { getThemeSession } from "./utils/Navbar/theme.server";
 import Navbar from "./components/Navbar";
 import SidePanel from "./components/SidePanel";
 import insertNewUser from "./utils/insertNewUser";
-import {
-    PopupNotification,
-    RawCartItem,
-} from "./utils/types/ContextProps.type";
+import { RawCartItem } from "./utils/types/ContextProps.type";
 import PopupNotificationsList from "./components/PopupNotificationsList";
 import Footer from "./components/Footer";
 import { useNotification } from "./components/useNotification";
@@ -66,6 +63,11 @@ function App() {
     const [supabase] = useState(() =>
         createBrowserClient<Database>(env.SUPABASE_URL, env.SUPABASE_ANON_KEY),
     );
+
+    const [notifications, addNotification] = useNotification();
+    const [avatarUri, setAvatarUri] = useState<string>("");
+    const [userDisplayName, setUserDisplayName] = useState<string>("");
+
     const [user, setUser] = useState<undefined | User>(undefined);
     // force rerender because user is still undefined briefly on first page load
     const [forceRerenderCounter, setForceRerenderCounter] = useState<number>(0);
@@ -84,12 +86,19 @@ function App() {
             } else if (event === "SIGNED_IN") {
                 setUser(session!.user);
                 // create new profile & avatar
-                insertNewUser(supabase, {
-                    id: session!.user.id!,
-                    display_name:
-                        session!.user.user_metadata.name ||
-                        session!.user.user_metadata.email.split("@")[0],
-                });
+                insertNewUser(
+                    supabase,
+                    {
+                        id: session!.user.id!,
+                        // user name or name from email address
+                        display_name:
+                            session!.user.user_metadata.name ||
+                            session!.user.user_metadata.email.split("@")[0],
+                    },
+                    setAvatarUri,
+                    setUserDisplayName,
+                    addNotification,
+                );
             } else if (event === "SIGNED_OUT") {
                 setUser(undefined);
             }
@@ -114,7 +123,6 @@ function App() {
     const [theme] = useTheme();
     const [sidePanelIsShown, setSidePanelIsShown] = useState<boolean>(false);
 
-    const [userDisplayName, setUserDisplayName] = useState<string>("");
     const [wishlist, setWishlist] = useState<number[]>([]);
     const [rawCartItems, setRawCartItems] = useState<RawCartItem[]>([]);
     const [cartCount, setCartCount] = useState<number>(0);
@@ -180,8 +188,6 @@ function App() {
         })();
     }, [user]);
 
-    const [notifications, addNotification] = useNotification();
-
     return (
         <html lang="en" className={theme ?? ""}>
             <head>
@@ -205,6 +211,8 @@ function App() {
                     user={user}
                     addNotification={addNotification}
                     userDisplayName={userDisplayName}
+                    avatarUri={avatarUri}
+                    setAvatarUri={setAvatarUri}
                 />
 
                 {/* space for navbar above main page content */}
