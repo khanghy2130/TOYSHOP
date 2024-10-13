@@ -292,7 +292,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                     }}
                 />
                 <button
-                    className="bg-primaryColor text-primaryTextColor"
+                    className="bg-primaryColor p-2 text-primaryTextColor"
                     type="button"
                     onClick={addTag}
                 >
@@ -330,7 +330,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
             />
 
             <button
-                className="bg-primaryColor text-primaryTextColor"
+                className="mt-4 bg-primaryColor p-2 text-primaryTextColor"
                 type="submit"
                 disabled={isSubmitting}
             >

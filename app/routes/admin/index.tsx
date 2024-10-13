@@ -103,10 +103,10 @@ export default function Admin() {
     if (!isEditor) return <h1>Access denied.</h1>;
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex w-full max-w-[800px] flex-col items-center">
             <div className="flex w-full flex-row items-center justify-around">
                 <button
-                    className="bg-primaryColor text-primaryTextColor enabled:cursor-pointer disabled:opacity-30"
+                    className="bg-primaryColor p-2 text-primaryTextColor enabled:cursor-pointer disabled:opacity-30"
                     onClick={createBtnClicked}
                     disabled={mode === "CREATE"}
                 >
@@ -127,7 +127,7 @@ export default function Admin() {
                         }}
                     />
                     <button
-                        className="bg-primaryColor text-primaryTextColor"
+                        className="bg-primaryColor p-2 text-primaryTextColor"
                         onClick={getProductBtnClicked}
                     >
                         Load existing product
