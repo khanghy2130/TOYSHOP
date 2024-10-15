@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { ProductInfo, ReviewsFetchTriggerType } from "../Types";
 import { Form, useOutletContext } from "@remix-run/react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
+import SpinnerSVG from "~/components/SpinnerSVG";
 
 type Props = {
     productInfo: ProductInfo;
@@ -50,6 +51,7 @@ export default function ReviewForm({
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
         if (rating < 1 || rating > 5) {
+            addNotification("Rating not set", "FAIL");
             return console.error("Stars amount must be between 1 and 5.");
         }
 
@@ -69,6 +71,7 @@ export default function ReviewForm({
 
         if (countError) {
             console.error("Error upserting review", countError);
+            addNotification("Error upserting review", "FAIL");
             return setIsSubmitting(false);
         }
 
@@ -182,10 +185,18 @@ export default function ReviewForm({
             {enableFormInput ? (
                 <button
                     disabled={isSubmitting}
-                    className="rounded-lg bg-primaryColor py-1 text-lg font-medium text-primaryTextColor hover:bg-primaryColorMuted"
+                    className="flex h-8 items-center justify-center rounded-lg bg-primaryColor text-lg font-medium text-primaryTextColor hover:bg-primaryColorMuted"
                     type="submit"
                 >
-                    {isSubmitting ? "Processing..." : "Submit"}
+                    {isSubmitting ? (
+                        <div className="flex h-8 w-8 items-center justify-center">
+                            <div className="h-3/4 w-3/4">
+                                <SpinnerSVG />
+                            </div>
+                        </div>
+                    ) : (
+                        <span>Submit</span>
+                    )}
                 </button>
             ) : null}
 
