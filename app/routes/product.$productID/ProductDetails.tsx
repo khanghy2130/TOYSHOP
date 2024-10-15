@@ -67,9 +67,7 @@ export default function ProductDetails({ productInfo }: Props) {
 
     return (
         <div className="mt-4 p-3 sm:mt-0 sm:p-5">
-            <h1 className="text-2xl leading-none sm:text-3xl">
-                {productInfo.title}
-            </h1>
+            <h1 className="text-3xl leading-none">{productInfo.title}</h1>
             <div className="mt-1 flex items-center">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -83,18 +81,18 @@ export default function ProductDetails({ productInfo }: Props) {
                         clipRule="evenodd"
                     />
                 </svg>
-                <span className="ms-1 text-lg font-medium sm:text-xl">
+                <span className="ms-1 text-xl font-medium">
                     {productInfo.average_rating === 0
                         ? "-"
                         : productInfo.average_rating.toFixed(1)}
                 </span>
             </div>
 
-            <h2 className="mt-10 text-2xl font-bold sm:text-4xl">
+            <h2 className="mt-10 text-4xl font-bold">
                 ${productInfo.price_with_discount?.toFixed(2)}
             </h2>
             {productInfo.discount > 0 ? (
-                <h3 className="text-lg sm:text-xl">
+                <h3 className="text-xl">
                     <span className="text-textColor2 line-through">
                         ${productInfo.price.toFixed(2)}
                     </span>

@@ -269,6 +269,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                 className="mb-10 bg-bgColor2 p-2 text-textColor1"
                 type="number"
                 min={0}
+                step="0.01"
                 required
                 placeholder="Price"
                 name="price"
