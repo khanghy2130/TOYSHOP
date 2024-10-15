@@ -226,7 +226,7 @@ export default function ProductCard({ product }: Props) {
 const renderAddToCartText = function (isAddingToCart: boolean) {
     if (isAddingToCart) {
         return (
-            <div className="h-6 w-6">
+            <div className="h-6 w-6 text-primaryTextColor">
                 <SpinnerSVG />
             </div>
         );

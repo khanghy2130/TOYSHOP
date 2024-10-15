@@ -109,6 +109,8 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                     title: formData.get("title") as string,
                     description: formData.get("description") as string,
                     quantity: Number(formData.get("quantity")),
+                    price: Number(formData.get("price")),
+                    discount: Number(formData.get("discount")),
                 })
                 .select()
                 .single();
@@ -127,6 +129,8 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                     title: formData.get("title") as string,
                     description: formData.get("description") as string,
                     quantity: Number(formData.get("quantity")),
+                    price: Number(formData.get("price")),
+                    discount: Number(formData.get("discount")),
                 })
                 .eq("id", productID);
 
@@ -261,6 +265,26 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                 defaultValue={updateFormState.quantity}
             />
 
+            <input
+                className="mb-10 bg-bgColor2 p-2 text-textColor1"
+                type="number"
+                min={0}
+                required
+                placeholder="Price"
+                name="price"
+                defaultValue={updateFormState.price}
+            />
+
+            <input
+                className="mb-10 bg-bgColor2 p-2 text-textColor1"
+                type="number"
+                min={0}
+                required
+                placeholder="Discount"
+                name="discount"
+                defaultValue={updateFormState.discount}
+            />
+
             <div>
                 {tags.map((tag, i) => (
                     <div className="flex" key={tag}>
@@ -292,7 +316,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                     }}
                 />
                 <button
-                    className="bg-primaryColor text-primaryTextColor"
+                    className="bg-primaryColor p-2 text-primaryTextColor"
                     type="button"
                     onClick={addTag}
                 >
@@ -330,7 +354,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
             />
 
             <button
-                className="bg-primaryColor text-primaryTextColor"
+                className="mt-4 bg-primaryColor p-2 text-primaryTextColor"
                 type="submit"
                 disabled={isSubmitting}
             >

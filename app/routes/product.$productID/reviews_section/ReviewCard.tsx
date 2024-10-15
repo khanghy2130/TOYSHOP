@@ -64,7 +64,7 @@ export default function ReviewCard({ review }: Props) {
                 </div>
             </div>
 
-            <p className="pt-1">{review.feedback}</p>
+            <p className="whitespace-pre-wrap pt-1">{review.feedback}</p>
         </div>
     );
 }

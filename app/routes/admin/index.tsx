@@ -9,6 +9,9 @@ export type UpdateFormState = {
     title: string;
     description: string;
     quantity: string | number;
+    price: string | number;
+    discount: string | number;
+
     tags: string[];
     imgNames: string[];
 };
@@ -36,6 +39,8 @@ export default function Admin() {
         title: "",
         description: "",
         quantity: "",
+        price: "",
+        discount: "",
         tags: [],
         imgNames: [],
     });
@@ -58,6 +63,8 @@ export default function Admin() {
                 title,
                 description,
                 quantity,
+                price,
+                discount,
                 tags:PRODUCTS_TAGS(tag_id(name))
             `,
             )
@@ -68,6 +75,8 @@ export default function Admin() {
                     title: string;
                     description: string;
                     quantity: number;
+                    price: number;
+                    discount: number;
                     tags: { tag_id: { name: string } }[];
                 }[]
             >()
@@ -94,6 +103,8 @@ export default function Admin() {
             title: data.title,
             description: data.description,
             quantity: data.quantity,
+            price: data.price,
+            discount: data.discount,
             tags: data.tags.map(({ tag_id }) => tag_id.name),
             imgNames: fetchedImagesData.map((imgData) => imgData.name),
         });
@@ -103,10 +114,10 @@ export default function Admin() {
     if (!isEditor) return <h1>Access denied.</h1>;
 
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex w-full max-w-[800px] flex-col items-center">
             <div className="flex w-full flex-row items-center justify-around">
                 <button
-                    className="bg-primaryColor text-primaryTextColor enabled:cursor-pointer disabled:opacity-30"
+                    className="bg-primaryColor p-2 text-primaryTextColor enabled:cursor-pointer disabled:opacity-30"
                     onClick={createBtnClicked}
                     disabled={mode === "CREATE"}
                 >
@@ -127,7 +138,7 @@ export default function Admin() {
                         }}
                     />
                     <button
-                        className="bg-primaryColor text-primaryTextColor"
+                        className="bg-primaryColor p-2 text-primaryTextColor"
                         onClick={getProductBtnClicked}
                     >
                         Load existing product
