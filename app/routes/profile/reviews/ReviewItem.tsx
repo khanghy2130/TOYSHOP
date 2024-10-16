@@ -1,5 +1,4 @@
 import { Link, useOutletContext } from "@remix-run/react";
-import { Tables } from "database.types";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import { MyReview } from "./MyReviews";
@@ -87,7 +86,9 @@ export default function ReviewItem({ review }: Props) {
                         </div>
 
                         {/* Feedback */}
-                        <p className="pr-2">{review.feedback}</p>
+                        <p className="whitespace-pre-wrap pr-2">
+                            {review.feedback}
+                        </p>
                     </div>
                 </div>
             </div>
