@@ -232,6 +232,7 @@ function App() {
                             userDisplayName,
                             setUserDisplayName,
                             addNotification,
+                            setAvatarUri,
                         }}
                     />
                 </div>

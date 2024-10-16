@@ -68,6 +68,7 @@ describe("Profile page", () => {
             },
             setUserDisplayName: vi.fn(),
             setWishlist: vi.fn(),
+            setAvatarUri: vi.fn(),
         });
         (useLoaderData as Mock).mockReturnValue({
             newWishlist: [1, 2],

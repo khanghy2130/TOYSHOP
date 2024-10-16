@@ -23,4 +23,5 @@ export type ContextProps = {
     userDisplayName: string;
     setUserDisplayName: SetState<string>;
     addNotification: (message: string, type: PopupNotification["type"]) => void;
+    setAvatarUri: SetState<string>;
 };

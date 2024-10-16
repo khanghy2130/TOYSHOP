@@ -32,6 +32,26 @@ const mockUseOutletContext = {
                             error: null,
                         }),
                     ),
+                    range: vi.fn(() => ({
+                        order: vi.fn(() => ({
+                            abortSignal: vi.fn(() => ({
+                                returns: vi.fn(() =>
+                                    Promise.resolve({
+                                        data: [{ id: 1, name: "item1" }],
+                                        error: null,
+                                    }),
+                                ),
+                            })),
+                        })),
+                        abortSignal: vi.fn(() => ({
+                            returns: vi.fn(() =>
+                                Promise.resolve({
+                                    data: [],
+                                    error: null,
+                                }),
+                            ),
+                        })),
+                    })),
                 })),
             })),
         }),

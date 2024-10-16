@@ -14,6 +14,7 @@ export default function ProfileInfo() {
         addNotification,
         userDisplayName,
         setUserDisplayName,
+        setAvatarUri,
     } = useOutletContext<ContextProps>();
 
     const [enableNameEdit, setEnableNameEdit] = useState<boolean>(false);
@@ -44,7 +45,8 @@ export default function ProfileInfo() {
     }, []);
 
     const [showAvatarModal, setShowAvatarModal] = useState<boolean>(false);
-    const [avatarUri, setAvatarUri] = useState<string>("");
+    // underscore to differentiate from the one in outlet context
+    const [_avatarUri, _setAvatarUri] = useState<string>("");
     // trigger a refetch
     const [avatarUriTrigger, setAvatarUriTrigger] = useState<{}>({});
 
@@ -52,7 +54,7 @@ export default function ProfileInfo() {
     useEffect(() => {
         (async function () {
             if (!user) return;
-            setAvatarUri("");
+            _setAvatarUri("");
             const { data, error } = await supabase
                 .from("AVATARS")
                 .select(`*`)
@@ -70,24 +72,24 @@ export default function ProfileInfo() {
             }
 
             const avt = data[0];
+            const newAvatarUri = createAvatar(bigSmile, {
+                accessoriesProbability: avt.accessoriesProbability!,
+                backgroundColor: [avt.backgroundColor!],
+                skinColor: [avt.skinColor!],
+                hairColor: [avt.hairColor!],
+                // expect errors of not matching types
+                // @ts-expect-error
+                hair: [avt.hair!],
+                // @ts-expect-error
+                eyes: [avt.eyes!],
+                // @ts-expect-error
+                mouth: [avt.mouth!],
+                // @ts-expect-error
+                accessories: [avt.accessories!],
+            }).toDataUri();
 
-            setAvatarUri(
-                createAvatar(bigSmile, {
-                    accessoriesProbability: avt.accessoriesProbability!,
-                    backgroundColor: [avt.backgroundColor!],
-                    skinColor: [avt.skinColor!],
-                    hairColor: [avt.hairColor!],
-                    // expect errors of not matching types
-                    // @ts-expect-error
-                    hair: [avt.hair!],
-                    // @ts-expect-error
-                    eyes: [avt.eyes!],
-                    // @ts-expect-error
-                    mouth: [avt.mouth!],
-                    // @ts-expect-error
-                    accessories: [avt.accessories!],
-                }).toDataUri(),
-            );
+            setAvatarUri(newAvatarUri);
+            _setAvatarUri(newAvatarUri);
         })();
     }, [avatarUriTrigger]);
 
@@ -137,12 +139,12 @@ export default function ProfileInfo() {
                     onClick={() => setShowAvatarModal(true)}
                 >
                     <div className="flex h-36 w-36 items-center justify-center overflow-hidden rounded-lg">
-                        {avatarUri === "" ? (
+                        {_avatarUri === "" ? (
                             <div className="h-1/3 w-1/3 text-primaryColor">
                                 <SpinnerSVG />
                             </div>
                         ) : (
-                            <img className="h-full w-full" src={avatarUri} />
+                            <img className="h-full w-full" src={_avatarUri} />
                         )}
                     </div>
                     <div className="absolute -right-3 -top-3 flex rounded-full bg-bgColor2 p-2 group-hover:bg-bgColor3">

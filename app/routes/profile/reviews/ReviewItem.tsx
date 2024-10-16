@@ -1,5 +1,4 @@
 import { Link, useOutletContext } from "@remix-run/react";
-import { Tables } from "database.types";
 import { useEffect, useState } from "react";
 import { ContextProps } from "~/utils/types/ContextProps.type";
 import { MyReview } from "./MyReviews";
@@ -64,8 +63,8 @@ export default function ReviewItem({ review }: Props) {
                     </div>
                 </div>
 
-                <div className="flex overflow-hidden px-3 py-2">
-                    <div className="flex flex-col items-start overflow-auto">
+                <div className="flex flex-grow overflow-hidden px-3 py-2">
+                    <div className="flex w-full flex-col items-start overflow-auto">
                         {/* Product title */}
                         <Link
                             to={`/product/${review.product_id}`}
@@ -87,7 +86,9 @@ export default function ReviewItem({ review }: Props) {
                         </div>
 
                         {/* Feedback */}
-                        <p className="pr-2">{review.feedback}</p>
+                        <p className="whitespace-pre-wrap pr-2">
+                            {review.feedback}
+                        </p>
                     </div>
                 </div>
             </div>
