@@ -249,7 +249,7 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                 defaultValue={updateFormState.title}
             />
             <textarea
-                className="mb-10 bg-bgColor2 p-2 text-textColor1"
+                className="mb-10 min-h-40 bg-bgColor2 p-2 text-textColor1"
                 required
                 placeholder="Description"
                 name="description"
@@ -332,7 +332,10 @@ export default function ProductDetails({ mode, updateFormState }: Props) {
                         .filter((imageFile) => !imageFile.willBeRemoved)
                         .map((imageFile, i) => (
                             <div className="flex" key={imageFile.listKey}>
-                                <img className="w-80" src={imageFile.url} />
+                                <img
+                                    className="h-40 w-40"
+                                    src={imageFile.url}
+                                />
                                 <button
                                     className="text-red-500 underline"
                                     type="button"
