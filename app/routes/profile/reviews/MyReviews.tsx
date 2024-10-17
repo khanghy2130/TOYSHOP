@@ -42,7 +42,7 @@ export default function MyReviews() {
                         No reviews found.
                     </p>
                 )}
-                <div className="flex w-full flex-wrap">
+                <div className="flex w-full flex-col">
                     {reviews.map((r) => (
                         <ReviewItem review={r} key={r.id} />
                     ))}

@@ -60,7 +60,7 @@ export default function MyOrders({ ordersData }: Props) {
                     My orders
                 </span>
             </h1>
-            <div className="flex max-h-96 flex-col overflow-auto text-xl sm:text-2xl">
+            <div className="flex max-h-96 flex-col overflow-auto text-lg sm:text-xl">
                 {orders.length === 0 ? (
                     <p className="w-full text-center text-lg">
                         No orders found.
