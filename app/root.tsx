@@ -10,9 +10,10 @@ import {
     Scripts,
     useLoaderData,
     useLocation,
+    useNavigation,
     useRevalidator,
 } from "@remix-run/react";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 
 import stylesheet from "~/tailwind.css";
@@ -30,6 +31,7 @@ import { RawCartItem } from "./utils/types/ContextProps.type";
 import PopupNotificationsList from "./components/PopupNotificationsList";
 import Footer from "./components/Footer";
 import { useNotification } from "./components/useNotification";
+import PageLoadingIndicator from "./components/PageLoadingIndicator";
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: stylesheet },
@@ -200,6 +202,7 @@ function App() {
                 <Links />
             </head>
             <body key={forceRerenderCounter}>
+                <PageLoadingIndicator />
                 <Navbar
                     cartCount={cartCount}
                     setSidePanelIsShown={setSidePanelIsShown}
