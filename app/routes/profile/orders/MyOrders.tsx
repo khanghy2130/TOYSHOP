@@ -62,9 +62,7 @@ export default function MyOrders({ ordersData }: Props) {
             </h1>
             <div className="flex max-h-96 flex-col overflow-auto text-lg sm:text-xl">
                 {orders.length === 0 ? (
-                    <p className="w-full text-center text-lg">
-                        No orders found.
-                    </p>
+                    <p className="w-full text-lg">No orders found.</p>
                 ) : null}
                 {orders.map((order) => (
                     <button

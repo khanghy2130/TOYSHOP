@@ -40,7 +40,7 @@ export default function OtherProductCard({ product }: Props) {
         <div className="flex w-1/2 p-1 sm:p-2 md:w-1/4">
             <Link
                 to={`/product/${product.id}`}
-                className="flex h-full w-full flex-col overflow-hidden rounded-lg bg-bgColor2 shadow-md sm:rounded-xl"
+                className="click-shrink flex h-full w-full flex-col overflow-hidden rounded-lg bg-bgColor2 shadow-md hover:bg-bgColor3 sm:rounded-xl"
                 onClick={() => {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
