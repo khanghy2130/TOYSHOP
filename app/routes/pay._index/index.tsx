@@ -11,7 +11,7 @@ import SpinnerSVG from "~/components/SpinnerSVG";
 export const loader: LoaderFunction = async () => {
     const data: { env: { [key: string]: string } } = {
         env: {
-            STRIPE_RETURN_URL: process.env.STRIPE_RETURN_URL!,
+            SITE_URL: process.env.SITE_URL!,
         },
     };
     return json(data);

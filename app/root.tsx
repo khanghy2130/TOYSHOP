@@ -10,7 +10,6 @@ import {
     Scripts,
     useLoaderData,
     useLocation,
-    useNavigation,
     useRevalidator,
 } from "@remix-run/react";
 import { useState, useEffect } from "react";

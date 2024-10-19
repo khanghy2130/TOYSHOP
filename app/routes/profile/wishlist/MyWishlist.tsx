@@ -50,7 +50,7 @@ export default function MyWishlist({ newWishlist, orderedProducts }: Props) {
             </h1>
 
             {products.length === 0 ? (
-                <p className="w-full text-center text-lg">Wishlist is empty.</p>
+                <p className="w-full text-lg">Wishlist is empty.</p>
             ) : (
                 <div className="flex flex-wrap">
                     {products.map((product) => (

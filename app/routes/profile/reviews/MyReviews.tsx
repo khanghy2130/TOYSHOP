@@ -38,9 +38,7 @@ export default function MyReviews() {
             </h1>
             <div className="flex flex-col">
                 {reviews.length === 0 && (
-                    <p className="w-full text-center text-lg">
-                        No reviews found.
-                    </p>
+                    <p className="w-full text-lg">No reviews found.</p>
                 )}
                 <div className="flex w-full flex-col">
                     {reviews.map((r) => (
