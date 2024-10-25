@@ -65,19 +65,8 @@ export default function Banner({
         setCurrentIndex((prevIndex) => (prevIndex + 1) % bannerHandlers.length);
 
     useEffect(() => {
-        // scroll to item
-        const slider = sliderRef.current;
-        if (slider) {
-            slider.scrollTo({
-                left: slider.offsetWidth * currentIndex,
-            });
-        }
-
         // set up timer
-        const interval = setInterval(() => {
-            handleNext();
-        }, 4000);
-
+        const interval = setInterval(handleNext, 4000);
         // clean up timer
         return () => clearInterval(interval);
     }, [currentIndex]);
@@ -86,7 +75,7 @@ export default function Banner({
         <div className="flex w-full flex-col items-center pb-10">
             <div
                 ref={sliderRef}
-                className="flex aspect-[4] w-11/12 max-w-[800px] snap-x snap-mandatory self-center overflow-x-hidden"
+                className="flex aspect-[4] w-11/12 max-w-[800px] self-center overflow-x-hidden"
             >
                 {bannerHandlers.map(({ imgSrc, handler }, i) => (
                     <button
@@ -100,9 +89,9 @@ export default function Banner({
                             // trigger fetch
                             setFetchTrigger({ fetchMode: "NEW" });
                         }}
-                        className="h-full w-full flex-shrink-0 snap-center"
+                        className={`${currentIndex === i ? "w-full" : "w-0"} h-full snap-center transition-all duration-300`}
                     >
-                        <img src={imgSrc} className="h-auto w-full" />
+                        <img src={imgSrc} className="h-full w-full" />
                     </button>
                 ))}
             </div>
